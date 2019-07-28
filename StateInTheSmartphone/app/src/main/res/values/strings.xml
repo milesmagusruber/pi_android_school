@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">State in the smartphone</string>
+    <string name="button_choose_action">Choose an action</string>
+    <string name="button_share_with_people">Share with people</string>
+    <string name="label_state_in_smartphone">State in the smartphone</string>
+    <string name="label_chosen_action_default">No action is chosen</string>
+    <string name="label_app_used_counter">Number of times you used this app:</string>
+    <string name="action1">Make a videomessage</string>
+    <string name="action2">Order shawarma</string>
+    <string name="action3">Ride a bike</string>
+    <string name="action4">Swim in the sea</string>
+    <string name="action5">Take a selfie</string>
+    <string name="action6">Visit a comedy show</string>
+    <string name="action7">Relax</string>
+</resources>

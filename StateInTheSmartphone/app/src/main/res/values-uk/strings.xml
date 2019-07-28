@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Держава в смартфоні</string>
+    <string name="button_choose_action">Оберіть дію</string>
+    <string name="button_share_with_people">Поділитись з людьми</string>
+    <string name="label_state_in_smartphone">Держава в смартфоні</string>
+    <string name="label_chosen_action_default">Дія не обрана</string>
+    <string name="label_app_used_counter">Кількість запусків:</string>
+    <string name="action1">Зробити відеозвернення</string>
+    <string name="action2">Замовити шаурму</string>
+    <string name="action3">Покататись на велосипеді</string>
+    <string name="action4">Покупатись у морі</string>
+    <string name="action5">Зробити селфі</string>
+    <string name="action6">Відвідати комедійне шоу</string>
+    <string name="action7">Розслабитись</string>
+</resources>

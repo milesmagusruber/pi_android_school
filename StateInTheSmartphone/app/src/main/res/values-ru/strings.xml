@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Государство в смартфоне</string>
+    <string name="button_choose_action">Выберите действие</string>
+    <string name="button_share_with_people">Поделиться с людьми</string>
+    <string name="label_state_in_smartphone">Государство в смартфоне</string>
+    <string name="label_chosen_action_default">Действие не выбрано</string>
+    <string name="label_app_used_counter">Количество запусков:</string>
+    <string name="action1">Сделать видеообращение</string>
+    <string name="action2">Заказать шаурму</string>
+    <string name="action3">Покататься на велосипеде</string>
+    <string name="action4">Покупаться в море</string>
+    <string name="action5">Сделать селфи</string>
+    <string name="action6">Посетить комедийное шоу</string>
+    <string name="action7">Расслабиться</string>
+</resources>
