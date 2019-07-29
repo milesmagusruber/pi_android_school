@@ -11,6 +11,8 @@ public class ChooseActivity extends AppCompatActivity {
 
     // Unique tag for the intent reply.
     public static final String EXTRA_REPLY =
+            // package id лучше брать из BuildConfig.APPLICATION_ID - так мы страхуемся
+            // от ошибок при смене package id (такое часо требуется при сборке тестовых билдов)
             "com.milesmagusruber.stateinthesmartphone.extra.REPLY";
 
 

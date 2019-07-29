@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         //Using static values and SharedPreferences to count number of times we've used our app
+        // Из-за этой конструкции не всегда при выходе-входе в приложение увеличивается счётчик
+        // Флаг valueOfLaunchCountModified тут лишний. Метод onCreate() твоей основной активити
+        // и так служит точкой входа в приложение
         if(!valueOfLaunchCountModified){
             SharedPreferences preferences = getPreferences(MODE_PRIVATE);
             appUsedCount= preferences.getInt("appUsedCount", 0);
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         // Restore the saved state.
         // See onSaveInstanceState() for what gets saved.
         if (savedInstanceState != null) {
+            //chosen_action лучше вынести в константу - с ней будет проще работать и нет шанса на опечатку
             mChosenActionTextView.setText(savedInstanceState.getString("chosen_action"));
         }
 
