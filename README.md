@@ -23,3 +23,17 @@
     - На экране просмотра фотографии нужно выводить текст поискового запроса по которому была найдена фотография
     - Создать экран где можно просмотреть последние 20 запросов
     - Челендж - сделать экран логина (формальный без пароля) и сохранять все данные на каждого отлдельно взятого пользователя. Если потом выбираем сохраненного пользователя то должны соответственно иметь возможность просмотреть все его последние запросы, какие фотки он полайкал
+
+
+Дополнительные материалы:
+Официальная документация https://developer.android.com/
+
+Google codelabs https://codelabs.developers.google.com/android-training/
+
+Yandex школа мобильной разработки https://www.youtube.com/playlist?list=PLQC2_0cDcSKBNCR8UWeElzCUuFkXASduz
+
+Vogella https://www.vogella.com//tutorials/android.html
+
+Codepath https://guides.codepath.com/android
+
+Busy Coder's guide to Android development https://commonsware.com/Android/ (book samples) https://github.com/commonsguy/cw-omnibus
