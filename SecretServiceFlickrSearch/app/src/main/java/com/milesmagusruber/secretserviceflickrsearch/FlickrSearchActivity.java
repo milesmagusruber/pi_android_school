@@ -73,6 +73,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
 
+
+        // Приложение крашится, если запустить поиск с пустым полем ввода
+
         //Main function of out app to search photos via Flickr API
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,6 +122,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             if (mFlickrResponse != null) {
                                 Photos photos = mFlickrResponse.getPhotos();
                                 List<Photo> photoList = photos.getPhoto();
+                                // Дело вкуса, но mFlickrResponse.getPhotos().getPhoto() читается проще, чем череда объявлений
                                 for (Photo photo : photoList) {
                                     resultBuilder.append(photo.getTitle() + " : " + photo.getPhotoUrl() + "<br><br>");
                                 }
