@@ -1,23 +1,39 @@
 # PI-school 2019
 
-## Week 2
-- Multithreading & Networking
-  - https://developer.android.com/guide/background/
-  - https://developer.android.com/training/multiple-threads/
-  - https://developer.android.com/training/basics/network-ops/
-  - https://youtu.be/yyZh3ME7Jyk 
-  - https://guides.codepath.com/android/Handling-ProgressBars
-  - https://guides.codepath.com/android/Consuming-APIs-with-Retrofit
+## Week 3
+ - Сохранение данных на диске
 
- - Задания и codelabs
-   - https://codelabs.developers.google.com/codelabs/android-training-create-asynctask/index.html?index=..%2F..android-training#0
-   - Создать приложение которое будет контактировать с Flickr Api ( https://www.flickr.com/services/api/ ) 
-   - При открытии приложения вы должны сначала демонстрировать лого приложения и названия (по сути Splash Screen)
-   - После  Splash screen пользователь должен увидеть экран с полем для ввода текста и кнопкой Search
-   - По нажатии на кнопку Search выполрнять поиск по Flickr (https://www.flickr.com/services/api/flickr.photos.search.html) с      заданым текстом
-   - Полученный результат вывести в TextView который будет расположен ниже
-   - Из полученного ответа от сервера вы должны сформировать прямую ссылку на каждую фотографию которая прийдет и сформировать строку, где каждая ссылка будет начинаться с новой строки
-   - Отобразить полученный результат в TextView ( в случае если результатов много - текст в TextView должен скроллиться)
-   - Пользователь должен быть в состоянии кликнуть по каждой ссылке (подсказка см. класс Linkify)
-   - При клике на линку пользователь должен перейти на другой экран в приложении где он сможет просмотреть содержимое линки (по сути отобразить в Webview)
-   - Не использовать для отображения список
+   - https://developer.android.com/guide/topics/data/data-storage
+   - https://developer.android.com/training/data-storage/shared-preferences 
+   - https://developer.android.com/training/data-storage/sqlite.html
+   - https://developer.android.com/training/data-storage/room
+   - https://youtu.be/A-P6EDw5z_s
+   - http://facebook.github.io/stetho/ Для работы с БД в живую на девайсе
+
+- Задания и codelabs
+  - https://codelabs.developers.google.com/codelabs/android-training-livedata-viewmodel/index.html?index=..%2F..android-training#0
+  - https://codelabs.developers.google.com/codelabs/android-training-room-delete-data/index.html?index=..%2F..android-training#0
+  - Работаем на основе приложения с прошлой недели
+    - В этот раз не используем никакую ORM типа Room
+    - Используем базовые классы типа SqliteDatabaseHelper, Cursor etc.
+    - При выходе из приложения сохраняем текст введенный в поисковую строку
+    - Теперь на экране просмотра фотографии нужно добавить функцию - сохранения фотографии в избранные
+    - Добавить возможность на главном экране перейти на экран с сохраненными ссылками и к какому запросу они относились. Пример: "Земля " и список линок подобно тому как вы уже выводите при поиске и так 
+    - Если пользователь будет просматривать фотографию которая уже сохраненна в избранные то на экране просмотра добавить возможность удаления этой фотографии из избранных (бонус - обрабатывать оба состояния сразу же: например зашли на незалайканую фотографию - лайкнуть и сразу же отобразить возможность ее удаления)
+    - На экране просмотра фотографии нужно выводить текст поискового запроса по которому была найдена фотография
+    - Создать экран где можно просмотреть последние 20 запросов
+    - Челендж - сделать экран логина (формальный без пароля) и сохранять все данные на каждого отлдельно взятого пользователя. Если потом выбираем сохраненного пользователя то должны соответственно иметь возможность просмотреть все его последние запросы, какие фотки он полайкал
+
+
+Дополнительные материалы:
+Официальная документация https://developer.android.com/
+
+Google codelabs https://codelabs.developers.google.com/android-training/
+
+Yandex школа мобильной разработки https://www.youtube.com/playlist?list=PLQC2_0cDcSKBNCR8UWeElzCUuFkXASduz
+
+Vogella https://www.vogella.com//tutorials/android.html
+
+Codepath https://guides.codepath.com/android
+
+Busy Coder's guide to Android development https://commonsware.com/Android/ (book samples) https://github.com/commonsguy/cw-omnibus
