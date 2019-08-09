@@ -74,8 +74,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
         textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
 
 
-        // Приложение крашится, если запустить поиск с пустым полем ввода
-
         //Main function of out app to search photos via Flickr API
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,7 +85,11 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 if (!haveNetworkConnection()) {
                     textViewFlickrResult.setVisibility(TextView.VISIBLE);
                     textViewFlickrResult.setText(getString(R.string.turn_on_internet));
-                } else {
+                } else if(textSearch.equals("")){
+                    textViewFlickrResult.setVisibility(TextView.VISIBLE);
+                    textViewFlickrResult.setText(getString(R.string.input_search_request));
+
+                }else{
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
                     //Creating OkHttpClient
@@ -120,9 +122,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
                             //If Response is not null making a result String that consists of photo title and urls
                             if (mFlickrResponse != null) {
-                                Photos photos = mFlickrResponse.getPhotos();
-                                List<Photo> photoList = photos.getPhoto();
-                                // Дело вкуса, но mFlickrResponse.getPhotos().getPhoto() читается проще, чем череда объявлений
+
+                                List<Photo> photoList = mFlickrResponse.getPhotos().getPhoto();
+
                                 for (Photo photo : photoList) {
                                     resultBuilder.append(photo.getTitle() + " : " + photo.getPhotoUrl() + "<br><br>");
                                 }
