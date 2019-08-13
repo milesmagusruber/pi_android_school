@@ -139,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
                 +"= "+user;
         }else{
             selectQuery ="SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
-                    +"="+user+" AND "+KEY_SEARCH_REQUEST+"="+searchRequest;
+                    +"="+user+" AND "+KEY_SEARCH_REQUEST+"=\'"+searchRequest+"\'";
         }
 
         SQLiteDatabase db = this.getWritableDatabase();
