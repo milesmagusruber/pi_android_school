@@ -15,7 +15,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_ynfav" />
+        app:layout_constraintTop_toBottomOf="@+id/button_like" />
 
     <TextView
         android:id="@+id/search_request_item"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_ynfav"
+        android:id="@+id/button_like"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Like"

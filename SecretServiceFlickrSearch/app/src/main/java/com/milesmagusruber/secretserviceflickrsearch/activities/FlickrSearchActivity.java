@@ -45,6 +45,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
+    public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
 
     //Declaring UI elements
     private Button buttonSearch;
@@ -53,6 +54,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private EditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
     private TextView textViewFlickrResult;
+    private String textSearch;
 
     //Declaring API Key
     private String flickrApiKey;
@@ -87,7 +89,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String textSearch = editTextFlickrSearch.getText().toString();
+                textSearch = editTextFlickrSearch.getText().toString();
                 textViewFlickrResult.setVisibility(TextView.INVISIBLE);
 
                 //At first check network connection
@@ -196,6 +198,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             String url = getURL();
             Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
             intent.putExtra(EXTRA_WEBLINK, url);
+            intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
             startActivity(intent);
         }
     }

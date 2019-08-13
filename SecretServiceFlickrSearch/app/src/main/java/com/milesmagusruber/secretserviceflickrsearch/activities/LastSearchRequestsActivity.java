@@ -27,12 +27,6 @@ public class LastSearchRequestsActivity extends AppCompatActivity {
         db = new DatabaseHelper(this);
         searchRequests=db.getAllSearchRequests(1);
         db.close();
-        /*searchRequests = new ArrayList<SearchRequest>();
-        searchRequests.add(new SearchRequest(1,1,"cat","today"));
-        searchRequests.add(new SearchRequest(2,2,"dog","today"));
-        searchRequests.add(new SearchRequest(3,1,"mouse","today"));
-        searchRequests.add(new SearchRequest(4,2,"rat","today"));
-        */
 
         // Create adapter passing in the sample user data
         SearchRequestsAdapter adapter = new SearchRequestsAdapter(searchRequests);

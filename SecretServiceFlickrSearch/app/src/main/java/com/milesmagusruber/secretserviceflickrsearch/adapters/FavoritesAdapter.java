@@ -17,7 +17,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView itemFavoriteSearchRequest;
-        public TextView itemFavoriteTitle;
         public TextView itemFavoriteWeblink;
 
 
@@ -25,7 +24,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             super(itemView);
 
             itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_favorite_search_request);
-            itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_favorite_title);
             itemFavoriteWeblink = (TextView) itemView.findViewById(R.id.item_favorite_weblink);
         }
     }
@@ -58,7 +56,6 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         Favorite favorite = favorites.get(position);
         // Set item views based on your views and data model
         viewHolder.itemFavoriteSearchRequest.setText(context.getString(R.string.favorites_adapter_search_request)+" "+favorite.getSearchRequest());
-        viewHolder.itemFavoriteTitle.setText(context.getString(R.string.favorites_adapter_title)+" "+favorite.getTitle());
         viewHolder.itemFavoriteWeblink.setText(context.getString(R.string.favorites_adapter_weblink)+" "+favorite.getWebLink());
     }
 

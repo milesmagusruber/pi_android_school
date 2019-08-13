@@ -62,6 +62,6 @@ public class Favorite {
     }
 
     public void setWebLink(String webLink){
-        this.title = webLink;
+        this.webLink = webLink;
     }
 }
