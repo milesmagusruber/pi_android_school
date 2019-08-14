@@ -60,9 +60,15 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         buttonLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db = new DatabaseHelper(FlickrViewItemActivity.this);
-                db.addFavorite(new Favorite(1,searchRequest,"",webLink));
-                db.close();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        db = new DatabaseHelper(FlickrViewItemActivity.this);
+                        db.addFavorite(new Favorite(1,searchRequest,"",webLink));
+                        db.close();
+                    }
+                }).start();
+
             }
         });
     }

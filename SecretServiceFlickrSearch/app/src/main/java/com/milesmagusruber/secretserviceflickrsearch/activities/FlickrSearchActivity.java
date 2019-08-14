@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.network.RetrofitAPI;
 import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
@@ -104,9 +105,14 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
                     //adding Search Request to Database
-                    db = new DatabaseHelper(FlickrSearchActivity.this);
-                    db.addSearchRequest(new SearchRequest(1,textSearch));
-                    db.close();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            db = new DatabaseHelper(FlickrSearchActivity.this);
+                            db.addSearchRequest(new SearchRequest(1,textSearch));
+                            db.close();
+                        }
+                    }).start();
 
                     //Creating OkHttpClient
                     OkHttpClient.Builder builder = new OkHttpClient().newBuilder();

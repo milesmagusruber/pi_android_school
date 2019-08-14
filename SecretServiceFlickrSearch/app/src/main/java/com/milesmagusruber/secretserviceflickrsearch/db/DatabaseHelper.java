@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.util.Log;
 
+import com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
@@ -77,6 +79,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     }
 
     //Working with users
+
+    //add user
     @Override
     public void addUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -85,6 +89,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         db.insert(TABLE_USERS, null, values);
         db.close();
     }
+
 
     @Override
     public User getUser(String login) {

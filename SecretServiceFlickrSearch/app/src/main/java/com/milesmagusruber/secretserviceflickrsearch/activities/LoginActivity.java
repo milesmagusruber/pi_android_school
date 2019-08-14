@@ -35,9 +35,16 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //adding login to database
-                db = new DatabaseHelper(LoginActivity.this);
-                db.addUser(new User(editTextlogin.getText().toString()));
-                db.close();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        db = new DatabaseHelper(LoginActivity.this);
+                        db.addUser(new User(editTextlogin.getText().toString()));
+                        db.close();
+                    }
+                }).start();
+
+
                 Intent intent=new Intent(LoginActivity.this,FlickrSearchActivity.class);
                 startActivity(intent);
             }

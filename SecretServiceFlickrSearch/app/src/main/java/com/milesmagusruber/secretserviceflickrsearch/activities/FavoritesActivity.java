@@ -50,7 +50,8 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     //Getting favorites from db if we have filter or not
-    private void showFavorites(String searchRequest){
+    private void showFavorites(final String searchRequest){
+
         db = new DatabaseHelper(this);
         favorites=db.getAllFavorites(1,searchRequest);
         db.close();
