@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        db = new DatabaseHelper(LoginActivity.this);
+                        db = DatabaseHelper.getInstance(LoginActivity.this);
                         db.addUser(new User(editTextlogin.getText().toString()));
                         db.close();
                     }

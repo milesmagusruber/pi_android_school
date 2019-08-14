@@ -108,7 +108,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            db = new DatabaseHelper(FlickrSearchActivity.this);
+                            db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
                             db.addSearchRequest(new SearchRequest(1,textSearch));
                             db.close();
                         }

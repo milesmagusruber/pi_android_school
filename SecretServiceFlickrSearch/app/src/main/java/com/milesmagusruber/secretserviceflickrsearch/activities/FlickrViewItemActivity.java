@@ -63,7 +63,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        db = new DatabaseHelper(FlickrViewItemActivity.this);
+                        db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
                         db.addFavorite(new Favorite(1,searchRequest,"",webLink));
                         db.close();
                     }

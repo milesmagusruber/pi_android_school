@@ -18,6 +18,8 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler{
 
+    //database instance
+    private static DatabaseHelper instance;
     //database information
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "secretserviceflickrsearch.db";
@@ -39,7 +41,15 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     private static final String TABLE_SEARCH_REQUESTS = "search_requests";
     private static final String KEY_SEARCH_REQUEST_SDATETIME = "sdatetime";
 
-    public DatabaseHelper(Context context){
+    public static synchronized DatabaseHelper getInstance(Context context) {
+
+        if (instance == null) {
+            instance = new DatabaseHelper(context.getApplicationContext());
+        }
+        return instance;
+    }
+
+    private DatabaseHelper(Context context){
         super(context,DATABASE_NAME,null,DATABASE_VERSION);
     }
 

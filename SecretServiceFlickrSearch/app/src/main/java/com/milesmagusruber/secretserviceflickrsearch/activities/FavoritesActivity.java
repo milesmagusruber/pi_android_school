@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -52,16 +53,27 @@ public class FavoritesActivity extends AppCompatActivity {
     //Getting favorites from db if we have filter or not
     private void showFavorites(final String searchRequest){
 
-        db = new DatabaseHelper(this);
-        favorites=db.getAllFavorites(1,searchRequest);
-        db.close();
 
-        // Create adapter passing in the sample user data
-        adapter = new FavoritesAdapter(favorites,this);
-        // Attach the adapter to the recyclerview to populate items
-        rvFavorites.setAdapter(adapter);
-        // Set layout manager to position the items
-        rvFavorites.setLayoutManager(new LinearLayoutManager(this));
+        new AsyncTask<Void,Void,Integer>(){
+            @Override
+            protected Integer doInBackground(Void... data) {
+                db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                favorites=db.getAllFavorites(1,searchRequest);
+                db.close();
+                return 0;
+            }
+
+            @Override
+            protected void onPostExecute(Integer a){
+
+                // Create adapter passing in the sample user data
+                adapter = new FavoritesAdapter(favorites,FavoritesActivity.this);
+                // Attach the adapter to the recyclerview to populate items
+                rvFavorites.setAdapter(adapter);
+                // Set layout manager to position the items
+                rvFavorites.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
+            }
+        }.execute();
 
     }
 }
