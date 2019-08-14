@@ -17,8 +17,12 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
+import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class FlickrViewItemActivity extends AppCompatActivity {
+
+    //Current user
+    private int currentUser;
 
     private WebView webViewFlickrItem; //WebView representation
     private TextView textViewSearchRequestItem; //Search Request
@@ -31,6 +35,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_view_item);
+        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
         buttonLike = (Button) findViewById(R.id.button_like);
@@ -64,7 +69,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                        db.addFavorite(new Favorite(1,searchRequest,"",webLink));
+                        db.addFavorite(new Favorite(currentUser,searchRequest,"",webLink));
                         db.close();
                     }
                 }).start();

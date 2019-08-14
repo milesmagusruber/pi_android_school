@@ -17,7 +17,12 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import java.util.ArrayList;
 
+import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
+
 public class FavoritesActivity extends AppCompatActivity {
+
+    //Current user
+    private int currentUser;
 
     private ArrayList<Favorite> favorites;
     private RecyclerView rvFavorites;
@@ -30,8 +35,12 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
+        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
+
         rvFavorites = (RecyclerView) findViewById(R.id.rv_favorites);
+
         editTextFavoritesFilter = (EditText) findViewById(R.id.edittext_favorites_filter);
+
         buttonFavoritesFilter = (Button) findViewById(R.id.button_favorites_filter);
         // Initialize Favorites from database data
         showFavorites(null);
@@ -58,7 +67,7 @@ public class FavoritesActivity extends AppCompatActivity {
             @Override
             protected Integer doInBackground(Void... data) {
                 db = DatabaseHelper.getInstance(FavoritesActivity.this);
-                favorites=db.getAllFavorites(1,searchRequest);
+                favorites=db.getAllFavorites(currentUser,searchRequest);
                 db.close();
                 return 0;
             }

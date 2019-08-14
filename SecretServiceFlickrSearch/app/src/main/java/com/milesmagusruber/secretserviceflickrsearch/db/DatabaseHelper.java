@@ -110,10 +110,16 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         if (cursor != null){
             cursor.moveToFirst();
         }
-        User user = new User(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
-        cursor.close();
-        db.close();
-        return user;
+        if(cursor !=null && cursor.getCount() > 0){
+            User user = new User(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
+            cursor.close();
+            db.close();
+            return user;
+        } else {
+            if(cursor!=null) cursor.close();
+            db.close();
+            return null;
+        }
     }
 
     //Working with favorites

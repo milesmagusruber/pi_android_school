@@ -14,22 +14,28 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 
 import java.util.ArrayList;
 
+import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
+
 public class LastSearchRequestsActivity extends AppCompatActivity {
-    ArrayList<SearchRequest> searchRequests;
-    RecyclerView rvSearchRequests;
-    DatabaseHelper db;
+    private ArrayList<SearchRequest> searchRequests;
+    private RecyclerView rvSearchRequests;
+    private DatabaseHelper db;
+
+    //Current user
+    private int currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_search_requests);
+        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
         rvSearchRequests = (RecyclerView) findViewById(R.id.rv_search_requests);
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... data) {
                 //Initialize SearchRequests
                 db = DatabaseHelper.getInstance(LastSearchRequestsActivity.this);
-                searchRequests = db.getAllSearchRequests(1);
+                searchRequests = db.getAllSearchRequests(currentUser);
                 db.close();
                 return 0;
             }

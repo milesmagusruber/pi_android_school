@@ -43,10 +43,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
+
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
+
+
+    //Current user
+    private int currentUser;
 
     //Declaring UI elements
     private Button buttonSearch;
@@ -73,6 +79,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_search);
+
+        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
 
         flickrApiKey = getResources().getString(R.string.flickr_api_key); //flickr api key
 
@@ -109,7 +117,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                            db.addSearchRequest(new SearchRequest(1,textSearch));
+                            db.addSearchRequest(new SearchRequest(currentUser,textSearch));
                             db.close();
                         }
                     }).start();
@@ -178,6 +186,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(FlickrSearchActivity.this,LastSearchRequestsActivity.class);
+                intent.putExtra(EXTRA_CURRENT_USER,currentUser);
                 startActivity(intent);
             }
         });
@@ -187,6 +196,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(FlickrSearchActivity.this,FavoritesActivity.class);
+                intent.putExtra(EXTRA_CURRENT_USER,currentUser);
                 startActivity(intent);
             }
         });
@@ -205,6 +215,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
             intent.putExtra(EXTRA_WEBLINK, url);
             intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
+            intent.putExtra(EXTRA_CURRENT_USER,currentUser);
             startActivity(intent);
         }
     }
