@@ -216,19 +216,26 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     }
 
     @Override
-    public SearchRequest getSearchRequest(int id) {
+    public SearchRequest getLastSearchRequest(int user) {
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
-                        KEY_USER_LOGIN }, KEY_USER_LOGIN + "=?",
-                new String[] { String.valueOf(id) }, null, null, null, null);
+        String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS+" WHERE "+KEY_USER
+                + "=" + user + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor != null){
             cursor.moveToFirst();
         }
-        SearchRequest searchRequest = new SearchRequest(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)),
-                cursor.getString(2),Long.parseLong(cursor.getString(3)));
-        cursor.close();
-        db.close();
-        return searchRequest;
+        if(cursor !=null && cursor.getCount() > 0){
+            SearchRequest searchRequest = new SearchRequest(Integer.parseInt(cursor.getString(0)),
+                    Integer.parseInt(cursor.getString(1)), cursor.getString(2),
+                    Long.parseLong(cursor.getString(3)));
+            cursor.close();
+            db.close();
+            return searchRequest;
+        } else {
+            if(cursor!=null) cursor.close();
+            db.close();
+            return new SearchRequest(0,user,"",0);
+        }
     }
 
     @Override

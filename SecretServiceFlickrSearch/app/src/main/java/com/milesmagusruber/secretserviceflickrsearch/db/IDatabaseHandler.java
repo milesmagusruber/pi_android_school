@@ -20,7 +20,7 @@ public interface IDatabaseHandler {
 
     //working with SearchRequests
     public void addSearchRequest(SearchRequest searchRequest);
-    public SearchRequest getSearchRequest(int id);
+    public SearchRequest getLastSearchRequest(int user);
     public ArrayList<SearchRequest> getAllSearchRequests(int user);
     public void deleteSearchRequest(SearchRequest searchRequest);
 

@@ -1,12 +1,14 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spannable;
@@ -27,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
+import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
@@ -53,6 +56,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
     //Current user
     private int currentUser;
+
+    //last search request
+    private String lastSearchRequest;
 
     //Declaring UI elements
     private Button buttonSearch;
@@ -92,6 +98,25 @@ public class FlickrSearchActivity extends AppCompatActivity {
         editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
+
+        //getting last search request of the user
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground(Void... data) {
+                //Initialize SearchRequests
+                db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                lastSearchRequest = db.getLastSearchRequest(currentUser).getSearchRequest();
+                db.close();
+                return 0;
+            }
+
+            @Override
+            protected void onPostExecute(Integer a) {
+                editTextFlickrSearch.setText(lastSearchRequest);
+            }
+        }.execute();
+
+
 
 
         //Main function of out app to search photos via Flickr API
