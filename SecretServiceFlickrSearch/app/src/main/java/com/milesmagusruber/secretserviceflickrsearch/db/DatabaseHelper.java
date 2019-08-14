@@ -204,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         ContentValues values = new ContentValues();
         values.put(KEY_USER, searchRequest.getUser());
         values.put(KEY_SEARCH_REQUEST, searchRequest.getSearchRequest());
-        values.put(KEY_SEARCH_REQUEST_SDATETIME, "datetime(\'now\')");
+        values.put(KEY_SEARCH_REQUEST_SDATETIME, System.currentTimeMillis());
         db.insert(TABLE_SEARCH_REQUESTS, null, values);
         db.close();
     }
@@ -219,7 +219,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
             cursor.moveToFirst();
         }
         SearchRequest searchRequest = new SearchRequest(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)),
-                cursor.getString(2),cursor.getString(3));
+                cursor.getString(2),Long.parseLong(cursor.getString(3)));
         cursor.close();
         db.close();
         return searchRequest;
@@ -229,8 +229,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     public ArrayList<SearchRequest> getAllSearchRequests(int user) {
         ArrayList<SearchRequest> searchRequestsList = new ArrayList<SearchRequest>();
         String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS+" WHERE "+KEY_USER
-                + "= " + user + " ORDER BY datetime(" + KEY_SEARCH_REQUEST_SDATETIME + ") ASC LIMIT 20";
-
+                + "=" + user + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 20";
+        Log.d("MOtherFucker",selectQuery);
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -240,8 +240,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
                 searchRequest.setId(Integer.parseInt(cursor.getString(0)));
                 searchRequest.setUser(Integer.parseInt(cursor.getString(1)));
                 searchRequest.setSearchRequest(cursor.getString(2));
-                searchRequest.setDate(cursor.getString(3));
+                searchRequest.setDate(Long.parseLong(cursor.getString(3)));
                 searchRequestsList.add(searchRequest);
+                Log.d("MotherFucker",Long.toString(searchRequest.getDateTime()));
             } while (cursor.moveToNext());
         }
         cursor.close();

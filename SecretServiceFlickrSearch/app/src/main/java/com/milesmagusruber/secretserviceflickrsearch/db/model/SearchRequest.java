@@ -4,14 +4,14 @@ public class SearchRequest {
     int id;
     int user;
     String searchRequest;
-    String sDateTime;
+    long sDateTime;
 
 
     public SearchRequest(){
 
     }
 
-    public SearchRequest(int id, int user, String searchRequest, String dateTime){
+    public SearchRequest(int id, int user, String searchRequest, long dateTime){
         this.id=id;
         this.user = user;
         this.searchRequest = searchRequest;
@@ -47,11 +47,11 @@ public class SearchRequest {
         this.searchRequest = searchRequest;
     }
 
-    public String getDateTime(){
+    public long getDateTime(){
         return this.sDateTime;
     }
 
-    public void setDate(String sDateTime){
+    public void setDate(long sDateTime){
         this.sDateTime = sDateTime;
     }
 }
