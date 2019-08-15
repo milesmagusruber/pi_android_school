@@ -68,9 +68,10 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         // Get the data model based on position
         Favorite favorite = favorites.get(position);
         // Set item views based on your views and data model
+        //TODO: Use resource string with placeholders https://developer.android.com/guide/topics/resources/string-resource#formatting-strings
         viewHolder.itemFavoriteSearchRequest.setText(context.getString(R.string.favorites_adapter_search_request)+" "+favorite.getSearchRequest());
         viewHolder.itemFavoriteWeblink.setText(context.getString(R.string.favorites_adapter_weblink)+" "+favorite.getWebLink());
-        viewHolder.bind(favorites.get(position), listener);
+        viewHolder.bind(favorite, listener);
     }
 
     // Returns the total count of items in the list

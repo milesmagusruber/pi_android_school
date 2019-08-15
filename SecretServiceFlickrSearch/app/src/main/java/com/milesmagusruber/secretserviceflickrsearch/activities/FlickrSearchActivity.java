@@ -54,6 +54,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
 
 
+    //TODO: Лучше заменить на Singleton, экономит время и нервы. время даже на собеседовании спрашивал как такое делать :)
     //Current user
     private int currentUser;
 
@@ -100,12 +101,14 @@ public class FlickrSearchActivity extends AppCompatActivity {
         textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
 
         //getting last search request of the user
+        //TODO: плохая практика - терять ссылки на потоки
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... data) {
                 //Initialize SearchRequests
                 db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
                 lastSearchRequest = db.getLastSearchRequest(currentUser).getSearchRequest();
+                //TODO: а если в это время другой поток работает с базой?
                 db.close();
                 return 0;
             }
@@ -120,6 +123,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
 
         //Main function of out app to search photos via Flickr API
+        //TODO: Этот метод нужно рефакторить. Всю работу с сетью вынести отсюда в специальный класс, активити не должна создавать коннекты и т.д.
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,6 +147,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         public void run() {
                             db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
                             db.addSearchRequest(new SearchRequest(currentUser,textSearch));
+                            //TODO: а если в это время другой поток работает с базой?
                             db.close();
                         }
                     }).start();

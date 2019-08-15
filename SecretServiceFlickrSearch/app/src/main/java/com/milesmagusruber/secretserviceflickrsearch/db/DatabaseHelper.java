@@ -16,6 +16,9 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: общие замечания:
+// 1. Не экранируется пользовательский ввод - возможность sql injection
+// 2. Не обрабатываются возможные исключения при записи/чтении - приложение может "падать"
 public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler{
 
     //database instance
@@ -107,10 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
                         KEY_USER_LOGIN }, KEY_USER_LOGIN + "=?",
                 new String[] { String.valueOf(login) }, null, null, null, null);
-        if (cursor != null){
-            cursor.moveToFirst();
-        }
-        if(cursor !=null && cursor.getCount() > 0){
+        if (cursor != null && cursor.moveToFirst()) { //TODO: moveToFirst() проверяет курсор на наличие результата
             User user = new User(Integer.parseInt(cursor.getString(0)), cursor.getString(1));
             cursor.close();
             db.close();
@@ -144,6 +144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         if (cursor != null){
             cursor.moveToFirst();
         }
+        //TODO: если выше cursor оказался null или пустым - приложение упадёт
         Favorite favorite = new Favorite(Integer.parseInt(cursor.getString(0)), Integer.parseInt(cursor.getString(1)),
                 cursor.getString(2),cursor.getString(3),cursor.getString(4));
         cursor.close();

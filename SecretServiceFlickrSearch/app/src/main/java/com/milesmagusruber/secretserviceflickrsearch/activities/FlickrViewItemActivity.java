@@ -94,6 +94,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         //Loading our image
         webViewFlickrItem.loadUrl(webLink);
         //Adding to favorites or deleting from favorites
+        //TODO: здесь и в других местах не проверяется, работает ли уже эта задача.
+        // Пользователь может быстрым тапом по кнопке запустить множество одинаковых потоков
         buttonLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

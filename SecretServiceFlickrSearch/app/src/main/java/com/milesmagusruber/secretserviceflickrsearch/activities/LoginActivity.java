@@ -46,11 +46,12 @@ public class LoginActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-
+                        //TODO: wtf
                     }
                 }).start();
                 login=editTextlogin.getText().toString();
 
+                // TODO: нужно хранить ссылку на этот AsyncTask и не запускать его если уже работает
                 new AsyncTask<Void, Void, Integer>() {
                     @Override
                     protected Integer doInBackground(Void... data) {
