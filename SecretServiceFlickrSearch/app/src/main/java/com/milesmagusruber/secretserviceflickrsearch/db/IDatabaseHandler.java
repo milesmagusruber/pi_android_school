@@ -14,6 +14,7 @@ public interface IDatabaseHandler {
     //working with Favorites
     public void addFavorite(Favorite favorite);
     public Favorite getFavorite(int id);
+    public Favorite getFavorite(int user, String url);
     public ArrayList<Favorite> getAllFavorites(int user, String searchRequest);
     public int updateFavorite(Favorite favorite);
     public void deleteFavorite(Favorite favorite);

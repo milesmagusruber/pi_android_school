@@ -152,6 +152,29 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     }
 
     @Override
+    public Favorite getFavorite(int user, String url){
+        SQLiteDatabase db = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
+                + "=" + user + " AND "+KEY_FAVORITE_WEB_LINK+"=\'"+url+"\'";
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor != null){
+            cursor.moveToFirst();
+        }
+        if(cursor !=null && cursor.getCount() > 0){
+            Favorite favorite = new Favorite(Integer.parseInt(cursor.getString(0)),
+                    Integer.parseInt(cursor.getString(1)), cursor.getString(2),
+                    cursor.getString(3),cursor.getString(4));
+            cursor.close();
+            db.close();
+            return favorite;
+        } else {
+            if(cursor!=null) cursor.close();
+            db.close();
+            return null;
+        }
+    }
+
+    @Override
     public ArrayList<Favorite> getAllFavorites(int user, String searchRequest) {
         ArrayList<Favorite> favoritesList = new ArrayList<Favorite>();
         String selectQuery=null;

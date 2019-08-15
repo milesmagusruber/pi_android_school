@@ -29,9 +29,10 @@
 
     <Button
         android:id="@+id/button_like"
-        android:layout_width="wrap_content"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:text="Like"
-        app:layout_constraintBaseline_toBaselineOf="@+id/search_request_item"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:background="@drawable/ic_star_not_favorite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
