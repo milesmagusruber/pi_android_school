@@ -43,12 +43,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //adding login to database
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        //TODO: wtf
-                    }
-                }).start();
                 login=editTextlogin.getText().toString();
 
                 // TODO: нужно хранить ссылку на этот AsyncTask и не запускать его если уже работает
