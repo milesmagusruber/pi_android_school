@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import java.util.ArrayList;
 
+import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class FavoritesActivity extends AppCompatActivity {
@@ -62,7 +65,6 @@ public class FavoritesActivity extends AppCompatActivity {
     //Getting favorites from db if we have filter or not
     private void showFavorites(final String searchRequest){
 
-
         new AsyncTask<Void,Void,Integer>(){
             @Override
             protected Integer doInBackground(Void... data) {
@@ -76,7 +78,16 @@ public class FavoritesActivity extends AppCompatActivity {
             protected void onPostExecute(Integer a){
 
                 // Create adapter passing in the sample user data
-                adapter = new FavoritesAdapter(favorites,FavoritesActivity.this);
+                adapter = new FavoritesAdapter(favorites,FavoritesActivity.this,new FavoritesAdapter.OnItemClickListener() {
+                    @Override public void onItemClick(Favorite favorite) {
+                        //get to Favorite Flick Photo from FavoritesActivity
+                        Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
+                        intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
+                        intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
+                        intent.putExtra(EXTRA_CURRENT_USER,currentUser);
+                        startActivity(intent);
+                    }
+                });
                 // Attach the adapter to the recyclerview to populate items
                 rvFavorites.setAdapter(adapter);
                 // Set layout manager to position the items

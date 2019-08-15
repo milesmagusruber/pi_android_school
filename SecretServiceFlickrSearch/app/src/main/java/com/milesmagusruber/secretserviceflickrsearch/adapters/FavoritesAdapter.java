@@ -26,15 +26,28 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_favorite_search_request);
             itemFavoriteWeblink = (TextView) itemView.findViewById(R.id.item_favorite_weblink);
         }
+
+        public void bind(final Favorite favorite, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(favorite);
+                }
+            });
+        }
     }
 
     // Store a member variable for the contacts
     private List<Favorite> favorites;
+    private final OnItemClickListener listener;
     private Context context;
     // Pass in the contact array into the constructor
-    public FavoritesAdapter(List<Favorite> favorites,Context context) {
+    public FavoritesAdapter(List<Favorite> favorites,Context context,OnItemClickListener listener) {
         this.favorites = favorites;
         this.context=context;
+        this.listener=listener;
+    }
+    public interface OnItemClickListener {
+        void onItemClick(Favorite favorite);
     }
 
     // Usually involves inflating a layout from XML and returning the holder
@@ -57,6 +70,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         // Set item views based on your views and data model
         viewHolder.itemFavoriteSearchRequest.setText(context.getString(R.string.favorites_adapter_search_request)+" "+favorite.getSearchRequest());
         viewHolder.itemFavoriteWeblink.setText(context.getString(R.string.favorites_adapter_weblink)+" "+favorite.getWebLink());
+        viewHolder.bind(favorites.get(position), listener);
     }
 
     // Returns the total count of items in the list
