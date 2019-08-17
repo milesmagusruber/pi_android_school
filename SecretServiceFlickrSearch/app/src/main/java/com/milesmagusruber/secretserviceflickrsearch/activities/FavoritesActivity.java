@@ -27,12 +27,16 @@ public class FavoritesActivity extends AppCompatActivity {
     //Current user
     private CurrentUser currentUser;
 
+    //Controlling asynctasks
+    private AsyncTask<Void, Void, Integer> asyncTask;
+
     private ArrayList<Favorite> favorites;
     private RecyclerView rvFavorites;
     private EditText editTextFavoritesFilter;
     private Button buttonFavoritesFilter;
     private DatabaseHelper db;
     private FavoritesAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,10 +54,10 @@ public class FavoritesActivity extends AppCompatActivity {
         buttonFavoritesFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String filterText=editTextFavoritesFilter.getText().toString();
-                if (filterText.equals("")){
+                String filterText = editTextFavoritesFilter.getText().toString();
+                if (filterText.equals("")) {
                     showFavorites(null);
-                }else{
+                } else {
                     showFavorites(filterText);
                 }
             }
@@ -62,36 +66,47 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     //Getting favorites from db if we have filter or not
-    private void showFavorites(final String searchRequest){
+    private void showFavorites(final String searchRequest) {
 
-        new AsyncTask<Void,Void,Integer>(){
-            @Override
-            protected Integer doInBackground(Void... data) {
-                db = DatabaseHelper.getInstance(FavoritesActivity.this);
-                favorites=db.getAllFavorites(currentUser.getUser().getId(),searchRequest);
-                db.close();
-                return 0;
-            }
+        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected void onPreExecute() {
+                    buttonFavoritesFilter.setClickable(false);
+                }
 
-            @Override
-            protected void onPostExecute(Integer a){
+                @Override
+                protected Integer doInBackground(Void... data) {
+                    db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                    favorites = db.getAllFavorites(currentUser.getUser().getId(), searchRequest);
+                    db.close();
+                    return 0;
+                }
 
-                // Create adapter passing in the sample user data
-                adapter = new FavoritesAdapter(favorites,FavoritesActivity.this,new FavoritesAdapter.OnItemClickListener() {
-                    @Override public void onItemClick(Favorite favorite) {
-                        //get to Favorite Flick Photo from FavoritesActivity
-                        Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
-                        intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
-                        intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
-                        startActivity(intent);
-                    }
-                });
-                // Attach the adapter to the recyclerview to populate items
-                rvFavorites.setAdapter(adapter);
-                // Set layout manager to position the items
-                rvFavorites.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
-            }
-        }.execute();
+                @Override
+                protected void onPostExecute(Integer a) {
+                    // Create adapter passing in the sample user data
+                    adapter = new FavoritesAdapter(favorites, FavoritesActivity.this, new FavoritesAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(Favorite favorite) {
+                            //get to Favorite Flick Photo from FavoritesActivity
+                            Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
+                            intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
+                            intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
+                            startActivity(intent);
+                        }
+
+                    });
+                    // Attach the adapter to the recyclerview to populate items
+                    rvFavorites.setAdapter(adapter);
+                    // Set layout manager to position the items
+                    rvFavorites.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
+
+                    buttonFavoritesFilter.setClickable(true);
+                }
+            };
+            asyncTask.execute();
+        }
 
     }
 }

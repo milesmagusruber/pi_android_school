@@ -33,7 +33,10 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private String searchRequest;
     private String webLink;
-    private boolean isFavorite=false;
+    private boolean isFavorite = false;
+
+    //Controlling asyncTasks in this activity
+    private AsyncTask<Void, Void, Integer> asyncTask;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,32 +49,41 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
 
         //Search Request that was used to find image
-        searchRequest=getIntent().getStringExtra(EXTRA_SEARCH_REQUEST);
+        searchRequest = getIntent().getStringExtra(EXTRA_SEARCH_REQUEST);
         webLink = getIntent().getStringExtra(EXTRA_WEBLINK);
         textViewSearchRequestItem.setText(searchRequest);
 
         //finding image in favorites
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... data) {
-                //Initialize SearchRequests
-                db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                favorite = db.getFavorite(currentUser.getUser().getId(),webLink);
-                db.close();
-                return 0;
-            }
-
-            @Override
-            protected void onPostExecute(Integer a) {
-                if (favorite !=null){
-                    buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
-                    isFavorite=true;
-                }else{
-                    buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
-                    isFavorite=false;
+        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected void onPreExecute() {
+                    buttonLike.setClickable(false);
                 }
-            }
-        }.execute();
+
+                @Override
+                protected Integer doInBackground(Void... data) {
+                    //Initialize SearchRequests
+                    db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                    favorite = db.getFavorite(currentUser.getUser().getId(), webLink);
+                    db.close();
+                    return 0;
+                }
+
+                @Override
+                protected void onPostExecute(Integer a) {
+                    buttonLike.setClickable(true);
+                    if (favorite != null) {
+                        buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
+                        isFavorite = true;
+                    } else {
+                        buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                        isFavorite = false;
+                    }
+                }
+            };
+            asyncTask.execute();
+        }
 
 
         // Make sure we handle clicked links ourselves
@@ -90,34 +102,64 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
         //Loading our image
         webViewFlickrItem.loadUrl(webLink);
+
         //Adding to favorites or deleting from favorites
-        //TODO: здесь и в других местах не проверяется, работает ли уже эта задача.
-        // Пользователь может быстрым тапом по кнопке запустить множество одинаковых потоков
+
         buttonLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isFavorite){
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                            db.addFavorite(new Favorite(currentUser.getUser().getId(),searchRequest,"",webLink));
-                            db.close();
-                        }
-                    }).start();
-                    buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
-                    isFavorite=true;
-                }else{
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                            db.deleteFavorite(new Favorite(currentUser.getUser().getId(),searchRequest,"",webLink));
-                            db.close();
-                        }
-                    }).start();
-                    buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
-                    isFavorite=false;
+                if (asyncTask.getStatus() != AsyncTask.Status.RUNNING) {
+                    if (!isFavorite) {
+
+                        asyncTask = new AsyncTask<Void, Void, Integer>() {
+                            @Override
+                            protected void onPreExecute() {
+                                buttonLike.setClickable(false);
+                            }
+
+                            @Override
+                            protected Integer doInBackground(Void... voids) {
+                                db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                                db.addFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, "", webLink));
+                                db.close();
+                                return 0;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Integer a) {
+                                buttonLike.setClickable(true);
+                                buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
+                                isFavorite = true;
+                            }
+                        };
+                        asyncTask.execute();
+
+                    } else {
+
+                        asyncTask = new AsyncTask<Void, Void, Integer>() {
+
+                            @Override
+                            protected void onPreExecute() {
+                                buttonLike.setClickable(false);
+                            }
+
+                            @Override
+                            protected Integer doInBackground(Void... voids) {
+                                db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                                db.deleteFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, "", webLink));
+                                db.close();
+                                return 0;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Integer a) {
+                                buttonLike.setClickable(true);
+                                buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                                isFavorite = false;
+                            }
+                        };
+                        asyncTask.execute();
+                    }
                 }
 
             }

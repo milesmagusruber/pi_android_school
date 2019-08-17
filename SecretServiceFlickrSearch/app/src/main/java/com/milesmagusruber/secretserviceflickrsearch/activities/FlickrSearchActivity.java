@@ -42,7 +42,7 @@ import retrofit2.Response;
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
-    public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
+    public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID + ".extra.search.request";
 
 
     //Current user
@@ -70,6 +70,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
     //Working with Network
     private NetworkHelper networkHelper;
 
+    //Controlling AsyncTasks in this activity
+    private AsyncTask<Void, Void, Integer> asyncTask;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,26 +91,30 @@ public class FlickrSearchActivity extends AppCompatActivity {
         textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
 
         //getting last search request of the user
-        //TODO: плохая практика - терять ссылки на потоки
-        new AsyncTask<Void, Void, Integer>() {
-            @Override
-            protected Integer doInBackground(Void... data) {
-                //Initialize SearchRequests
-                db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                lastSearchRequest = db.getLastSearchRequest(currentUser.getUser().getId()).getSearchRequest();
-                //TODO: а если в это время другой поток работает с базой?
-                db.close();
-                return 0;
-            }
+        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected void onPreExecute() {
+                    buttonSearch.setClickable(false);
+                }
 
-            @Override
-            protected void onPostExecute(Integer a) {
-                editTextFlickrSearch.setText(lastSearchRequest);
-            }
-        }.execute();
+                @Override
+                protected Integer doInBackground(Void... data) {
+                    //Initialize SearchRequests
+                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                    lastSearchRequest = db.getLastSearchRequest(currentUser.getUser().getId()).getSearchRequest();
+                    db.close();
+                    return 0;
+                }
 
-
-
+                @Override
+                protected void onPostExecute(Integer a) {
+                    editTextFlickrSearch.setText(lastSearchRequest);
+                    buttonSearch.setClickable(true);
+                }
+            };
+            asyncTask.execute();
+        }
 
         //Main function of out app to search photos via Flickr API
 
@@ -121,26 +128,39 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
                     textViewFlickrResult.setVisibility(TextView.VISIBLE);
                     textViewFlickrResult.setText(getString(R.string.turn_on_internet));
-                } else if(textSearch.equals("")){
+                } else if (textSearch.equals("")) {
                     textViewFlickrResult.setVisibility(TextView.VISIBLE);
                     textViewFlickrResult.setText(getString(R.string.input_search_request));
 
-                }else{
+                } else {
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
                     //adding Search Request to Database
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                            db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(),textSearch));
-                            //TODO: а если в это время другой поток работает с базой?
-                            db.close();
-                        }
-                    }).start();
+                    if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+                        asyncTask = new AsyncTask<Void, Void, Integer>() {
+                            @Override
+                            protected void onPreExecute() {
+                                buttonSearch.setClickable(false);
+                            }
+
+                            @Override
+                            protected Integer doInBackground(Void... voids) {
+                                db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                                db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), textSearch));
+                                db.close();
+                                return 0;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Integer a) {
+                                buttonSearch.setClickable(true);
+                            }
+                        };
+                        asyncTask.execute();
+                    }
 
                     //working with response from Flickr
-                    Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this,textSearch);
+                    Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this, textSearch);
 
                     call.enqueue(new Callback<FlickrResponse>() {
                         @Override
@@ -183,7 +203,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonLastSearchRequests.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(FlickrSearchActivity.this,LastSearchRequestsActivity.class);
+                Intent intent = new Intent(FlickrSearchActivity.this, LastSearchRequestsActivity.class);
                 startActivity(intent);
             }
         });
@@ -192,7 +212,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonFavorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(FlickrSearchActivity.this,FavoritesActivity.class);
+                Intent intent = new Intent(FlickrSearchActivity.this, FavoritesActivity.class);
                 startActivity(intent);
             }
         });
