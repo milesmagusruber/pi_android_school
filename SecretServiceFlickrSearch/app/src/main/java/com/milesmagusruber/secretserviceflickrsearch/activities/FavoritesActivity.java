@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.FavoritesAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -20,12 +21,11 @@ import java.util.ArrayList;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class FavoritesActivity extends AppCompatActivity {
 
     //Current user
-    private int currentUser;
+    private CurrentUser currentUser;
 
     private ArrayList<Favorite> favorites;
     private RecyclerView rvFavorites;
@@ -38,8 +38,7 @@ public class FavoritesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
 
-        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
-
+        currentUser = CurrentUser.getInstance();
         rvFavorites = (RecyclerView) findViewById(R.id.rv_favorites);
 
         editTextFavoritesFilter = (EditText) findViewById(R.id.edittext_favorites_filter);
@@ -69,7 +68,7 @@ public class FavoritesActivity extends AppCompatActivity {
             @Override
             protected Integer doInBackground(Void... data) {
                 db = DatabaseHelper.getInstance(FavoritesActivity.this);
-                favorites=db.getAllFavorites(currentUser,searchRequest);
+                favorites=db.getAllFavorites(currentUser.getUser().getId(),searchRequest);
                 db.close();
                 return 0;
             }
@@ -84,7 +83,6 @@ public class FavoritesActivity extends AppCompatActivity {
                         Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
                         intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
                         intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
-                        intent.putExtra(EXTRA_CURRENT_USER,currentUser);
                         startActivity(intent);
                     }
                 });

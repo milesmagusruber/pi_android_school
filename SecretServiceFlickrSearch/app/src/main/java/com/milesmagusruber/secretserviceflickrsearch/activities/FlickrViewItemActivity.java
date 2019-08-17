@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.View;
 import android.webkit.URLUtil;
@@ -13,20 +12,18 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class FlickrViewItemActivity extends AppCompatActivity {
 
     //Current user
-    private int currentUser;
-
+    private CurrentUser currentUser;
     //Current Favorite
     private Favorite favorite;
 
@@ -42,7 +39,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_view_item);
-        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
+        currentUser = CurrentUser.getInstance();
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
         buttonLike = (Button) findViewById(R.id.button_like);
@@ -59,7 +56,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
             protected Integer doInBackground(Void... data) {
                 //Initialize SearchRequests
                 db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                favorite = db.getFavorite(currentUser,webLink);
+                favorite = db.getFavorite(currentUser.getUser().getId(),webLink);
                 db.close();
                 return 0;
             }
@@ -104,7 +101,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                            db.addFavorite(new Favorite(currentUser,searchRequest,"",webLink));
+                            db.addFavorite(new Favorite(currentUser.getUser().getId(),searchRequest,"",webLink));
                             db.close();
                         }
                     }).start();
@@ -115,7 +112,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                            db.deleteFavorite(new Favorite(currentUser,searchRequest,"",webLink));
+                            db.deleteFavorite(new Favorite(currentUser.getUser().getId(),searchRequest,"",webLink));
                             db.close();
                         }
                     }).start();

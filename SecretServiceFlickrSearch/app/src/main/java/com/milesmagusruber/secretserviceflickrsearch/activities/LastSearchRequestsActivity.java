@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -14,7 +15,6 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 
 import java.util.ArrayList;
 
-import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class LastSearchRequestsActivity extends AppCompatActivity {
     private ArrayList<SearchRequest> searchRequests;
@@ -22,20 +22,19 @@ public class LastSearchRequestsActivity extends AppCompatActivity {
     private DatabaseHelper db;
 
     //Current user
-    private int currentUser;
-
+    private CurrentUser currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_last_search_requests);
-        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
+        currentUser=CurrentUser.getInstance();
         rvSearchRequests = (RecyclerView) findViewById(R.id.rv_search_requests);
         new AsyncTask<Void, Void, Integer>() {
             @Override
             protected Integer doInBackground(Void... data) {
                 //Initialize SearchRequests
                 db = DatabaseHelper.getInstance(LastSearchRequestsActivity.this);
-                searchRequests = db.getAllSearchRequests(currentUser);
+                searchRequests = db.getAllSearchRequests(currentUser.getUser().getId());
                 db.close();
                 return 0;
             }

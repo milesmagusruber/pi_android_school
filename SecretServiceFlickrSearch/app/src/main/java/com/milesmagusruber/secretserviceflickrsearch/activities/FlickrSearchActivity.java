@@ -1,7 +1,6 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -28,10 +27,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.network.RetrofitAPI;
 import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
@@ -46,17 +44,14 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-import static com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity.EXTRA_CURRENT_USER;
 
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
 
-
-    //TODO: Лучше заменить на Singleton, экономит время и нервы. время даже на собеседовании спрашивал как такое делать :)
     //Current user
-    private int currentUser;
+    private CurrentUser currentUser;
 
     //last search request
     private String lastSearchRequest;
@@ -87,8 +82,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_search);
 
-        currentUser = getIntent().getIntExtra(EXTRA_CURRENT_USER,1);
-
+        currentUser = CurrentUser.getInstance();
         flickrApiKey = getResources().getString(R.string.flickr_api_key); //flickr api key
 
 
@@ -107,7 +101,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             protected Integer doInBackground(Void... data) {
                 //Initialize SearchRequests
                 db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                lastSearchRequest = db.getLastSearchRequest(currentUser).getSearchRequest();
+                lastSearchRequest = db.getLastSearchRequest(currentUser.getUser().getId()).getSearchRequest();
                 //TODO: а если в это время другой поток работает с базой?
                 db.close();
                 return 0;
@@ -146,7 +140,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         @Override
                         public void run() {
                             db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                            db.addSearchRequest(new SearchRequest(currentUser,textSearch));
+                            db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(),textSearch));
                             //TODO: а если в это время другой поток работает с базой?
                             db.close();
                         }
@@ -216,7 +210,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(FlickrSearchActivity.this,LastSearchRequestsActivity.class);
-                intent.putExtra(EXTRA_CURRENT_USER,currentUser);
                 startActivity(intent);
             }
         });
@@ -226,7 +219,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(FlickrSearchActivity.this,FavoritesActivity.class);
-                intent.putExtra(EXTRA_CURRENT_USER,currentUser);
                 startActivity(intent);
             }
         });
@@ -245,7 +237,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
             Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
             intent.putExtra(EXTRA_WEBLINK, url);
             intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
-            intent.putExtra(EXTRA_CURRENT_USER,currentUser);
             startActivity(intent);
         }
     }
