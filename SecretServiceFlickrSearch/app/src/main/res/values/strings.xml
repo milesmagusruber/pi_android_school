@@ -10,7 +10,6 @@
     <string name="turn_on_internet">Please, turn on the internet connection!</string>
     <string name="request_error">Error processing the request</string>
     <string name="input_search_request">Please, input your search request</string>
-    <string name="favorites_adapter_search_request">Search request: </string>
-    <string name="favorites_adapter_title">Title: </string>
-    <string name="favorites_adapter_weblink">Web link: </string>
+    <string name="favorites_adapter_search_request">Search request: %1$s</string>
+    <string name="favorites_adapter_weblink">Web link: %1$s</string>
 </resources>
