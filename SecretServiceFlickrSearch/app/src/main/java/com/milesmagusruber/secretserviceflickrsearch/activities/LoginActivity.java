@@ -40,10 +40,16 @@ public class LoginActivity extends AppCompatActivity {
                 //checking login in database
                 login = editTextlogin.getText().toString();
 
+                //checking login
+                if(login.matches("[A-Za-z0-9_]{3,30}")){
                 //using Asynctask to work with database
                 loginTask = new LoginTask();
                 if (loginTask.getStatus() != AsyncTask.Status.RUNNING) {
                     loginTask.execute();
+                }
+                }else{
+                    editTextlogin.setText("");
+                    editTextlogin.setHint(R.string.incorrect_login);
                 }
             }
         });

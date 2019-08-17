@@ -17,8 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO: общие замечания:
-// 1. Не экранируется пользовательский ввод - возможность sql injection
-// 2. Не обрабатываются возможные исключения при записи/чтении - приложение может "падать"
+// 1. Не обрабатываются возможные исключения при записи/чтении - приложение может "падать"
 public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler{
 
     //database instance
@@ -70,14 +69,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_USER + " INTEGER,"
                 + KEY_SEARCH_REQUEST + " TEXT,"+ KEY_FAVORITE_TITLE + " TEXT,"
                 + KEY_FAVORITE_WEB_LINK + " TEXT UNIQUE);";
-                /*+ "FOREIGN KEY("+KEY_USER+") REFERENCES "+TABLE_USERS+"("+KEY_ID + ")"+"); ");*/
         db.execSQL(createFavorites);
 
         //creating table search requests
         String createSearchRequests="CREATE TABLE " + TABLE_SEARCH_REQUESTS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY," + KEY_USER + " INTEGER,"
                 + KEY_SEARCH_REQUEST + " TEXT,"+ KEY_SEARCH_REQUEST_SDATETIME + " TEXT); ";
-                /*+ "FOREIGN KEY("+KEY_USER+") REFERENCES "+TABLE_USERS+"("+KEY_ID + ")"+"); ");*/
         db.execSQL(createSearchRequests);
     }
 
@@ -141,6 +138,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         Cursor cursor = db.query(TABLE_USERS, new String[] { KEY_ID,
                         KEY_USER_LOGIN }, KEY_USER_LOGIN + "=?",
                 new String[] { String.valueOf(id) }, null, null, null, null);
+
         if (cursor != null){
             cursor.moveToFirst();
         }
@@ -155,9 +153,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     @Override
     public Favorite getFavorite(int user, String url){
         SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
-                + "=" + user + " AND "+KEY_FAVORITE_WEB_LINK+"=\'"+url+"\'";
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
+                + " = ?" + " AND "+KEY_FAVORITE_WEB_LINK+" = ?", new String[]{Integer.toString(user),url});
         if (cursor != null){
             cursor.moveToFirst();
         }
@@ -179,16 +176,21 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     public ArrayList<Favorite> getAllFavorites(int user, String searchRequest) {
         ArrayList<Favorite> favoritesList = new ArrayList<Favorite>();
         String selectQuery=null;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor=null;
         if(searchRequest==null){
-        selectQuery = "SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
-                +"= "+user;
+            selectQuery = "SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
+                    +" = ?";
+            cursor=db.rawQuery(selectQuery , new String[]{Integer.toString(user)});
+
         }else{
             selectQuery ="SELECT * FROM " + TABLE_FAVORITES+" WHERE "+KEY_USER
-                    +"="+user+" AND "+KEY_SEARCH_REQUEST+"=\'"+searchRequest+"\'";
+                    +" = ?"+" AND "+KEY_SEARCH_REQUEST+"= ?";
+            cursor=db.rawQuery(selectQuery , new String[]{Integer.toString(user),searchRequest});
         }
 
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        //Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -243,8 +245,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     public SearchRequest getLastSearchRequest(int user) {
         SQLiteDatabase db = this.getReadableDatabase();
         String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS+" WHERE "+KEY_USER
-                + "=" + user + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
-        Cursor cursor = db.rawQuery(selectQuery, null);
+                + "= ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
         if (cursor != null){
             cursor.moveToFirst();
         }
@@ -266,10 +268,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     public ArrayList<SearchRequest> getAllSearchRequests(int user) {
         ArrayList<SearchRequest> searchRequestsList = new ArrayList<SearchRequest>();
         String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS+" WHERE "+KEY_USER
-                + "=" + user + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 20";
-        Log.d("MOtherFucker",selectQuery);
+                + "= ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 20";
+
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
+        Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
 
         if (cursor.moveToFirst()) {
             do {
@@ -279,7 +281,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
                 searchRequest.setSearchRequest(cursor.getString(2));
                 searchRequest.setDate(Long.parseLong(cursor.getString(3)));
                 searchRequestsList.add(searchRequest);
-                Log.d("MotherFucker",Long.toString(searchRequest.getDateTime()));
             } while (cursor.moveToNext());
         }
         cursor.close();

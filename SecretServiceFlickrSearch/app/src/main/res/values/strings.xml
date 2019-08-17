@@ -12,4 +12,5 @@
     <string name="input_search_request">Please, input your search request</string>
     <string name="favorites_adapter_search_request">Search request: %1$s</string>
     <string name="favorites_adapter_weblink">Web link: %1$s</string>
+    <string name="incorrect_login">Incorrect login</string>
 </resources>
