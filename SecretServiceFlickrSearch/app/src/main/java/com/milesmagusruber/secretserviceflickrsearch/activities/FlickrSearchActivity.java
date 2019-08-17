@@ -24,31 +24,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
-import com.milesmagusruber.secretserviceflickrsearch.network.RetrofitAPI;
+import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
 import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
 import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
 
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID +".extra.search.request";
+
 
     //Current user
     private CurrentUser currentUser;
@@ -65,25 +60,23 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private TextView textViewFlickrResult;
     private String textSearch;
 
-    //Declaring API Key
-    private String flickrApiKey;
 
-    private String BASE_URL = "https://api.flickr.com/services/";
     public static final String TAG = "MainActivity";
 
-    //Retrofit API Consts
-    private static String METHOD_NAME = "flickr.photos.search";
-    private static String FORMAT = "json";
-    private static int NO_JSON_CALL_BACK = 1;
-    private static String EXTRAS = "url_s";
+
+    //Working with database;
     private DatabaseHelper db;
+
+    //Working with Network
+    private NetworkHelper networkHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_search);
 
+        networkHelper = NetworkHelper.getInstance();
         currentUser = CurrentUser.getInstance();
-        flickrApiKey = getResources().getString(R.string.flickr_api_key); //flickr api key
 
 
         //Initialising UI elements
@@ -117,7 +110,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
 
         //Main function of out app to search photos via Flickr API
-        //TODO: Этот метод нужно рефакторить. Всю работу с сетью вынести отсюда в специальный класс, активити не должна создавать коннекты и т.д.
+
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +118,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 textViewFlickrResult.setVisibility(TextView.INVISIBLE);
 
                 //At first check network connection
-                if (!haveNetworkConnection()) {
+                if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
                     textViewFlickrResult.setVisibility(TextView.VISIBLE);
                     textViewFlickrResult.setText(getString(R.string.turn_on_internet));
                 } else if(textSearch.equals("")){
@@ -146,38 +139,19 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         }
                     }).start();
 
-                    //Creating OkHttpClient
-                    OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-                    builder.readTimeout(10, TimeUnit.SECONDS);
-                    builder.connectTimeout(5, TimeUnit.SECONDS);
-
-                    HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                    interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-                    builder.addInterceptor(interceptor);
-                    OkHttpClient okHttpClient = builder.build();
-
-                    //Using Retrofit
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl(BASE_URL)
-                            .client(okHttpClient)
-                            .addConverterFactory(ScalarsConverterFactory.create())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    final RetrofitAPI client = retrofit.create(RetrofitAPI.class);
-                    Call<FlickrResponse> call = client.getSearchQueryPhotos(METHOD_NAME, flickrApiKey, FORMAT, NO_JSON_CALL_BACK, EXTRAS, textSearch);
-
+                    //working with response from Flickr
+                    Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this,textSearch);
 
                     call.enqueue(new Callback<FlickrResponse>() {
                         @Override
                         public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
-                            FlickrResponse mFlickrResponse = response.body();
+                            FlickrResponse flickrResponse = response.body();
                             StringBuilder resultBuilder = new StringBuilder();
 
                             //If Response is not null making a result String that consists of photo title and urls
-                            if (mFlickrResponse != null) {
+                            if (flickrResponse != null) {
 
-                                List<Photo> photoList = mFlickrResponse.getPhotos().getPhoto();
+                                List<Photo> photoList = flickrResponse.getPhotos().getPhoto();
 
                                 for (Photo photo : photoList) {
                                     resultBuilder.append(photo.getTitle() + " : " + photo.getPhotoUrl() + "<br><br>");
@@ -239,24 +213,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
             intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
             startActivity(intent);
         }
-    }
-
-    //checking network connection
-    private boolean haveNetworkConnection() {
-        boolean haveConnectedWifi = false;
-        boolean haveConnectedMobile = false;
-
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo[] netInfo = cm.getAllNetworkInfo();
-        for (NetworkInfo ni : netInfo) {
-            if (ni.getTypeName().equalsIgnoreCase("WIFI"))
-                if (ni.isConnected())
-                    haveConnectedWifi = true;
-            if (ni.getTypeName().equalsIgnoreCase("MOBILE"))
-                if (ni.isConnected())
-                    haveConnectedMobile = true;
-        }
-        return haveConnectedWifi || haveConnectedMobile;
     }
 
     //Making our urls from Flickr result string clickable
