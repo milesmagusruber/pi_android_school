@@ -36,11 +36,11 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         }
     }
 
-    // Store a member variable for the contacts
+    // Store a member variable for the favorites
     private List<Favorite> favorites;
     private final OnItemClickListener listener;
     private Context context;
-    // Pass in the contact array into the constructor
+    // Pass in the favorites array into the constructor
     public FavoritesAdapter(List<Favorite> favorites,Context context,OnItemClickListener listener) {
         this.favorites = favorites;
         this.context=context;
@@ -56,9 +56,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.item_favorite, parent, false);
+        View favoriteView = inflater.inflate(R.layout.item_favorite, parent, false);
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
+        ViewHolder viewHolder = new ViewHolder(favoriteView);
         return viewHolder;
     }
 

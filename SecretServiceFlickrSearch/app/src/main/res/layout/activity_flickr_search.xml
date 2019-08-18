@@ -46,28 +46,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_search" />
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/flickr_result"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/margin_norm"
+        android:layout_marginTop="24dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_search">
-
-        <TextView
-            android:id="@+id/flickr_result"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/margin_big"
-            android:layout_marginLeft="@dimen/margin_big"
-            android:layout_marginTop="@dimen/margin_big"
-            android:layout_marginEnd="@dimen/margin_big"
-            android:layout_marginRight="@dimen/margin_big"
-            android:layout_marginBottom="@dimen/margin_big"
-            android:text=""
-            android:visibility="invisible" />
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/button_search" />
 
     <Button
         android:id="@+id/button_last_search_requests"
@@ -96,4 +84,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_last_search_requests"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/flickr_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_search" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

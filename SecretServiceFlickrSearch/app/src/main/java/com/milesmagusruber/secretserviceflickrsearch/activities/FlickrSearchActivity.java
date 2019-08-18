@@ -1,21 +1,13 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.method.LinkMovementMethod;
-import android.text.style.URLSpan;
-import android.text.util.Linkify;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +18,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
+import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -57,8 +50,12 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private Button buttonLastSearchRequests;
     private EditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
-    private TextView textViewFlickrResult;
+    private TextView textViewFlickrError;
+    private RecyclerView rvFlickrResult;
     private String textSearch;
+
+    //adapter for Flickr photos
+    private PhotosAdapter photosAdapter;
 
 
     public static final String TAG = "MainActivity";
@@ -88,8 +85,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonLastSearchRequests = (Button) findViewById(R.id.button_last_search_requests);
         editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
-        textViewFlickrResult = (TextView) findViewById(R.id.flickr_result);
-
+        rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
+        textViewFlickrError = (TextView) findViewById(R.id.flickr_error);
         //getting last search request of the user
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
@@ -122,15 +119,16 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 textSearch = editTextFlickrSearch.getText().toString();
-                textViewFlickrResult.setVisibility(TextView.INVISIBLE);
+                textViewFlickrError.setVisibility(View.INVISIBLE);
+                rvFlickrResult.setVisibility(View.INVISIBLE);
 
                 //At first check network connection
                 if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
-                    textViewFlickrResult.setVisibility(TextView.VISIBLE);
-                    textViewFlickrResult.setText(getString(R.string.turn_on_internet));
+                    textViewFlickrError.setVisibility(TextView.VISIBLE);
+                    textViewFlickrError.setText(getString(R.string.turn_on_internet));
                 } else if (textSearch.equals("")) {
-                    textViewFlickrResult.setVisibility(TextView.VISIBLE);
-                    textViewFlickrResult.setText(getString(R.string.input_search_request));
+                    textViewFlickrError.setVisibility(TextView.VISIBLE);
+                    textViewFlickrError.setText(getString(R.string.input_search_request));
 
                 } else {
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
@@ -168,18 +166,22 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             FlickrResponse flickrResponse = response.body();
                             StringBuilder resultBuilder = new StringBuilder();
 
-                            //If Response is not null making a result String that consists of photo title and urls
+                            List<Photo> photos = null;
+                            //If Response is not null making a result list of photos
                             if (flickrResponse != null) {
 
-                                List<Photo> photoList = flickrResponse.getPhotos().getPhoto();
+                                photos = flickrResponse.getPhotos().getPhoto();
 
-                                for (Photo photo : photoList) {
-                                    resultBuilder.append(photo.getTitle() + " : " + photo.getPhotoUrl() + "<br><br>");
-                                }
                             }
-                            //linkify out result string
-                            makeLinksFromText(resultBuilder.toString());
+                            //If photos not null show them
+                            if(photos!=null){
+                             showPhotos(photos);
+                            }else{
+                                textViewFlickrError.setVisibility(View.VISIBLE);
+                                textViewFlickrError.setText(R.string.search_request_no_photos);
+                            }
                             //disabling download bar
+
                             downloadProgressBar.setVisibility(View.INVISIBLE);
 
                         }
@@ -191,8 +193,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             Log.e(TAG, "onFailure: Error");
                             Log.e(TAG, t.toString());
                             downloadProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                            textViewFlickrResult.setVisibility(TextView.VISIBLE);
-                            textViewFlickrResult.setText(getString(R.string.request_error));
+                            textViewFlickrError.setVisibility(TextView.VISIBLE);
+                            textViewFlickrError.setText(getString(R.string.request_error));
                         }
                     });
                 }
@@ -219,44 +221,28 @@ public class FlickrSearchActivity extends AppCompatActivity {
     }
 
 
-    //LinkSpan to bind our links
-    private class LinkSpan extends URLSpan {
-        private LinkSpan(String url) {
-            super(url);
-        }
+    private void showPhotos(List<Photo> photos){
 
-        @Override
-        public void onClick(View view) {
-            String url = getURL();
-            Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
-            intent.putExtra(EXTRA_WEBLINK, url);
-            intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
-            startActivity(intent);
-        }
+
+        photosAdapter = new PhotosAdapter(photos, textSearch, new PhotosAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Photo photo) {
+                //get to Favorite Flick Photo from FavoritesActivity
+                Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
+                intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
+                intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
+                startActivity(intent);
+            }
+
+        });
+        // Attach the adapter to the recyclerview to populate items
+        rvFlickrResult.setAdapter(photosAdapter);
+        // Set layout manager to position the items
+        rvFlickrResult.setLayoutManager(new LinearLayoutManager(FlickrSearchActivity.this));
+
+        rvFlickrResult.setVisibility(View.VISIBLE);
     }
 
-    //Making our urls from Flickr result string clickable
-    private void makeLinksFromText(String resultString) {
-
-        //Linkify the TextView
-        Spannable spannable = new SpannableString(Html.fromHtml(resultString));
-        Linkify.addLinks(spannable, Linkify.WEB_URLS);
-
-        //Replace each URLSpan by a LinkSpan
-        URLSpan[] spans = spannable.getSpans(0, spannable.length(), URLSpan.class);
-        for (URLSpan urlSpan : spans) {
-            LinkSpan linkSpan = new LinkSpan(urlSpan.getURL());
-            int spanStart = spannable.getSpanStart(urlSpan);
-            int spanEnd = spannable.getSpanEnd(urlSpan);
-            spannable.setSpan(linkSpan, spanStart, spanEnd, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.removeSpan(urlSpan);
-        }
-
-        // Make sure the TextView supports clicking on Links
-        textViewFlickrResult.setMovementMethod(LinkMovementMethod.getInstance());
-        textViewFlickrResult.setText(spannable, TextView.BufferType.SPANNABLE);
-        textViewFlickrResult.setVisibility(View.VISIBLE);
-    }
 
 }
 
