@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
 
 import java.util.List;
 
@@ -85,5 +86,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     @Override
     public int getItemCount() {
         return favorites.size();
+    }
+
+    //to get a favorite at a given position
+    public Favorite getFavoriteAtPosition (int position) {
+        return favorites.get(position);
+    }
+
+    //this method is used to remove favorite
+    public void removeFavorite(int position) {
+        favorites.remove(position);
     }
 }

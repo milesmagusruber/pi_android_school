@@ -229,7 +229,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         photosAdapter = new PhotosAdapter(photos, textSearch, new PhotosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Photo photo) {
-                //get to Favorite Flick Photo from FavoritesActivity
+                //get to FlickViewItemActivity
                 Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
                 intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
                 intent.putExtra(EXTRA_TITLE, photo.getTitle());
@@ -260,9 +260,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
                                          int direction) {
                         int position = viewHolder.getAdapterPosition();
                         removePhoto(position);
-                        /*
-                        // Delete the word
-                        mWordViewModel.deleteWord(myWord);*/
                     }
                 });
         helper.attachToRecyclerView(rvFlickrResult);

@@ -1,6 +1,7 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +28,9 @@ public class FavoritesActivity extends AppCompatActivity {
     //Current user
     private CurrentUser currentUser;
 
+    //Favorite that is deleted
+    private Favorite favoriteForDelete;
+
     //Controlling asynctasks
     private AsyncTask<Void, Void, Integer> asyncTask;
 
@@ -36,6 +40,7 @@ public class FavoritesActivity extends AppCompatActivity {
     private Button buttonFavoritesFilter;
     private DatabaseHelper db;
     private FavoritesAdapter adapter;
+    private ItemTouchHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,44 @@ public class FavoritesActivity extends AppCompatActivity {
         editTextFavoritesFilter = (EditText) findViewById(R.id.edittext_favorites_filter);
 
         buttonFavoritesFilter = (Button) findViewById(R.id.button_favorites_filter);
+
+        // Add the functionality to swipe items in the
+        // recycler view to delete that item
+        helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                                         int direction) {
+                        final int position = viewHolder.getAdapterPosition();
+                        favoriteForDelete = adapter.getFavoriteAtPosition(position);
+                        if((favoriteForDelete!=null) && ( (asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))){
+                            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                                @Override
+                                protected Integer doInBackground(Void... voids) {
+                                    db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                                    db.deleteFavorite(favoriteForDelete);
+                                    db.close();
+                                    return 0;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Integer a){
+                                    removeFavorite(position);
+                                }
+                            };
+                            asyncTask.execute();
+                        }
+                    }
+                });
+
         // Initialize Favorites from database data
         showFavorites(null);
 
@@ -62,6 +105,7 @@ public class FavoritesActivity extends AppCompatActivity {
                 }
             }
         });
+
 
     }
 
@@ -102,6 +146,8 @@ public class FavoritesActivity extends AppCompatActivity {
                     // Set layout manager to position the items
                     rvFavorites.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
 
+                    helper.attachToRecyclerView(rvFavorites);
+
                     buttonFavoritesFilter.setClickable(true);
                 }
             };
@@ -109,4 +155,12 @@ public class FavoritesActivity extends AppCompatActivity {
         }
 
     }
+
+    public void removeFavorite(int position) {
+
+        adapter.removeFavorite(position);
+        adapter.notifyItemRemoved(position);
+    }
+
+
 }
