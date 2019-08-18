@@ -23,7 +23,7 @@ public class SearchRequestsAdapter extends RecyclerView.Adapter<SearchRequestsAd
         public ViewHolder(View itemView) {
             super(itemView);
 
-            itemSearchRequest = (TextView) itemView.findViewById(R.id.item_search_request);
+            itemSearchRequest = (TextView) itemView.findViewById(R.id.item_card_search_request_value);
         }
     }
 
@@ -41,7 +41,7 @@ public class SearchRequestsAdapter extends RecyclerView.Adapter<SearchRequestsAd
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.item_search_request, parent, false);
+        View contactView = inflater.inflate(R.layout.item_card_search_request, parent, false);
         // Return a new holder instance
         SearchRequestsAdapter.ViewHolder viewHolder = new SearchRequestsAdapter.ViewHolder(contactView);
         return viewHolder;
