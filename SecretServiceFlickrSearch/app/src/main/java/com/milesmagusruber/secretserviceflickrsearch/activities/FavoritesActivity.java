@@ -140,6 +140,28 @@ public class FavoritesActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
 
+                    }, new FavoritesAdapter.OnRemoveFavoriteClickListener() {
+                        @Override
+                        public void onClick(final int position) {
+                            favoriteForDelete = adapter.getFavoriteAtPosition(position);
+                            if((favoriteForDelete!=null) && ( (asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))){
+                                asyncTask = new AsyncTask<Void, Void, Integer>() {
+                                    @Override
+                                    protected Integer doInBackground(Void... voids) {
+                                        db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                                        db.deleteFavorite(favoriteForDelete);
+                                        db.close();
+                                        return 0;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Integer a){
+                                        removeFavorite(position);
+                                    }
+                                };
+                                asyncTask.execute();
+                            }
+                        }
                     });
                     // Attach the adapter to the recyclerview to populate items
                     rvFavorites.setAdapter(adapter);

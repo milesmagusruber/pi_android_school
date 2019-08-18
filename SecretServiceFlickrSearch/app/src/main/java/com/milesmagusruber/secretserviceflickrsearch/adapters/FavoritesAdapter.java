@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,14 +23,16 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         public TextView itemFavoriteSearchRequest;
         public ImageView itemFavoriteImage;
         public TextView itemFavoriteTitle;
+        public Button itemFavoriteButtonRemove;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_card_photo_search_request);
-            itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_card_photo_title);
-            itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_photo_image);
+            itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_card_favorite_search_request);
+            itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_card_favorite_title);
+            itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_favorite_image);
+            itemFavoriteButtonRemove = (Button) itemView.findViewById(R.id.item_card_favorite_button_remove);
         }
 
         public void bind(final Favorite favorite, final OnItemClickListener listener) {
@@ -43,17 +46,28 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
     // Store a member variable for the favorites
     private List<Favorite> favorites;
-    private final OnItemClickListener listener;
+    private final OnItemClickListener clickListener;
+    private final OnRemoveFavoriteClickListener removeFavoriteListener;
     private Context context;
     // Pass in the favorites array into the constructor
-    public FavoritesAdapter(List<Favorite> favorites,Context context,OnItemClickListener listener) {
+    public FavoritesAdapter(List<Favorite> favorites, Context context, OnItemClickListener clickListener,
+                            OnRemoveFavoriteClickListener removeFavoriteListener ) {
         this.favorites = favorites;
         this.context=context;
-        this.listener=listener;
+        this.clickListener=clickListener;
+        this.removeFavoriteListener = removeFavoriteListener;
     }
+
+    //To control item clicks
     public interface OnItemClickListener {
         void onItemClick(Favorite favorite);
     }
+
+    //To control delete button clicks
+    public interface OnRemoveFavoriteClickListener{
+        void onClick(final int position);
+    }
+
 
     // Usually involves inflating a layout from XML and returning the holder
     @Override
@@ -61,7 +75,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // Inflate the custom layout
-        View favoriteView = inflater.inflate(R.layout.item_card_photo, parent, false);
+        View favoriteView = inflater.inflate(R.layout.item_card_favorite, parent, false);
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(favoriteView);
         return viewHolder;
@@ -79,7 +93,21 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         Glide.with(viewHolder.itemView.getContext()).
                 load(favorite.getWebLink()).
                 into(viewHolder.itemFavoriteImage);
-        viewHolder.bind(favorite, listener);
+        final ViewHolder holder = viewHolder;
+        holder.itemFavoriteButtonRemove.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view) {
+                if (removeFavoriteListener != null) {
+                    final int position = holder.getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        removeFavoriteListener.onClick(position);
+                    }
+                }
+            }
+        });
+
+        viewHolder.bind(favorite, clickListener);
     }
 
     // Returns the total count of items in the list
