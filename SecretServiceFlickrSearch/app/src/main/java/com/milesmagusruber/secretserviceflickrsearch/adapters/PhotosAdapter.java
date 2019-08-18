@@ -86,4 +86,16 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     public int getItemCount() {
         return photos.size();
     }
+
+    //to get a photo at a given position
+    public Photo getPhotoAtPosition (int position) {
+        return photos.get(position);
+    }
+
+    //this method is used to remove photo
+    public void removePhoto(int position) {
+        photos.remove(position);
+    }
+
+
 }

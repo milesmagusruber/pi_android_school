@@ -1,6 +1,7 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -222,7 +223,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     }
 
 
-    private void showPhotos(List<Photo> photos){
+    private void showPhotos(final List<Photo> photos){
 
 
         photosAdapter = new PhotosAdapter(photos, textSearch, new PhotosAdapter.OnItemClickListener() {
@@ -242,7 +243,36 @@ public class FlickrSearchActivity extends AppCompatActivity {
         // Set layout manager to position the items
         rvFlickrResult.setLayoutManager(new LinearLayoutManager(FlickrSearchActivity.this));
 
+        // Add the functionality to swipe items in the
+        // recycler view to delete that item
+        ItemTouchHelper helper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                                         int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        removePhoto(position);
+                        /*
+                        // Delete the word
+                        mWordViewModel.deleteWord(myWord);*/
+                    }
+                });
+        helper.attachToRecyclerView(rvFlickrResult);
         rvFlickrResult.setVisibility(View.VISIBLE);
+    }
+
+    public void removePhoto(int position) {
+
+        photosAdapter.removePhoto(position);
+        photosAdapter.notifyItemRemoved(position);
     }
 
 
