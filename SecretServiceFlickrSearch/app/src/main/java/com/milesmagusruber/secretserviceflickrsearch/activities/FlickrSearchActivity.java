@@ -1,5 +1,6 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,12 +53,17 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private Button buttonLastSearchRequests;
     private EditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
+    private ProgressBar scrollProgressBar;
     private TextView textViewFlickrError;
     private RecyclerView rvFlickrResult;
     private String textSearch;
 
     //adapter for Flickr photos
     private PhotosAdapter photosAdapter;
+    private int photosPage; //to know a number of pages
+    private ItemTouchHelper itemTouchHelper; //For touch swipes
+    private RecyclerView.OnScrollListener onScrollListener; //For scrolls
+    private LinearLayoutManager layoutManager;
 
 
     public static final String TAG = "MainActivity";
@@ -89,6 +95,44 @@ public class FlickrSearchActivity extends AppCompatActivity {
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
         textViewFlickrError = (TextView) findViewById(R.id.flickr_error);
+        scrollProgressBar = (ProgressBar) findViewById(R.id.scroll_progressbar);
+
+        //Initialize itemTouchHelper
+        itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                                         int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        removePhoto(position);
+                    }
+                });
+
+        //Initialize onScrollListener
+        onScrollListener = new RecyclerView.OnScrollListener() {
+            int visibleItemCount, totalItemCount, pastVisiblesItems;
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if(dy>0){
+                    visibleItemCount = layoutManager.getChildCount();
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                        loadMorePhotos();
+                    }
+                }
+            }
+        };
+
+        layoutManager = new LinearLayoutManager(this);
         //getting last search request of the user
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
@@ -133,6 +177,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     textViewFlickrError.setText(getString(R.string.input_search_request));
 
                 } else {
+                    photosPage=1;
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
                     //adding Search Request to Database
@@ -160,13 +205,12 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     }
 
                     //working with response from Flickr
-                    Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this, textSearch);
+                    Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this, textSearch,photosPage);
 
                     call.enqueue(new Callback<FlickrResponse>() {
                         @Override
                         public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
                             FlickrResponse flickrResponse = response.body();
-                            StringBuilder resultBuilder = new StringBuilder();
 
                             List<Photo> photos = null;
                             //If Response is not null making a result list of photos
@@ -241,35 +285,63 @@ public class FlickrSearchActivity extends AppCompatActivity {
         // Attach the adapter to the recyclerview to populate items
         rvFlickrResult.setAdapter(photosAdapter);
         // Set layout manager to position the items
-        rvFlickrResult.setLayoutManager(new LinearLayoutManager(FlickrSearchActivity.this));
+        rvFlickrResult.setLayoutManager(layoutManager);
 
         // Add the functionality to swipe items in the
         // recycler view to delete that item
-        ItemTouchHelper helper = new ItemTouchHelper(
-                new ItemTouchHelper.SimpleCallback(0,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                    @Override
-                    public boolean onMove(RecyclerView recyclerView,
-                                          RecyclerView.ViewHolder viewHolder,
-                                          RecyclerView.ViewHolder target) {
-                        return false;
-                    }
+        itemTouchHelper.attachToRecyclerView(rvFlickrResult);
 
-                    @Override
-                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
-                                         int direction) {
-                        int position = viewHolder.getAdapterPosition();
-                        removePhoto(position);
-                    }
-                });
-        helper.attachToRecyclerView(rvFlickrResult);
+        //Add infinity scroll functionality to RecyclerView
+        rvFlickrResult.addOnScrollListener(onScrollListener);
+
+
         rvFlickrResult.setVisibility(View.VISIBLE);
     }
 
-    public void removePhoto(int position) {
+    private void removePhoto(int position) {
 
         photosAdapter.removePhoto(position);
         photosAdapter.notifyItemRemoved(position);
+    }
+
+    private void loadMorePhotos(){
+        if(networkHelper.haveNetworkConnection(this)) {
+            scrollProgressBar.setVisibility(View.VISIBLE);
+            //working with new page response from Flickr
+            Call<FlickrResponse> call = networkHelper.getSearchQueryPhotos(FlickrSearchActivity.this, textSearch, photosPage + 1);
+
+            call.enqueue(new Callback<FlickrResponse>() {
+                @Override
+                public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
+                    FlickrResponse flickrResponse = response.body();
+
+                    List<Photo> photos = null;
+                    //If Response is not null making a result list of photos
+                    if (flickrResponse != null) {
+
+                        photos = flickrResponse.getPhotos().getPhoto();
+
+                    }
+                    //If photos not null show them
+                    if (photos != null) {
+                        photosAdapter.addNewPhotos(photos);
+                        photosPage++;
+                    }
+                    //disabling download bar
+                    scrollProgressBar.setVisibility(View.INVISIBLE);
+
+                }
+
+                //If we fail then set an error string to textview
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onFailure(Call<FlickrResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: Error");
+                    Log.e(TAG, t.toString());
+                    scrollProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                }
+            });
+        }
     }
 
 

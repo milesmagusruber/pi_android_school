@@ -97,5 +97,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         photos.remove(position);
     }
 
+    public void addNewPhotos(List<Photo> newPhotos){
+        photos.addAll(newPhotos);
+        notifyDataSetChanged();
+    }
 
 }

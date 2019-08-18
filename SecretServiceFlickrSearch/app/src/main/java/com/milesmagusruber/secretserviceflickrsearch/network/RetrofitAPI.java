@@ -8,5 +8,5 @@ import retrofit2.http.Query;
 public interface RetrofitAPI {
 
     @GET("rest")
-    Call<FlickrResponse> getSearchQueryPhotos(@Query("method") String methodName, @Query("api_key") String API_KEY, @Query("format") String format, @Query("nojsoncallback") int value, @Query("extras") String urlS,@Query("text") String userSearchText);
+    Call<FlickrResponse> getSearchQueryPhotos(@Query("method") String methodName, @Query("api_key") String API_KEY, @Query("format") String format, @Query("nojsoncallback") int value, @Query("extras") String urlS,@Query("text") String userSearchText,@Query("page") int page);
 }
