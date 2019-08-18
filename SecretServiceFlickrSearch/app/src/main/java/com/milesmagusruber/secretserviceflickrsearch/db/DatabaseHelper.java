@@ -216,17 +216,24 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
             Cursor cursor = null;
             if (searchRequest == null) {
                 selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
-                        + " = ?";
+                        + " = ? ORDER BY "+KEY_SEARCH_REQUEST+" ASC";
                 cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
 
             } else {
                 selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
-                        + " = ?" + " AND " + KEY_SEARCH_REQUEST + "= ?";
+                        + " = ?" + " AND " + KEY_SEARCH_REQUEST + "= ? ORDER BY "+KEY_SEARCH_REQUEST+" ASC";
                 cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user), searchRequest});
             }
 
+            String cunningSearchString=""; //for FavoritesAdapter to have different cards
+
             if (cursor.moveToFirst()) {
                 do {
+                    String searchReq=cursor.getString(2);
+                    if(!cunningSearchString.equals(searchReq)){
+                        cunningSearchString=searchReq;
+                        favoritesList.add(new Favorite(user,cunningSearchString,"",""));
+                    }
                     Favorite favorite = new Favorite();
                     favorite.setId(Integer.parseInt(cursor.getString(0)));
                     favorite.setUser(Integer.parseInt(cursor.getString(1)));

@@ -24,6 +24,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         public ImageView itemFavoriteImage;
         public TextView itemFavoriteTitle;
         public Button itemFavoriteButtonRemove;
+        public TextView itemFavoriteHeaderSearch;
 
 
         public ViewHolder(View itemView) {
@@ -33,6 +34,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_card_favorite_title);
             itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_favorite_image);
             itemFavoriteButtonRemove = (Button) itemView.findViewById(R.id.item_card_favorite_button_remove);
+            itemFavoriteHeaderSearch = (TextView) itemView.findViewById(R.id.item_card_favorite_header_search);
         }
 
         public void bind(final Favorite favorite, final OnItemClickListener listener) {
@@ -86,28 +88,43 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public void onBindViewHolder(FavoritesAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
         Favorite favorite = favorites.get(position);
-        // Set item views based on your views and data model
-        viewHolder.itemFavoriteSearchRequest.setText(favorite.getSearchRequest());
-        viewHolder.itemFavoriteTitle.setText(favorite.getTitle());
+        if(!favorite.getWebLink().equals("")) {
+            viewHolder.itemFavoriteHeaderSearch.setVisibility(View.GONE);
+            viewHolder.itemFavoriteButtonRemove.setVisibility(View.VISIBLE);
+            viewHolder.itemFavoriteTitle.setVisibility(View.VISIBLE);
+            viewHolder.itemFavoriteSearchRequest.setVisibility(View.VISIBLE);
+            viewHolder.itemFavoriteImage.setVisibility(View.VISIBLE);
+            // Set item views based on your views and data model
+            viewHolder.itemFavoriteSearchRequest.setText(favorite.getSearchRequest());
+            viewHolder.itemFavoriteTitle.setText(favorite.getTitle());
 
-        Glide.with(viewHolder.itemView.getContext()).
-                load(favorite.getWebLink()).
-                into(viewHolder.itemFavoriteImage);
-        final ViewHolder holder = viewHolder;
-        holder.itemFavoriteButtonRemove.setOnClickListener(new View.OnClickListener(){
+            Glide.with(viewHolder.itemView.getContext()).
+                    load(favorite.getWebLink()).
+                    into(viewHolder.itemFavoriteImage);
+            final ViewHolder holder = viewHolder;
+            holder.itemFavoriteButtonRemove.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                if (removeFavoriteListener != null) {
-                    final int position = holder.getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        removeFavoriteListener.onClick(position);
+                @Override
+                public void onClick(View view) {
+                    if (removeFavoriteListener != null) {
+                        final int position = holder.getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            removeFavoriteListener.onClick(position);
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        viewHolder.bind(favorite, clickListener);
+            viewHolder.bind(favorite, clickListener);
+        }else{
+
+            viewHolder.itemFavoriteHeaderSearch.setVisibility(View.VISIBLE);
+            viewHolder.itemFavoriteHeaderSearch.setText(favorite.getSearchRequest());
+            viewHolder.itemFavoriteButtonRemove.setVisibility(View.GONE);
+            viewHolder.itemFavoriteTitle.setVisibility(View.GONE);
+            viewHolder.itemFavoriteSearchRequest.setVisibility(View.GONE);
+            viewHolder.itemFavoriteImage.setVisibility(View.GONE);
+        }
     }
 
     // Returns the total count of items in the list
