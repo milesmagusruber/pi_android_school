@@ -18,6 +18,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_TITLE;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
 
 public class FlickrViewItemActivity extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     private Button buttonLike; //Button
     private DatabaseHelper db;
     private String searchRequest;
+    private String title;
     private String webLink;
     private boolean isFavorite = false;
 
@@ -51,6 +53,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         //Search Request that was used to find image
         searchRequest = getIntent().getStringExtra(EXTRA_SEARCH_REQUEST);
         webLink = getIntent().getStringExtra(EXTRA_WEBLINK);
+        title = getIntent().getStringExtra(EXTRA_TITLE);
         textViewSearchRequestItem.setText(searchRequest);
 
         //finding image in favorites
@@ -120,7 +123,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             @Override
                             protected Integer doInBackground(Void... voids) {
                                 db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                                db.addFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, "", webLink));
+                                db.addFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 db.close();
                                 return 0;
                             }
@@ -146,7 +149,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             @Override
                             protected Integer doInBackground(Void... voids) {
                                 db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
-                                db.deleteFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, "", webLink));
+                                db.deleteFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 db.close();
                                 return 0;
                             }

@@ -35,6 +35,7 @@ import retrofit2.Response;
 public class FlickrSearchActivity extends AppCompatActivity {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
+    public static final String EXTRA_TITLE = BuildConfig.APPLICATION_ID + ".extra.title";
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID + ".extra.search.request";
 
 
@@ -230,6 +231,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 //get to Favorite Flick Photo from FavoritesActivity
                 Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
                 intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
+                intent.putExtra(EXTRA_TITLE, photo.getTitle());
                 intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
                 startActivity(intent);
             }

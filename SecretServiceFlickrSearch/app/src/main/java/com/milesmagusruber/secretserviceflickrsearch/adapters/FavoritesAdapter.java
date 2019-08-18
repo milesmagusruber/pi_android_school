@@ -4,10 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
@@ -17,14 +19,16 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView itemFavoriteSearchRequest;
-        public TextView itemFavoriteWeblink;
+        public ImageView itemFavoriteImage;
+        public TextView itemFavoriteTitle;
 
 
         public ViewHolder(View itemView) {
             super(itemView);
 
-            itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_favorite_search_request);
-            itemFavoriteWeblink = (TextView) itemView.findViewById(R.id.item_favorite_weblink);
+            itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_card_photo_search_request);
+            itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_card_photo_title);
+            itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_photo_image);
         }
 
         public void bind(final Favorite favorite, final OnItemClickListener listener) {
@@ -56,7 +60,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         // Inflate the custom layout
-        View favoriteView = inflater.inflate(R.layout.item_favorite, parent, false);
+        View favoriteView = inflater.inflate(R.layout.item_card_photo, parent, false);
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(favoriteView);
         return viewHolder;
@@ -68,8 +72,12 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         // Get the data model based on position
         Favorite favorite = favorites.get(position);
         // Set item views based on your views and data model
-        viewHolder.itemFavoriteSearchRequest.setText(context.getString(R.string.favorites_adapter_search_request,favorite.getSearchRequest()));
-        viewHolder.itemFavoriteWeblink.setText(context.getString(R.string.favorites_adapter_weblink,favorite.getWebLink()));
+        viewHolder.itemFavoriteSearchRequest.setText(favorite.getSearchRequest());
+        viewHolder.itemFavoriteTitle.setText(favorite.getTitle());
+
+        Glide.with(viewHolder.itemView.getContext()).
+                load(favorite.getWebLink()).
+                into(viewHolder.itemFavoriteImage);
         viewHolder.bind(favorite, listener);
     }
 
