@@ -276,7 +276,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         SQLiteDatabase db = null;
         try {
             db = this.getWritableDatabase();
-            db.delete(TABLE_FAVORITES, KEY_FAVORITE_WEB_LINK + " = ?", new String[]{String.valueOf(favorite.getWebLink())});
+            if(!favorite.getWebLink().equals("")) {
+                db.delete(TABLE_FAVORITES, KEY_FAVORITE_WEB_LINK + " = ?", new String[]{String.valueOf(favorite.getWebLink())});
+            }else{
+                db.delete(TABLE_FAVORITES,KEY_SEARCH_REQUEST +" = ?", new String[]{String.valueOf(favorite.getSearchRequest())});
+            }
         } catch (Exception e) {
             Log.e(LOG_DB, e.toString());
         } finally {

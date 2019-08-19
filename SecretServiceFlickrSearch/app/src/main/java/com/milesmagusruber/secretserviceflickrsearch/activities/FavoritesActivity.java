@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -73,6 +74,13 @@ public class FavoritesActivity extends AppCompatActivity {
                         favoriteForDelete = adapter.getFavoriteAtPosition(position);
                         if((favoriteForDelete!=null) && ( (asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))){
                             asyncTask = new AsyncTask<Void, Void, Integer>() {
+                                private String deleteSearchRequest;
+
+                                @Override
+                                protected void onPreExecute(){
+                                    deleteSearchRequest=favoriteForDelete.getSearchRequest();
+                                }
+
                                 @Override
                                 protected Integer doInBackground(Void... voids) {
                                     db = DatabaseHelper.getInstance(FavoritesActivity.this);
@@ -83,7 +91,21 @@ public class FavoritesActivity extends AppCompatActivity {
 
                                 @Override
                                 protected void onPostExecute(Integer a){
-                                    removeFavorite(position);
+                                    if(!favoriteForDelete.getWebLink().equals("")) {
+                                        adapter.removeFavorite(position);
+                                    }else{
+                                        //delete all favorites with header search after swipe of header
+                                        int currentPosition=position;
+                                        boolean isNotEnd=true;
+                                        adapter.removeFavorite(currentPosition);
+                                        do{
+                                            Log.d("SHIT",Integer.toString(currentPosition));
+                                            isNotEnd=adapter.getFavoriteAtPosition(currentPosition).getSearchRequest().equals(deleteSearchRequest);
+                                            if(isNotEnd) {
+                                                adapter.removeFavorite(currentPosition);
+                                            }
+                                        }while(isNotEnd);
+                                    }
                                 }
                             };
                             asyncTask.execute();
@@ -156,7 +178,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
                                     @Override
                                     protected void onPostExecute(Integer a){
-                                        removeFavorite(position);
+                                        adapter.removeFavorite(position);
                                     }
                                 };
                                 asyncTask.execute();
@@ -178,11 +200,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
     }
 
-    public void removeFavorite(int position) {
 
-        adapter.removeFavorite(position);
-        adapter.notifyItemRemoved(position);
-    }
 
 
 }

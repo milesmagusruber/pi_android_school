@@ -152,5 +152,9 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     //this method is used to remove favorite
     public void removeFavorite(int position) {
         favorites.remove(position);
+        notifyItemRemoved(position);
     }
+
+    //public boolean removeFavorite()
+
 }
