@@ -18,8 +18,8 @@ import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
 import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder> {
-    public static final int HEADER_BACKGROUND_COLOR=0xFF6666;
-    public static final int FAVORITE_BACKGROUND_COLOR=0xFFFFFF;
+    public static final int HEADER_BACKGROUND_COLOR=0xFFFF4444;
+    public static final int FAVORITE_BACKGROUND_COLOR=0xFFFFFFFF;
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView itemFavoriteSearchRequest;
