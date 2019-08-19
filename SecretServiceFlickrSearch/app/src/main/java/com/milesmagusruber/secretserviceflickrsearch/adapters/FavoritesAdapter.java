@@ -18,6 +18,8 @@ import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
 import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder> {
+    public static final int HEADER_BACKGROUND_COLOR=0xFF6666;
+    public static final int FAVORITE_BACKGROUND_COLOR=0xFFFFFF;
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView itemFavoriteSearchRequest;
@@ -35,6 +37,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_favorite_image);
             itemFavoriteButtonRemove = (Button) itemView.findViewById(R.id.item_card_favorite_button_remove);
             itemFavoriteHeaderSearch = (TextView) itemView.findViewById(R.id.item_card_favorite_header_search);
+
         }
 
         public void bind(final Favorite favorite, final OnItemClickListener listener) {
@@ -116,6 +119,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             });
 
             viewHolder.bind(favorite, clickListener);
+            viewHolder.itemView.setBackgroundColor(FAVORITE_BACKGROUND_COLOR);
         }else{
 
             viewHolder.itemFavoriteHeaderSearch.setVisibility(View.VISIBLE);
@@ -124,6 +128,13 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             viewHolder.itemFavoriteTitle.setVisibility(View.GONE);
             viewHolder.itemFavoriteSearchRequest.setVisibility(View.GONE);
             viewHolder.itemFavoriteImage.setVisibility(View.GONE);
+            viewHolder.bind(favorite, new OnItemClickListener() {
+                @Override
+                public void onItemClick(Favorite favorite) {
+
+                }
+            });
+            viewHolder.itemView.setBackgroundColor(HEADER_BACKGROUND_COLOR); // set lightred color
         }
     }
 
