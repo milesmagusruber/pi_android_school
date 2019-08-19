@@ -19,6 +19,6 @@
 
 
 Дополнительные материалы:
-https://github.com/Karumi/Dexter - Популярная библиотека для облегчения работы с permissions (в рамках задания использовать запрещено)
-https://habr.com/ru/post/278945/ - русскоязычный гайд
-https://medium.com/mindorks/multiple-runtime-permissions-in-android-without-any-third-party-libraries-53ccf7550d0
+- https://github.com/Karumi/Dexter Популярная библиотека для облегчения работы с permissions (в рамках задания использовать запрещено)
+- https://habr.com/ru/post/278945/ русскоязычный гайд
+- https://medium.com/mindorks/multiple-runtime-permissions-in-android-without-any-third-party-libraries-53ccf7550d0
