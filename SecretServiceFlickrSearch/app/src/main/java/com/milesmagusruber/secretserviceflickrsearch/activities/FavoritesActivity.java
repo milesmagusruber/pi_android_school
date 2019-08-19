@@ -99,7 +99,6 @@ public class FavoritesActivity extends AppCompatActivity {
                                         boolean isNotEnd=true;
                                         adapter.removeFavorite(currentPosition);
                                         do{
-                                            Log.d("SHIT",Integer.toString(currentPosition));
                                             isNotEnd=adapter.getFavoriteAtPosition(currentPosition).getSearchRequest().equals(deleteSearchRequest);
                                             if(isNotEnd) {
                                                 adapter.removeFavorite(currentPosition);
