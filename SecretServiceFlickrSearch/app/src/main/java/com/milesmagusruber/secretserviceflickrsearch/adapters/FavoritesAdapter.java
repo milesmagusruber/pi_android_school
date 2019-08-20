@@ -146,7 +146,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
     //to get a favorite at a given position
     public Favorite getFavoriteAtPosition (int position) {
-        return favorites.get(position);
+        Favorite fav=null;
+        try {
+            fav = favorites.get(position);
+            return fav;
+        }catch (Exception e){
+
+        }
+        return null;
     }
 
     //this method is used to remove favorite

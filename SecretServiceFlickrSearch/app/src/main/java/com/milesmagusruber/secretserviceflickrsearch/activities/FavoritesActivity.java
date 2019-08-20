@@ -98,8 +98,10 @@ public class FavoritesActivity extends AppCompatActivity {
                                         int currentPosition=position;
                                         boolean isNotEnd=true;
                                         adapter.removeFavorite(currentPosition);
+                                        Favorite fav=null;
                                         do{
-                                            isNotEnd=adapter.getFavoriteAtPosition(currentPosition).getSearchRequest().equals(deleteSearchRequest);
+                                            fav = adapter.getFavoriteAtPosition(currentPosition);
+                                            isNotEnd=(fav!=null) && (fav.getSearchRequest().equals(deleteSearchRequest));
                                             if(isNotEnd) {
                                                 adapter.removeFavorite(currentPosition);
                                             }
