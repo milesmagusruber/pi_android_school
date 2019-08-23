@@ -7,7 +7,7 @@
     <!-- Add your API keys here -->
     <string name="flickr_api_key">b2af56de6a8c4738adaca9de6d7b1d9d</string>
     <string name="flickr_secret">69ee187bd66fa34e</string>
-    <string name="google_maps_key">YOUR_KEY</string>
+    <string name="google_maps_key"></string>
 
     <string name="logo_description">Image shows two secret agents listening to you and searching information about you using Flickr</string>
     <string name="turn_on_internet">Please, turn on the internet connection!</string>
@@ -22,5 +22,6 @@
     <string name="geo_search_flickr_photos">Search Flickr Photos</string>
     <string name="geo_search_no_markers">This is no marker on the map. Please, place one to let us search photos!</string>
     <string name="geo_snippet">Latitude: %1$.6f, Longitude: %2$.6f</string>
+    <string name="geo_location_problem">There is some problem with location services. Can\'t get your location! Move to default spot!</string>
     <string name="marker_title">Coordinates</string>
 </resources>

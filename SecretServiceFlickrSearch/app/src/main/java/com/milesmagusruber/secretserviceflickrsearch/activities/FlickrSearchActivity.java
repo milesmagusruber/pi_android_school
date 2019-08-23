@@ -1,6 +1,7 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
@@ -63,6 +65,12 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private RecyclerView rvFlickrResult;
     private String textSearch;
 
+    //for geo coordinates
+    private boolean geoResult;
+    private double geoResultLatitude;
+    private double geoResultLongitude;
+
+
     //adapter for Flickr photos
     private PhotosAdapter photosAdapter;
     private int photosPage; //to know a number of pages
@@ -95,7 +103,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
         networkHelper = NetworkHelper.getInstance(this);
         currentUser = CurrentUser.getInstance();
-
+        geoResult=false;
 
         //Initialising UI elements
         buttonTextSearch = (Button) findViewById(R.id.button_text_search);
@@ -190,6 +198,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonTextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                geoResult=false;
                 textSearch = editTextFlickrSearch.getText().toString();
                 textViewFlickrError.setVisibility(View.INVISIBLE);
                 rvFlickrResult.setVisibility(View.INVISIBLE);
@@ -211,8 +220,10 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
                         asyncTask = new AsyncTask<Void, Void, Integer>() {
                             @Override
-                            protected void onPreExecute() {
+                            protected void onPreExecute()
+                            {
                                 buttonTextSearch.setClickable(false);
+                                buttonGeoSearch.setClickable(false);
                             }
 
                             @Override
@@ -226,6 +237,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             @Override
                             protected void onPostExecute(Integer a) {
                                 buttonTextSearch.setClickable(true);
+                                buttonGeoSearch.setClickable(true);
                             }
                         };
                         asyncTask.execute();
@@ -248,7 +260,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             }
                             //If photos not null show them
                             if (photos != null) {
-                                showPhotos(photos);
+                                showPhotos(photos,textSearch);
                                 photosPage++;
                             } else {
                                 textViewFlickrError.setVisibility(View.VISIBLE);
@@ -294,18 +306,111 @@ public class FlickrSearchActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        if (requestCode == GEO_SEARCH_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                if (intent != null) {
+                    geoResult=true;
+                    geoResultLatitude=intent.getDoubleExtra(EXTRA_LATITUDE,0);
+                    geoResultLongitude = intent.getDoubleExtra(EXTRA_LONGITUDE,0);
+                    photosPage=1;
+                    photosEndReached = false;
+                    textViewFlickrError.setVisibility(View.INVISIBLE);
+                    rvFlickrResult.setVisibility(View.INVISIBLE);
+                    if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
+                        textViewFlickrError.setVisibility(TextView.VISIBLE);
+                        textViewFlickrError.setText(getString(R.string.turn_on_internet));
+                    }else{
+                        downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
-    private void showPhotos(final List<Photo> photos) {
+                        final String searchRequest=String.format(Locale.getDefault(),
+                                getString(R.string.geo_snippet),
+                                geoResultLatitude,
+                                geoResultLongitude);
+                        //adding Search Request to Database
+                        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+                            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                                @Override
+                                protected void onPreExecute() {
+                                    buttonTextSearch.setClickable(false);
+                                    buttonGeoSearch.setClickable(false);
+                                }
+
+                                @Override
+                                protected Integer doInBackground(Void... voids) {
+                                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                                    db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), searchRequest));
+                                    db.close();
+                                    return 0;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Integer a) {
+                                    buttonTextSearch.setClickable(true);
+                                    buttonGeoSearch.setClickable(true);
+                                }
+                            };
+                            asyncTask.execute();
+                        }
+
+                        //working with response from Flickr
+                        call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
+
+                        call.enqueue(new Callback<FlickrResponse>() {
+                            @Override
+                            public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
+                                FlickrResponse flickrResponse = response.body();
+
+                                List<Photo> photos = null;
+                                //If Response is not null making a result list of photos
+                                if (flickrResponse != null) {
+
+                                    photos = flickrResponse.getPhotos().getPhoto();
+
+                                }
+                                //If photos not null show them
+                                if (photos != null) {
+                                    showPhotos(photos,searchRequest);
+                                    photosPage++;
+                                } else {
+                                    textViewFlickrError.setVisibility(View.VISIBLE);
+                                    textViewFlickrError.setText(R.string.search_request_no_photos);
+                                }
+                                //disabling download bar
+
+                                downloadProgressBar.setVisibility(View.INVISIBLE);
+
+                            }
+
+                            //If we fail then set an error string to textview
+                            @SuppressLint("SetTextI18n")
+                            @Override
+                            public void onFailure(Call<FlickrResponse> call, Throwable t) {
+                                Log.e(TAG, "onFailure: Error");
+                                Log.e(TAG, t.toString());
+                                downloadProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                                textViewFlickrError.setVisibility(TextView.VISIBLE);
+                                textViewFlickrError.setText(getString(R.string.request_error));
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    private void showPhotos(final List<Photo> photos, final String searchRequest) {
 
 
-        photosAdapter = new PhotosAdapter(photos, textSearch, new PhotosAdapter.OnItemClickListener() {
+        photosAdapter = new PhotosAdapter(photos, searchRequest, new PhotosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Photo photo) {
                 //get to FlickViewItemActivity
                 Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
                 intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
                 intent.putExtra(EXTRA_TITLE, photo.getTitle());
-                intent.putExtra(EXTRA_SEARCH_REQUEST, textSearch);
+                intent.putExtra(EXTRA_SEARCH_REQUEST, searchRequest);
                 startActivity(intent);
             }
 
@@ -340,7 +445,11 @@ public class FlickrSearchActivity extends AppCompatActivity {
         //working with new page response from Flickr
         //Log.d(TAG,"Page number before:"+photosPage);
 
-        call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
+        if(geoResult!=true) {
+            call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
+        }else{
+            call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude, photosPage);
+        }
 
 
         call.enqueue(new Callback<FlickrResponse>() {
@@ -383,6 +492,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
         });
 
     }
+
+
 
 
 }

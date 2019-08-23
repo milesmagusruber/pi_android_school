@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -108,11 +109,19 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     private void getLocation(GoogleMap gMap) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             gMap.setMyLocationEnabled(true);
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INIT_ZOOM));
+            try {
+                LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                criteria.setAccuracy(Criteria.ACCURACY_FINE);
+                criteria.setCostAllowed(false);
+                String provider = locationManager.getBestProvider(criteria, false);
+                Location location = locationManager.getLastKnownLocation(provider);
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INIT_ZOOM));
+            }catch(Exception e){
+                Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.468018, 30.734358), INIT_ZOOM));
+            }
         } else {
             ActivityCompat.requestPermissions(this, new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
