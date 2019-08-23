@@ -89,7 +89,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_search);
 
-        networkHelper = NetworkHelper.getInstance();
+        networkHelper = NetworkHelper.getInstance(this);
         currentUser = CurrentUser.getInstance();
 
 
@@ -219,7 +219,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     }
 
                     //working with response from Flickr
-                    call = networkHelper.getSearchTextQueryPhotos(FlickrSearchActivity.this, textSearch,photosPage);
+                    call = networkHelper.getSearchTextQueryPhotos(textSearch,photosPage);
 
                     call.enqueue(new Callback<FlickrResponse>() {
                         @Override
@@ -327,7 +327,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             //working with new page response from Flickr
             //Log.d(TAG,"Page number before:"+photosPage);
 
-            call = networkHelper.getSearchTextQueryPhotos(FlickrSearchActivity.this, textSearch, photosPage);
+            call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
 
 
             call.enqueue(new Callback<FlickrResponse>() {

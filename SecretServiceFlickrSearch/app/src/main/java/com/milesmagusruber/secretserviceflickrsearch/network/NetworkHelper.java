@@ -25,14 +25,43 @@ public class NetworkHelper {
     private final int NO_JSON_CALL_BACK = 1;
     private final String EXTRAS = "url_s";
 
+    //Our Flickr API Key
+    private String flickrApiKey;
+
+    //Retrofit API client for server requests
+    private RetrofitAPI retrofitAPIclient;
+
+
     private static NetworkHelper instance;
 
-    private NetworkHelper(){
+    private NetworkHelper(Context context){
+        //getting Flickr API key
+        flickrApiKey = context.getResources().getString(R.string.flickr_api_key);
+        //Creating OkHttpClient
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
+        builder.readTimeout(10, TimeUnit.SECONDS);
+        builder.connectTimeout(5, TimeUnit.SECONDS);
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        builder.addInterceptor(interceptor);
+        OkHttpClient okHttpClient = builder.build();
+
+        //Using Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .client(okHttpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        retrofitAPIclient = retrofit.create(RetrofitAPI.class);
+
     }
 
-    public static NetworkHelper getInstance(){
+    public static NetworkHelper getInstance(Context context){
         if (instance == null) {
-            instance = new NetworkHelper();
+            instance = new NetworkHelper(context);
         }
         return instance;
     }
@@ -56,32 +85,14 @@ public class NetworkHelper {
     }
 
     //getting search query response from Flickr
-    public Call<FlickrResponse> getSearchTextQueryPhotos(Context context, String textSearch, int page){
-        //getting Flickr API key
-        String flickrApiKey = context.getResources().getString(R.string.flickr_api_key);
+    public Call<FlickrResponse> getSearchTextQueryPhotos(String textSearch, int page){
+        return retrofitAPIclient.getSearchTextQueryPhotos(METHOD_NAME, flickrApiKey,
+                FORMAT, NO_JSON_CALL_BACK, EXTRAS, textSearch, page);
+    }
 
-        //Creating OkHttpClient
-        OkHttpClient.Builder builder = new OkHttpClient().newBuilder();
-        builder.readTimeout(10, TimeUnit.SECONDS);
-        builder.connectTimeout(5, TimeUnit.SECONDS);
-
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
-        builder.addInterceptor(interceptor);
-        OkHttpClient okHttpClient = builder.build();
-
-        //Using Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .client(okHttpClient)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        final RetrofitAPI client = retrofit.create(RetrofitAPI.class);
-
-        return client.getSearchTextQueryPhotos(METHOD_NAME, flickrApiKey, FORMAT, NO_JSON_CALL_BACK, EXTRAS, textSearch, page);
-
+    public Call<FlickrResponse> getSearchGeoQueryPhotos(double latitude, double longitude, int page){
+        return retrofitAPIclient.getSearchGeoQueryPhotos(METHOD_NAME, flickrApiKey,
+                FORMAT, NO_JSON_CALL_BACK, EXTRAS, latitude, longitude, page);
     }
 
 }
