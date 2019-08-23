@@ -56,7 +56,7 @@ public class NetworkHelper {
     }
 
     //getting search query response from Flickr
-    public Call<FlickrResponse> getSearchQueryPhotos(Context context, String textSearch, int page){
+    public Call<FlickrResponse> getSearchTextQueryPhotos(Context context, String textSearch, int page){
         //getting Flickr API key
         String flickrApiKey = context.getResources().getString(R.string.flickr_api_key);
 
@@ -80,7 +80,7 @@ public class NetworkHelper {
 
         final RetrofitAPI client = retrofit.create(RetrofitAPI.class);
 
-        return client.getSearchQueryPhotos(METHOD_NAME, flickrApiKey, FORMAT, NO_JSON_CALL_BACK, EXTRAS, textSearch, page);
+        return client.getSearchTextQueryPhotos(METHOD_NAME, flickrApiKey, FORMAT, NO_JSON_CALL_BACK, EXTRAS, textSearch, page);
 
     }
 
