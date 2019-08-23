@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,7 +39,11 @@ public class FlickrSearchActivity extends AppCompatActivity {
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
     public static final String EXTRA_TITLE = BuildConfig.APPLICATION_ID + ".extra.title";
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID + ".extra.search.request";
+    public static final String EXTRA_LATITUDE = BuildConfig.APPLICATION_ID + ".extra.latitude";
+    public static final String EXTRA_LONGITUDE = BuildConfig.APPLICATION_ID + ".extra.longitude";
 
+
+    public static final int GEO_SEARCH_REQUEST = 1;
 
     //Current user
     private CurrentUser currentUser;
@@ -49,7 +52,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private String lastSearchRequest;
 
     //Declaring UI elements
-    private Button buttonSearch;
+    private Button buttonTextSearch;
+    private Button buttonGeoSearch;
     private Button buttonFavorites;
     private Button buttonLastSearchRequests;
     private EditText editTextFlickrSearch;
@@ -94,7 +98,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
 
         //Initialising UI elements
-        buttonSearch = (Button) findViewById(R.id.button_search);
+        buttonTextSearch = (Button) findViewById(R.id.button_text_search);
+        buttonGeoSearch = (Button) findViewById(R.id.button_geo_search);
         buttonFavorites = (Button) findViewById(R.id.button_favorites);
         buttonLastSearchRequests = (Button) findViewById(R.id.button_last_search_requests);
         editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
@@ -102,9 +107,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
         rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
         textViewFlickrError = (TextView) findViewById(R.id.flickr_error);
         scrollProgressBar = (ProgressBar) findViewById(R.id.scroll_progressbar);
-        isLoading=false;
+        isLoading = false;
         photosPage = 1;//number of pages is 1
-        photosEndReached=false;
+        photosEndReached = false;
 
         //Initialize itemTouchHelper
         itemTouchHelper = new ItemTouchHelper(
@@ -128,20 +133,21 @@ public class FlickrSearchActivity extends AppCompatActivity {
         //Initialize onScrollListener
         onScrollListener = new RecyclerView.OnScrollListener() {
             int visibleItemCount, totalItemCount, pastVisiblesItems;
+
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if(!isLoading){
-                if(dy>0){
-                    visibleItemCount = layoutManager.getChildCount();
-                    totalItemCount = layoutManager.getItemCount();
-                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
-                    if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                        if(!photosEndReached && networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
-                            isLoading = true;
-                            loadMorePhotos();
+                if (!isLoading) {
+                    if (dy > 0) {
+                        visibleItemCount = layoutManager.getChildCount();
+                        totalItemCount = layoutManager.getItemCount();
+                        pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            if (!photosEndReached && networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
+                                isLoading = true;
+                                loadMorePhotos();
+                            }
                         }
                     }
-                }
                 }
             }
         };
@@ -151,7 +157,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected void onPreExecute() {
-                    buttonSearch.setClickable(false);
+                    buttonTextSearch.setClickable(false);
                 }
 
                 @Override
@@ -166,7 +172,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(Integer a) {
                     editTextFlickrSearch.setText(lastSearchRequest);
-                    buttonSearch.setClickable(true);
+                    buttonTextSearch.setClickable(true);
                 }
             };
             asyncTask.execute();
@@ -174,14 +180,21 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
         //Main function of out app to search photos via Flickr API
 
-        buttonSearch.setOnClickListener(new View.OnClickListener() {
+        buttonGeoSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(new Intent(FlickrSearchActivity.this, GoogleMapsSearchActivity.class), GEO_SEARCH_REQUEST);
+            }
+        });
+
+        buttonTextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 textSearch = editTextFlickrSearch.getText().toString();
                 textViewFlickrError.setVisibility(View.INVISIBLE);
                 rvFlickrResult.setVisibility(View.INVISIBLE);
-                photosPage=1;
-                photosEndReached=false;
+                photosPage = 1;
+                photosEndReached = false;
                 //At first check network connection
                 if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
                     textViewFlickrError.setVisibility(TextView.VISIBLE);
@@ -199,7 +212,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         asyncTask = new AsyncTask<Void, Void, Integer>() {
                             @Override
                             protected void onPreExecute() {
-                                buttonSearch.setClickable(false);
+                                buttonTextSearch.setClickable(false);
                             }
 
                             @Override
@@ -212,14 +225,14 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
                             @Override
                             protected void onPostExecute(Integer a) {
-                                buttonSearch.setClickable(true);
+                                buttonTextSearch.setClickable(true);
                             }
                         };
                         asyncTask.execute();
                     }
 
                     //working with response from Flickr
-                    call = networkHelper.getSearchTextQueryPhotos(textSearch,photosPage);
+                    call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
 
                     call.enqueue(new Callback<FlickrResponse>() {
                         @Override
@@ -234,10 +247,10 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
                             }
                             //If photos not null show them
-                            if(photos!=null){
-                             showPhotos(photos);
-                             photosPage++;
-                            }else{
+                            if (photos != null) {
+                                showPhotos(photos);
+                                photosPage++;
+                            } else {
                                 textViewFlickrError.setVisibility(View.VISIBLE);
                                 textViewFlickrError.setText(R.string.search_request_no_photos);
                             }
@@ -282,7 +295,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     }
 
 
-    private void showPhotos(final List<Photo> photos){
+    private void showPhotos(final List<Photo> photos) {
 
 
         photosAdapter = new PhotosAdapter(photos, textSearch, new PhotosAdapter.OnItemClickListener() {
@@ -319,55 +332,55 @@ public class FlickrSearchActivity extends AppCompatActivity {
         photosAdapter.notifyItemRemoved(position);
     }
 
-    private void loadMorePhotos(){
+    private void loadMorePhotos() {
 
 
-            scrollProgressBar.setVisibility(View.VISIBLE);
+        scrollProgressBar.setVisibility(View.VISIBLE);
 
-            //working with new page response from Flickr
-            //Log.d(TAG,"Page number before:"+photosPage);
+        //working with new page response from Flickr
+        //Log.d(TAG,"Page number before:"+photosPage);
 
-            call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
+        call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
 
 
-            call.enqueue(new Callback<FlickrResponse>() {
-                @Override
-                public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
-                    FlickrResponse flickrResponse = response.body();
+        call.enqueue(new Callback<FlickrResponse>() {
+            @Override
+            public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
+                FlickrResponse flickrResponse = response.body();
 
-                    List<Photo> photos = null;
-                    //If Response is not null making a result list of photos
-                    if (flickrResponse != null) {
+                List<Photo> photos = null;
+                //If Response is not null making a result list of photos
+                if (flickrResponse != null) {
 
-                        photos = flickrResponse.getPhotos().getPhoto();
-
-                    }
-                    //Log.d(TAG,photos.toString());
-                    //If photos not null show them
-                    if (photos != null && !photos.isEmpty()) {
-                        photosAdapter.addNewPhotos(photos);
-                        photosPage++;
-
-                        //Log.d(TAG,"Page number after:"+photosPage);
-                    }else{
-                        photosEndReached=true;
-                    }
-                    //disabling download bar
-                    scrollProgressBar.setVisibility(View.INVISIBLE);
-                    isLoading=false;
+                    photos = flickrResponse.getPhotos().getPhoto();
 
                 }
+                //Log.d(TAG,photos.toString());
+                //If photos not null show them
+                if (photos != null && !photos.isEmpty()) {
+                    photosAdapter.addNewPhotos(photos);
+                    photosPage++;
 
-                //If we fail then set an error string to textview
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onFailure(Call<FlickrResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: Error");
-                    Log.e(TAG, t.toString());
-                    scrollProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                    isLoading=false;
+                    //Log.d(TAG,"Page number after:"+photosPage);
+                } else {
+                    photosEndReached = true;
                 }
-            });
+                //disabling download bar
+                scrollProgressBar.setVisibility(View.INVISIBLE);
+                isLoading = false;
+
+            }
+
+            //If we fail then set an error string to textview
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onFailure(Call<FlickrResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: Error");
+                Log.e(TAG, t.toString());
+                scrollProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                isLoading = false;
+            }
+        });
 
     }
 
