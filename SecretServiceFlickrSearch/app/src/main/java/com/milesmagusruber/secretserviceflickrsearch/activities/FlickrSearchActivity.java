@@ -316,6 +316,13 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     geoResultLongitude = intent.getDoubleExtra(EXTRA_LONGITUDE,0);
                     photosPage=1;
                     photosEndReached = false;
+
+                    final String searchRequest=String.format(Locale.getDefault(),
+                            getString(R.string.geo_snippet),
+                            geoResultLatitude,
+                            geoResultLongitude);
+
+                    editTextFlickrSearch.setText(searchRequest);
                     textViewFlickrError.setVisibility(View.INVISIBLE);
                     rvFlickrResult.setVisibility(View.INVISIBLE);
                     if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
@@ -324,10 +331,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     }else{
                         downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
-                        final String searchRequest=String.format(Locale.getDefault(),
-                                getString(R.string.geo_snippet),
-                                geoResultLatitude,
-                                geoResultLongitude);
                         //adding Search Request to Database
                         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
                             asyncTask = new AsyncTask<Void, Void, Integer>() {

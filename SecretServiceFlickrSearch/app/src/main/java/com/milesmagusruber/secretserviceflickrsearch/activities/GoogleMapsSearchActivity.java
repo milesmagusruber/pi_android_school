@@ -1,5 +1,6 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -10,9 +11,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
+
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -35,8 +39,10 @@ import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSea
 public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapReadyCallback {
 
     //constants
-    public static final float INIT_ZOOM = 10f;
+    public static final float INIT_ZOOM = 15f;
     private static final int REQUEST_LOCATION_PERMISSION = 5;
+    private static final double DEFAULT_LATITUDE=46.468018;
+    private static final double DEFAULT_LONGITUDE=30.734358;
 
     //map variables
     private GoogleMap googleMap;
@@ -74,33 +80,36 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
-        setNewMarker(googleMap);
-        getLocation(googleMap);
-    }
-
-
-    //This method is used to set a marker on new location and delete the old one
-    private void setNewMarker(final GoogleMap gMap) {
-        gMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        googleMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                if (marker != null) {
-                    marker.remove();
-                }
-
-                String snippet = String.format(Locale.getDefault(),
-                        getString(R.string.geo_snippet),
-                        latLng.latitude,
-                        latLng.longitude);
-
-                marker = gMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(getString(R.string.marker_title))
-                        .snippet(snippet)
-                        .icon(BitmapDescriptorFactory.defaultMarker
-                                (BitmapDescriptorFactory.HUE_VIOLET)));
+                setMarker(latLng);
             }
         });
+        getLocation(googleMap);
+
+    }
+
+    //setting marker in a point we need
+    private void setMarker(LatLng latLng){
+        if (marker != null) {
+            marker.remove();
+        }
+
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INIT_ZOOM));
+
+        String snippet = String.format(Locale.getDefault(),
+                getString(R.string.geo_snippet),
+                latLng.latitude,
+                latLng.longitude);
+
+        marker = googleMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title(getString(R.string.marker_title))
+                .snippet(snippet)
+                .icon(BitmapDescriptorFactory.defaultMarker
+                        (BitmapDescriptorFactory.HUE_VIOLET)));
     }
 
     /*This method is used to get our location
@@ -110,23 +119,23 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             gMap.setMyLocationEnabled(true);
             try {
-                LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-                Criteria criteria = new Criteria();
-                criteria.setAccuracy(Criteria.ACCURACY_FINE);
-                criteria.setCostAllowed(false);
-                String provider = locationManager.getBestProvider(criteria, false);
-                Location location = locationManager.getLastKnownLocation(provider);
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, INIT_ZOOM));
+                setMarker(latLng);
             }catch(Exception e){
                 Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
-                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.468018, 30.734358), INIT_ZOOM));
+                LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+                setMarker(latLng);
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-            gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(46.468018, 30.734358), INIT_ZOOM));
+            LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+            setMarker(latLng);
         }
     }
+
 
 }
