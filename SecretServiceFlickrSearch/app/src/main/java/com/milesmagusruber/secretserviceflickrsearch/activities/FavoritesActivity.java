@@ -93,6 +93,13 @@ public class FavoritesActivity extends AppCompatActivity {
                                 protected void onPostExecute(Integer a){
                                     if(!favoriteForDelete.getWebLink().equals("")) {
                                         adapter.removeFavorite(position);
+                                        Favorite prevFav=adapter.getFavoriteAtPosition(position-1);
+                                        Favorite nextFav=adapter.getFavoriteAtPosition(position);
+                                        if (prevFav.getWebLink().equals("") && (
+                                                nextFav == null || nextFav.getWebLink().equals("")
+                                                )){
+                                            adapter.removeFavorite(position-1);
+                                        }
                                     }else{
                                         //delete all favorites with header search after swipe of header
                                         int currentPosition=position;
@@ -180,6 +187,13 @@ public class FavoritesActivity extends AppCompatActivity {
                                     @Override
                                     protected void onPostExecute(Integer a){
                                         adapter.removeFavorite(position);
+                                        Favorite prevFav=adapter.getFavoriteAtPosition(position-1);
+                                        Favorite nextFav=adapter.getFavoriteAtPosition(position);
+                                        if (prevFav.getWebLink().equals("") && (
+                                                nextFav == null || nextFav.getWebLink().equals("")
+                                        )){
+                                            adapter.removeFavorite(position-1);
+                                        }
                                     }
                                 };
                                 asyncTask.execute();

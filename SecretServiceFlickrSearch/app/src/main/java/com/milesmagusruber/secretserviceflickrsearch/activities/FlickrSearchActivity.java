@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
@@ -172,7 +173,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 protected Integer doInBackground(Void... data) {
                     //Initialize SearchRequests
                     db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                    lastSearchRequest = db.getLastSearchRequest(currentUser.getUser().getId()).getSearchRequest();
+                    lastSearchRequest = db.getLastTextSearchRequest(currentUser.getUser().getId()).getSearchRequest();
                     db.close();
                     return 0;
                 }
@@ -262,7 +263,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             geoResultLatitude,
                             geoResultLongitude);
 
-                    editTextFlickrSearch.setText(searchRequest);
+                    editTextFlickrSearch.setText("");
+                    Toast.makeText(FlickrSearchActivity.this,searchRequest,Toast.LENGTH_LONG).show();
                     textViewFlickrError.setVisibility(View.INVISIBLE);
                     rvFlickrResult.setVisibility(View.INVISIBLE);
                     if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {

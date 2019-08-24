@@ -307,13 +307,14 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
     }
 
     @Override
-    public SearchRequest getLastSearchRequest(int user) {
+    public SearchRequest getLastTextSearchRequest(int user) {
         SQLiteDatabase db = null;
         try {
             db = this.getReadableDatabase();
+            String pattern="Geo Request%Latitude%Longitude%";
             String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS + " WHERE " + KEY_USER
-                    + "= ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
-            Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
+                    + "= ? AND "+KEY_SEARCH_REQUEST+" NOT LIKE ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
+            Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user),pattern});
             if (cursor != null) {
                 cursor.moveToFirst();
                 if (cursor.getCount() > 0) {
