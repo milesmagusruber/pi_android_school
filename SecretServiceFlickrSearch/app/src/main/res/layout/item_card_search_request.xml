@@ -20,7 +20,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:textColor="@android:color/black"
-            android:textSize="36sp"
+            android:textSize="24sp"
             android:textStyle="bold|italic" />
 
     </LinearLayout>

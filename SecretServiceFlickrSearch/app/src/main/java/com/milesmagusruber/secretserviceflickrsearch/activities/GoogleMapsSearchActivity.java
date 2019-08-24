@@ -39,14 +39,16 @@ import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSea
 public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapReadyCallback {
 
     //constants
-    public static final float INIT_ZOOM = 15f;
+    public static final float INIT_ZOOM = 13f;
     private static final int REQUEST_LOCATION_PERMISSION = 5;
     private static final double DEFAULT_LATITUDE=46.468018;
     private static final double DEFAULT_LONGITUDE=30.734358;
 
+
     //map variables
     private GoogleMap googleMap;
     private Marker marker;
+
 
     //Button that returns result coordinates
     private Button buttonGeoSearch;
@@ -87,7 +89,7 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
                 setMarker(latLng);
             }
         });
-        getLocation(googleMap);
+        getLocation();
 
     }
 
@@ -115,27 +117,52 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     /*This method is used to get our location
      * If we can't get it then we have a default one in Odessa
      * */
-    private void getLocation(GoogleMap gMap) {
+    private void getLocation(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            gMap.setMyLocationEnabled(true);
-            try {
+            googleMap.setMyLocationEnabled(true);
+                try{
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                Location location=null;
+                location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if(location==null){
+                    location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if(location==null){
+                        location=locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+                    }
+                }
+                if(location!=null){
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    setMarker(latLng);
+                }else{
+                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
+                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+                    setMarker(latLng);
+                }
+                }catch (Exception e){
+                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
+                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+                    setMarker(latLng);
+                }
 
-                Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                setMarker(latLng);
-            }catch(Exception e){
-                Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
-                LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-                setMarker(latLng);
-            }
         } else {
             ActivityCompat.requestPermissions(this, new String[]
                     {Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION_PERMISSION);
-            LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-            setMarker(latLng);
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSION: {
+                if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    getLocation();
+                }else{
+                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_permission_not_granted, Toast.LENGTH_LONG).show();
+                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+                    setMarker(latLng);
+                }
+            }
+        }
+    }
 
 }

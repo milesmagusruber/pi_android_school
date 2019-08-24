@@ -217,72 +217,12 @@ public class FlickrSearchActivity extends AppCompatActivity {
                     downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
 
                     //adding Search Request to Database
-                    if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
-                        asyncTask = new AsyncTask<Void, Void, Integer>() {
-                            @Override
-                            protected void onPreExecute()
-                            {
-                                buttonTextSearch.setClickable(false);
-                                buttonGeoSearch.setClickable(false);
-                            }
-
-                            @Override
-                            protected Integer doInBackground(Void... voids) {
-                                db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                                db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), textSearch));
-                                db.close();
-                                return 0;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Integer a) {
-                                buttonTextSearch.setClickable(true);
-                                buttonGeoSearch.setClickable(true);
-                            }
-                        };
-                        asyncTask.execute();
-                    }
+                    addSearchRequestToDB(textSearch);
 
                     //working with response from Flickr
                     call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
 
-                    call.enqueue(new Callback<FlickrResponse>() {
-                        @Override
-                        public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
-                            FlickrResponse flickrResponse = response.body();
-
-                            List<Photo> photos = null;
-                            //If Response is not null making a result list of photos
-                            if (flickrResponse != null) {
-
-                                photos = flickrResponse.getPhotos().getPhoto();
-
-                            }
-                            //If photos not null show them
-                            if (photos != null) {
-                                showPhotos(photos,textSearch);
-                                photosPage++;
-                            } else {
-                                textViewFlickrError.setVisibility(View.VISIBLE);
-                                textViewFlickrError.setText(R.string.search_request_no_photos);
-                            }
-                            //disabling download bar
-
-                            downloadProgressBar.setVisibility(View.INVISIBLE);
-
-                        }
-
-                        //If we fail then set an error string to textview
-                        @SuppressLint("SetTextI18n")
-                        @Override
-                        public void onFailure(Call<FlickrResponse> call, Throwable t) {
-                            Log.e(TAG, "onFailure: Error");
-                            Log.e(TAG, t.toString());
-                            downloadProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                            textViewFlickrError.setVisibility(TextView.VISIBLE);
-                            textViewFlickrError.setText(getString(R.string.request_error));
-                        }
-                    });
+                    initialFlickrSearchCall(textSearch);
                 }
             }
         });
@@ -330,73 +270,12 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         textViewFlickrError.setText(getString(R.string.turn_on_internet));
                     }else{
                         downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
-
                         //adding Search Request to Database
-                        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
-                            asyncTask = new AsyncTask<Void, Void, Integer>() {
-                                @Override
-                                protected void onPreExecute() {
-                                    buttonTextSearch.setClickable(false);
-                                    buttonGeoSearch.setClickable(false);
-                                }
-
-                                @Override
-                                protected Integer doInBackground(Void... voids) {
-                                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-                                    db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), searchRequest));
-                                    db.close();
-                                    return 0;
-                                }
-
-                                @Override
-                                protected void onPostExecute(Integer a) {
-                                    buttonTextSearch.setClickable(true);
-                                    buttonGeoSearch.setClickable(true);
-                                }
-                            };
-                            asyncTask.execute();
-                        }
+                        addSearchRequestToDB(searchRequest);
 
                         //working with response from Flickr
                         call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
-
-                        call.enqueue(new Callback<FlickrResponse>() {
-                            @Override
-                            public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
-                                FlickrResponse flickrResponse = response.body();
-
-                                List<Photo> photos = null;
-                                //If Response is not null making a result list of photos
-                                if (flickrResponse != null) {
-
-                                    photos = flickrResponse.getPhotos().getPhoto();
-
-                                }
-                                //If photos not null show them
-                                if (photos != null) {
-                                    showPhotos(photos,searchRequest);
-                                    photosPage++;
-                                } else {
-                                    textViewFlickrError.setVisibility(View.VISIBLE);
-                                    textViewFlickrError.setText(R.string.search_request_no_photos);
-                                }
-                                //disabling download bar
-
-                                downloadProgressBar.setVisibility(View.INVISIBLE);
-
-                            }
-
-                            //If we fail then set an error string to textview
-                            @SuppressLint("SetTextI18n")
-                            @Override
-                            public void onFailure(Call<FlickrResponse> call, Throwable t) {
-                                Log.e(TAG, "onFailure: Error");
-                                Log.e(TAG, t.toString());
-                                downloadProgressBar.setVisibility(ProgressBar.INVISIBLE);
-                                textViewFlickrError.setVisibility(TextView.VISIBLE);
-                                textViewFlickrError.setText(getString(R.string.request_error));
-                            }
-                        });
+                        initialFlickrSearchCall(searchRequest);
                     }
                 }
             }
@@ -440,6 +319,76 @@ public class FlickrSearchActivity extends AppCompatActivity {
         photosAdapter.notifyItemRemoved(position);
     }
 
+    //This method is used to add text or geo search request to database
+    private void addSearchRequestToDB(final String searchRequest){
+        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected void onPreExecute() {
+                    buttonTextSearch.setClickable(false);
+                    buttonGeoSearch.setClickable(false);
+                }
+
+                @Override
+                protected Integer doInBackground(Void... voids) {
+                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                    db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), searchRequest));
+                    db.close();
+                    return 0;
+                }
+
+                @Override
+                protected void onPostExecute(Integer a) {
+                    buttonTextSearch.setClickable(true);
+                    buttonGeoSearch.setClickable(true);
+                }
+            };
+            asyncTask.execute();
+        }
+    }
+
+    //This method is used to process our response from the search request where we loaded first page of photos
+    private void initialFlickrSearchCall(final String searchRequest){
+        call.enqueue(new Callback<FlickrResponse>() {
+            @Override
+            public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
+                FlickrResponse flickrResponse = response.body();
+
+                List<Photo> photos = null;
+                //If Response is not null making a result list of photos
+                if (flickrResponse != null) {
+
+                    photos = flickrResponse.getPhotos().getPhoto();
+
+                }
+                //If photos not null show them
+                if (photos != null && !photos.isEmpty()) {
+                    showPhotos(photos,searchRequest);
+                    photosPage++;
+                } else {
+                    textViewFlickrError.setVisibility(View.VISIBLE);
+                    textViewFlickrError.setText(R.string.search_request_no_photos);
+                }
+                //disabling download bar
+
+                downloadProgressBar.setVisibility(View.INVISIBLE);
+
+            }
+
+            //If we fail then set an error string to textview
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onFailure(Call<FlickrResponse> call, Throwable t) {
+                Log.e(TAG, "onFailure: Error");
+                Log.e(TAG, t.toString());
+                downloadProgressBar.setVisibility(ProgressBar.INVISIBLE);
+                textViewFlickrError.setVisibility(TextView.VISIBLE);
+                textViewFlickrError.setText(getString(R.string.request_error));
+            }
+        });
+    }
+
+    //This method is used when we load more pages of the same photo search request (text or geo)
     private void loadMorePhotos() {
 
 
@@ -495,9 +444,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
         });
 
     }
-
-
-
 
 }
 

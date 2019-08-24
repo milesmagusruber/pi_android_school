@@ -22,6 +22,9 @@
     <string name="geo_search_flickr_photos">Search Flickr Photos</string>
     <string name="geo_search_no_markers">This is no marker on the map. Please, place one to let us search photos!</string>
     <string name="geo_snippet">Latitude: %1$.6f, Longitude: %2$.6f</string>
-    <string name="geo_location_problem">There is some problem with location services. Can\'t get your location! Move to default spot!</string>
+    <string name="geo_location_problem">There is some problem with location services.
+        Can\'t get your location! Move to default spot! Please, turn on your geolocation or move
+        to the zone of better signal reception!</string>
+    <string name="geo_location_permission_not_granted">Location permission is not granted. Showing default location.</string>
     <string name="marker_title">Coordinates</string>
 </resources>
