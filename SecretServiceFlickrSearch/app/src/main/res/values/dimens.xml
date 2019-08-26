@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="margin_norm">16dp</dimen>
+    <dimen name="margin_big">24dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="progress_bar_dimen">100dp</dimen>
+    <dimen name="progress_bar_margin">50dp</dimen>
+</resources>
