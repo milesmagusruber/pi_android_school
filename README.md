@@ -1,22 +1,24 @@
 # PI-school 2019
 
-## Week 5
- - Permissions & Location 
+## Week 6
+ - Internal & external storage & camera 
  
-   - https://developer.android.com/guide/topics/permissions/overview всю секцию
-   - https://developer.android.com/training/location 
-  - Задания и codelabs
-    - https://codelabs.developers.google.com/codelabs/advanced-android-training-device-location/index.html?index=..%2F..advanced-android-training#0
-    - https://codelabs.developers.google.com/codelabs/advanced-android-training-places-api/index.html?index=..%2F..advanced-android-training#0
-    - https://codelabs.developers.google.com/codelabs/advanced-android-training-google-maps/index.html?index=..%2F..advanced-android-training#0
-    - Работаем на основе приложения с прошлой недели:
-     - Добавляем новый экран с Google Maps. По умолчанию пытаемся показать и отметить на карте текущее местоположение пользователя
-     - Пользователь может тапом выбрать на карте любое место
-     - Если место выбрано, по нажатии кнопки на экране он может получить фид фоточек с Flickr с заданой локации на карте и отобразить это в списке
-     - Workflow: попадаем на экран с картой, выбираем местоположение (или оставляем текущее, определённое автоматически), жмем на кнопку "найти фотографии отсюда" и попадаем экран с результатами поиска
+   - https://developer.android.com/training/data-storage/files.html
+   - https://developer.android.com/training/camera
+   - https://github.com/Yalantis/uCrop
+ - Задания и codelabs
+    - https://codelabs.developers.google.com/codelabs/android-storage-permissions/#0
+    - Работаем на основе приложения с прошлой недели
+      - Необходимо завести отдельную папку, в которой ваше приложение будет сохранять фотографии сделанные пользователем
+      - Создаём новый экран Галерея
+      - Когда пользователь попадет на этот экран, нужно отображать фотографии в списке подобно тому как мы это делаем на остальных экранах (фото из папки выше)
+      - В галерее должна быть кнопка, тап по которой запускает камеру
+      - После того как пользователь сделает фотографию, запускаем обработку фото с помощью библиотеки uCrop
+      - После обработки сохраняем полученный результат в папку и отображаем как новый элемент списка
+      - На экране просмотра фото из Flickr добавляем возможность сохранить фото на устройстве
+      - Фотографии сделанные из приложения с камеры пользователя сохранять в приватное хранилище вашего приложения, фотографии из фликера загружать в какую то папку в общем хранилище устройства
+      - Свайп фотографии в списке физически удаляет фото с устройства
 
 
 Дополнительные материалы:
-- https://github.com/Karumi/Dexter Популярная библиотека для облегчения работы с permissions (в рамках задания использовать запрещено)
-- https://habr.com/ru/post/278945/ русскоязычный гайд
-- https://medium.com/mindorks/multiple-runtime-permissions-in-android-without-any-third-party-libraries-53ccf7550d0
+- https://medium.com/@babul.sust.cse/understanding-of-android-storage-system-17b6134f873
