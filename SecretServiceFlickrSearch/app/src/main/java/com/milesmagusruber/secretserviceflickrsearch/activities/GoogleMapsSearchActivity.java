@@ -134,14 +134,10 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     setMarker(latLng);
                 }else{
-                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
-                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-                    setMarker(latLng);
+                    setDefaultLocation(R.string.geo_location_problem);
                 }
                 }catch (Exception e){
-                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_problem, Toast.LENGTH_LONG).show();
-                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-                    setMarker(latLng);
+                    setDefaultLocation(R.string.geo_location_problem);
                 }
 
         } else {
@@ -157,12 +153,15 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getLocation();
                 }else{
-                    Toast.makeText(GoogleMapsSearchActivity.this, R.string.geo_location_permission_not_granted, Toast.LENGTH_LONG).show();
-                    LatLng latLng =new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
-                    setMarker(latLng);
+                    setDefaultLocation(R.string.geo_location_permission_not_granted);
                 }
             }
         }
+    }
+
+    public void setDefaultLocation(int stringResId){
+        Toast.makeText(this, stringResId, Toast.LENGTH_LONG);
+        setMarker(new LatLng(DEFAULT_LATITUDE,DEFAULT_LONGITUDE));
     }
 
 }
