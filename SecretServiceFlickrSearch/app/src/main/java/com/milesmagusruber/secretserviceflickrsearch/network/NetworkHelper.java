@@ -6,7 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
+import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
 
 import java.util.concurrent.TimeUnit;
 

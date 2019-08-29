@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
-import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
 
 import java.util.List;
 

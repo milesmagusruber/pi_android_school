@@ -11,7 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
+import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
 
 import java.util.List;
 
@@ -41,7 +41,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         }
     }
 
-    // Store a member variable for the favorites
     private List<Photo> photos;
     private final PhotosAdapter.OnItemClickListener listener;
 

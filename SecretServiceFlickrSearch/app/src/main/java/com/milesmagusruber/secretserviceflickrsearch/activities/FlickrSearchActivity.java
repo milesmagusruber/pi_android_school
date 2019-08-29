@@ -31,8 +31,8 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
-import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
-import com.milesmagusruber.secretserviceflickrsearch.model.Photo;
+import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
+import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
 
 import retrofit2.Call;
 import retrofit2.Callback;

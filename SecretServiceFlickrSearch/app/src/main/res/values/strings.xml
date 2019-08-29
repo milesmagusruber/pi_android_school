@@ -7,7 +7,7 @@
     <!-- Add your API keys here -->
     <string name="flickr_api_key">b2af56de6a8c4738adaca9de6d7b1d9d</string>
     <string name="flickr_secret">69ee187bd66fa34e</string>
-    <string name="google_maps_key">your_key</string>
+    <string name="google_maps_key"></string>
 
     <!-- Titles -->
     <string name="title_favorites">Favorites</string>
@@ -24,6 +24,7 @@
     <string name="incorrect_login">Incorrect login</string>
     <string name="cd_flickr_photo_image">Some Flickr Photo</string>
 
+    <!--Geolocation strings-->
     <string name="geo_search_flickr_photos">Search Flickr Photos</string>
     <string name="geo_search_no_markers">This is no marker on the map. Please, place one to let us search photos!</string>
     <string name="geo_snippet">Geo Request\nLatitude: %1$.6f\nLongitude: %2$.6f</string>
@@ -32,4 +33,8 @@
         to the zone of better signal reception!</string>
     <string name="geo_location_permission_not_granted">Location permission is not granted. Showing default location.</string>
     <string name="marker_title">Coordinates</string>
+
+    <!--Gallery strings-->
+    <string name="no_camera_app">Camera applications are not available!</string>
+
 </resources>

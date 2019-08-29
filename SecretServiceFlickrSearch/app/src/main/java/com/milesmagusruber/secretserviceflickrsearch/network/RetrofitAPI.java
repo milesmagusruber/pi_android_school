@@ -1,6 +1,6 @@
 package com.milesmagusruber.secretserviceflickrsearch.network;
 
-import com.milesmagusruber.secretserviceflickrsearch.model.FlickrResponse;
+import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
