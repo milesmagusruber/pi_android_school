@@ -9,6 +9,11 @@
     <string name="flickr_secret">69ee187bd66fa34e</string>
     <string name="google_maps_key">your_key</string>
 
+    <!-- Titles -->
+    <string name="title_favorites">Favorites</string>
+    <string name="title_gallery">Gallery</string>
+    <string name="title_last_search_requests">Last Search Requests</string>
+
     <string name="logo_description">Image shows two secret agents listening to you and searching information about you using Flickr</string>
     <string name="turn_on_internet">Please, turn on the internet connection!</string>
     <string name="request_error">Error processing the request</string>

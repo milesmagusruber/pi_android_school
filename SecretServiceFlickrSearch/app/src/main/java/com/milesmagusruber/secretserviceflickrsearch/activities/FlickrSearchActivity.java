@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -57,8 +59,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
     //Declaring UI elements
     private Button buttonTextSearch;
     private Button buttonGeoSearch;
-    private Button buttonFavorites;
-    private Button buttonLastSearchRequests;
     private EditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
     private ProgressBar scrollProgressBar;
@@ -109,8 +109,6 @@ public class FlickrSearchActivity extends AppCompatActivity {
         //Initialising UI elements
         buttonTextSearch = (Button) findViewById(R.id.button_text_search);
         buttonGeoSearch = (Button) findViewById(R.id.button_geo_search);
-        buttonFavorites = (Button) findViewById(R.id.button_favorites);
-        buttonLastSearchRequests = (Button) findViewById(R.id.button_last_search_requests);
         editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
@@ -227,26 +225,42 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //Going to last search requests
-        buttonLastSearchRequests.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FlickrSearchActivity.this, LastSearchRequestsActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        //Going to favorites
-        buttonFavorites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(FlickrSearchActivity.this, FavoritesActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
+    //Creating main menu of our application
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    //Transitions between app activities via main menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Intent intent=null;
+        switch(id){
+            case R.id.activity_last_search_requests :
+                //going to Last Search Requests
+                intent = new Intent(this, LastSearchRequestsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.activity_favorites:
+                //going to Favorites
+                intent = new Intent(this, FavoritesActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.activity_gallery:
+                //going to gallery
+                intent = new Intent(this, GalleryActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    //Using this method to get geo coords from GoogleMapsSearchActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
         if (requestCode == GEO_SEARCH_REQUEST) {
@@ -284,6 +298,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         }
     }
 
+    //Use to show list of photos in our view
     private void showPhotos(final List<Photo> photos, final String searchRequest) {
 
 
@@ -315,6 +330,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
         rvFlickrResult.setVisibility(View.VISIBLE);
     }
 
+    //This method is used with swipe to remove photo list item from view
     private void removePhoto(int position) {
 
         photosAdapter.removePhoto(position);

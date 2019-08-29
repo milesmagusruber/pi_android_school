@@ -14,7 +14,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Last Search Requests"
+        android:text="@string/title_last_search_requests"
         android:textColor="@android:color/black"
         android:textSize="24sp"
         android:textStyle="bold"
