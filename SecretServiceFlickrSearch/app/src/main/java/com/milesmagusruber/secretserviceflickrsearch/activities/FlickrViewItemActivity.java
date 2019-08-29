@@ -30,12 +30,14 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
     private WebView webViewFlickrItem; //WebView representation
     private TextView textViewSearchRequestItem; //Search Request
-    private Button buttonLike; //Button
+    private Button buttonIsFavorite; //Button that checks if Flickr image is favorite
+    private Button buttonIsSaved; // Button that checks if Flickr image saved on device
     private DatabaseHelper db;
     private String searchRequest;
     private String title;
     private String webLink;
     private boolean isFavorite = false;
+    private boolean isSaved=false;
 
     //Controlling asyncTasks in this activity
     private AsyncTask<Void, Void, Integer> asyncTask;
@@ -47,7 +49,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         currentUser = CurrentUser.getInstance();
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
-        buttonLike = (Button) findViewById(R.id.button_like);
+        buttonIsFavorite = (Button) findViewById(R.id.button_is_favorite);
+        buttonIsSaved = (Button) findViewById(R.id.button_is_saved);
 
 
         //Search Request that was used to find image
@@ -61,7 +64,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected void onPreExecute() {
-                    buttonLike.setClickable(false);
+                    buttonIsFavorite.setClickable(false);
                 }
 
                 @Override
@@ -75,12 +78,12 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                 @Override
                 protected void onPostExecute(Integer a) {
-                    buttonLike.setClickable(true);
+                    buttonIsFavorite.setClickable(true);
                     if (favorite != null) {
-                        buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
+                        buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_favorite);
                         isFavorite = true;
                     } else {
-                        buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                        buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_not_favorite);
                         isFavorite = false;
                     }
                 }
@@ -108,7 +111,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
         //Adding to favorites or deleting from favorites
 
-        buttonLike.setOnClickListener(new View.OnClickListener() {
+        buttonIsFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (asyncTask.getStatus() != AsyncTask.Status.RUNNING) {
@@ -117,7 +120,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                         asyncTask = new AsyncTask<Void, Void, Integer>() {
                             @Override
                             protected void onPreExecute() {
-                                buttonLike.setClickable(false);
+                                buttonIsFavorite.setClickable(false);
                             }
 
                             @Override
@@ -130,8 +133,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                             @Override
                             protected void onPostExecute(Integer a) {
-                                buttonLike.setClickable(true);
-                                buttonLike.setBackgroundResource(R.drawable.ic_star_favorite);
+                                buttonIsFavorite.setClickable(true);
+                                buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_favorite);
                                 isFavorite = true;
                             }
                         };
@@ -143,7 +146,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                             @Override
                             protected void onPreExecute() {
-                                buttonLike.setClickable(false);
+                                buttonIsFavorite.setClickable(false);
                             }
 
                             @Override
@@ -156,8 +159,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                             @Override
                             protected void onPostExecute(Integer a) {
-                                buttonLike.setClickable(true);
-                                buttonLike.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                                buttonIsFavorite.setClickable(true);
+                                buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_not_favorite);
                                 isFavorite = false;
                             }
                         };
@@ -167,6 +170,22 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
             }
         });
+
+        //Button that saves Flickr image to the local device
+        buttonIsSaved.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isSaved){
+                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                    isSaved=true;
+                }else{
+                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_not_saved);
+                    isSaved=false;
+                }
+            }
+        });
+
+
     }
 
 }
