@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -55,7 +58,8 @@ public class GalleryActivity extends AppCompatActivity {
         //rvGallery = findViewById(R.id.rv_gallery);
         imageView = findViewById(R.id.image_view);
         //file helper
-        fileHelper=FileHelper.getInstance(this);
+        fileHelper=FileHelper.getInstance();
+        fileHelper.checkLogin();
         //permissions
         permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         //checkingGalleryPermissions
@@ -69,8 +73,12 @@ public class GalleryActivity extends AppCompatActivity {
     /*if we get result from camera go to uCrop activity
     * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode==REQUEST_IMAGE_CAPTURE){
+            Log.d("FILETT",Integer.toString(resultCode));
+        }
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //If we get photo from camera
+            Log.d("FILETT","Camera returns image");
             Uri uri = Uri.parse(currentPhotoPath);
             openCropActivity(uri, uri);
         } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
@@ -84,15 +92,18 @@ public class GalleryActivity extends AppCompatActivity {
     private void takeAPhoto() {
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            //File file = createImageFile(); // 1
-            File file = fileHelper.createUserPhotoFile();
+            File file = fileHelper.createUserPhotoFile(this);
+
             currentPhotoPath = "file:" + file.getAbsolutePath();
             Uri uri;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) // 2
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
             else
-                uri = Uri.fromFile(file); // 3
-            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // 4
+                uri = Uri.fromFile(file);
+            Log.d("FILETT",uri.toString());
+            pictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
         }catch (NullPointerException e){
             Toast.makeText(this,R.string.problem_with_filesystem,Toast.LENGTH_LONG).show();

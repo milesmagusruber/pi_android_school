@@ -1,11 +1,12 @@
 package com.milesmagusruber.secretserviceflickrsearch.fs;
 
+import android.content.Context;
 import java.io.File;
 
 public interface IFileHandler {
 
     //adds photo into private directory that was captured by user's camera
-    public File createUserPhotoFile();
+    public File createUserPhotoFile(Context context);
 
     //add FlickrPhoto
     //public void addFlickrPhoto();
