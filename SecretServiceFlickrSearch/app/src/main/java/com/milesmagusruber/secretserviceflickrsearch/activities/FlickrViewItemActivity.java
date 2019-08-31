@@ -1,9 +1,14 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.view.View;
 import android.webkit.URLUtil;
@@ -11,11 +16,16 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_TITLE;
@@ -23,6 +33,7 @@ import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSea
 
 public class FlickrViewItemActivity extends AppCompatActivity {
 
+    static final int REQUEST_STORAGE = 62;
     //Current user
     private CurrentUser currentUser;
     //Current Favorite
@@ -36,17 +47,26 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     private String searchRequest;
     private String title;
     private String webLink;
+    private String fileName;
     private boolean isFavorite = false;
-    private boolean isSaved=false;
+    private boolean isSaved = false;
 
     //Controlling asyncTasks in this activity
     private AsyncTask<Void, Void, Integer> asyncTask;
+
+
+    //Permissions
+    private String[] permissions;
+
+    //FileHelper
+    private FileHelper fileHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_view_item);
         currentUser = CurrentUser.getInstance();
+        fileHelper = FileHelper.getInstance();
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
         buttonIsFavorite = (Button) findViewById(R.id.button_is_favorite);
@@ -57,8 +77,21 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         searchRequest = getIntent().getStringExtra(EXTRA_SEARCH_REQUEST);
         webLink = getIntent().getStringExtra(EXTRA_WEBLINK);
         title = getIntent().getStringExtra(EXTRA_TITLE);
-        textViewSearchRequestItem.setText(searchRequest);
 
+        //get name of server file from weblink
+        getFileNameFromWebLink();
+
+        //checking permissions
+        permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        //checkingGalleryPermissions
+        if (checkStoragePermissions()) {
+            initializeSavingFlickrFiles();
+        } else {
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE);
+        }
+
+
+        textViewSearchRequestItem.setText(searchRequest);
         //finding image in favorites
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
@@ -171,21 +204,76 @@ public class FlickrViewItemActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    //getting filename for web url
+    private void getFileNameFromWebLink() {
+        fileName = webLink.substring(webLink.lastIndexOf('/') + 1, webLink.length());
+    }
+
+    private boolean checkStoragePermissions() {
+        boolean result = true;
+        for (String perm : permissions) {
+            result = result && (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED);
+        }
+        return result;
+    }
+
+    //If we have permissions for camera and storage camera button will work
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_STORAGE: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    initializeSavingFlickrFiles();
+
+                } else {
+                    Toast.makeText(this, "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void activateButtonIsSaved() {
+        buttonIsSaved.setVisibility(View.VISIBLE);
+        buttonIsSaved.setClickable(true);
+        //checking if we've already saved flickr file
+        isSaved = fileHelper.isFlickrPhotoSaved(fileName);
+        if (isSaved) {
+            buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+        }
+
         //Button that saves Flickr image to the local device
         buttonIsSaved.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isSaved){
+                if (!isSaved) {
                     buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
-                    isSaved=true;
-                }else{
+                    //loading image to file with glide
+                    Glide.with(FlickrViewItemActivity.this)
+                            .asBitmap()
+                            .load(webLink)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                    fileHelper.addFlickrPhoto(FlickrViewItemActivity.this, fileName, resource);
+                                }
+                            });
+                    isSaved = true;
+                } else {
                     buttonIsSaved.setBackgroundResource(R.drawable.ic_file_not_saved);
-                    isSaved=false;
+                    fileHelper.deleteFlickrPhoto(fileName);
+                    isSaved = false;
                 }
             }
         });
+    }
 
-
+    private void initializeSavingFlickrFiles() {
+        fileHelper = FileHelper.getInstance();
+        fileHelper.initializeUser(this);
+        activateButtonIsSaved();
     }
 
 }

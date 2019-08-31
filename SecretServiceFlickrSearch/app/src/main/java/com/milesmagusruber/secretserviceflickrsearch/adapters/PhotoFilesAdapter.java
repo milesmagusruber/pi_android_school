@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 
 import java.io.File;
@@ -71,8 +72,7 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
         File photoFile = photoFiles.get(position);
         // Set item views based on your views and data model
         holder.itemPhotoFileTitle.setText(photoFile.getName());
-        Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getPath());
-        holder.itemPhotoFileImage.setImageBitmap(bitmap);
+        Glide.with(holder.itemView.getContext()).load(photoFile).into(holder.itemPhotoFileImage);
         holder.bind(photoFile, listener);
     }
 

@@ -50,6 +50,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/ic_file_not_saved"
+        android:visibility="invisible"
+        android:clickable="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/button_is_favorite" />
 </androidx.constraintlayout.widget.ConstraintLayout>

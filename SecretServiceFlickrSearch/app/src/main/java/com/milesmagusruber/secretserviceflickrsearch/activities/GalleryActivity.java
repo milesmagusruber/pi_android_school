@@ -33,7 +33,7 @@ public class GalleryActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 30;
     static final int REQUEST_CAMERA_AND_STORAGE = 42;
-    public static final String EXTRA_GALLERY_ITEM=BuildConfig.APPLICATION_ID + ".extra.gallery.item";
+    public static final String EXTRA_GALLERY_ITEM = BuildConfig.APPLICATION_ID + ".extra.gallery.item";
 
     //Layout elements
     private Button buttonTakeAPhoto;
@@ -60,9 +60,6 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
         buttonTakeAPhoto = findViewById(R.id.button_take_a_photo);
         rvGallery = findViewById(R.id.rv_gallery);
-        //file helper
-        fileHelper=FileHelper.getInstance();
-        fileHelper.initializeUser(this);
 
         //Initialize itemTouchHelper
         itemTouchHelper = new ItemTouchHelper(
@@ -83,28 +80,26 @@ public class GalleryActivity extends AppCompatActivity {
                     }
                 });
 
-        //init recyclerview list
-        showPhotoFiles(fileHelper.getAllUserPhotos());
 
         //permissions
-        permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA};
         //checkingGalleryPermissions
-        if(checkGalleryPermissions()){
-            activateCameraButton();
-        }else{
+        if (checkGalleryPermissions()) {
+            initializeCameraAndStorageFunctionaly();
+        } else {
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_AND_STORAGE);
         }
     }
 
     /*if we get result from camera go to uCrop activity
-    * if we get result from uCrop activity show image in imageView*/
+     * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==REQUEST_IMAGE_CAPTURE){
-            Log.d("FILETT",Integer.toString(resultCode));
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            Log.d("FILETT", Integer.toString(resultCode));
         }
-        if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //If we get photo from camera
-            Log.d("FILETT","Camera returns image");
+            Log.d("FILETT", "Camera returns image");
             Uri uri = Uri.parse(currentPhotoPath);
             openCropActivity(uri, uri);
         } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
@@ -126,21 +121,21 @@ public class GalleryActivity extends AppCompatActivity {
                 uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
             else
                 uri = Uri.fromFile(file);
-            Log.d("FILETT",uri.toString());
+            Log.d("FILETT", uri.toString());
             pictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             pictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
-        }catch (NullPointerException e){
-            Toast.makeText(this,R.string.problem_with_filesystem,Toast.LENGTH_LONG).show();
+        } catch (NullPointerException e) {
+            Toast.makeText(this, R.string.problem_with_filesystem, Toast.LENGTH_LONG).show();
         }
     }
 
 
     //this method is used to process photo with UCrop library
     private void openCropActivity(Uri sourceUri, Uri destinationUri) {
-        int maxWidth=1600;
-        int maxHeight=1600;
+        int maxWidth = 1600;
+        int maxHeight = 1600;
         UCrop.of(sourceUri, destinationUri)
                 .withMaxResultSize(maxWidth, maxHeight)
                 .withAspectRatio(5f, 5f)
@@ -154,7 +149,7 @@ public class GalleryActivity extends AppCompatActivity {
             photoFilesAdapter.addNewPhotoFile(new File(imageUri.getPath()));
 
         } catch (Exception e) {
-            Toast.makeText(this,"Having problems with showing image",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Having problems with showing image", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -163,39 +158,39 @@ public class GalleryActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CAMERA_AND_STORAGE: {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                && grantResults[2]==PackageManager.PERMISSION_GRANTED) {
-                    activateCameraButton();
-                }else{
-                    Toast.makeText(this,"Having problems with permission requests!!",Toast.LENGTH_LONG).show();
+                        && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    initializeCameraAndStorageFunctionaly();
+                } else {
+                    Toast.makeText(this, "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
                 }
             }
         }
     }
 
     //checks gallery permissions
-    public boolean checkGalleryPermissions(){
+    private boolean checkGalleryPermissions() {
         boolean result = true;
-        for(String perm: permissions){
-            result = result && (ContextCompat.checkSelfPermission(this,perm) == PackageManager.PERMISSION_GRANTED);
+        for (String perm : permissions) {
+            result = result && (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED);
         }
         return result;
     }
 
     //activate camera button
-    public void activateCameraButton(){
+    private void activateCameraButton() {
         buttonTakeAPhoto.setClickable(true);
-        buttonTakeAPhoto.setOnClickListener(new View.OnClickListener(){
+        buttonTakeAPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 takeAPhoto();
             }
         });
     }
 
     //shows photos in recycler view
-    public void showPhotoFiles(ArrayList<File> photoFiles){
+    private void showPhotoFiles(ArrayList<File> photoFiles) {
         photoFilesAdapter = new PhotoFilesAdapter(photoFiles, new PhotoFilesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(File photoFile) {
@@ -220,12 +215,24 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     //removes file from recycler view
-    public void removePhotoFile(int position){
-        if(fileHelper.deletePhotoFile(photoFilesAdapter.getPhotoFileAtPosition(position))) {
+    private void removePhotoFile(int position) {
+        if (fileHelper.deletePhotoFile(photoFilesAdapter.getPhotoFileAtPosition(position))) {
             photoFilesAdapter.removePhotoFile(position);
-        }else{
-            Toast.makeText(this,R.string.file_not_removed,Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, R.string.file_not_removed, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void initializeCameraAndStorageFunctionaly() {
+        activateCameraButton();
+        //file helper
+        fileHelper = FileHelper.getInstance();
+        fileHelper.initializeUser(this);
+        //init recyclerview list
+        ArrayList<File> photoFiles = new ArrayList<File>();
+        photoFiles.addAll(fileHelper.getAllUserPhotos());
+        photoFiles.addAll(fileHelper.getAllFlickrPhotos());
+        showPhotoFiles(photoFiles);
     }
 
 

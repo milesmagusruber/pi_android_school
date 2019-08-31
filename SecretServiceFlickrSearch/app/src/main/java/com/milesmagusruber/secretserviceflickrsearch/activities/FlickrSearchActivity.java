@@ -118,6 +118,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
         photosPage = 1;//number of pages is 1
         photosEndReached = false;
 
+
+
         //Initialize itemTouchHelper
         itemTouchHelper = new ItemTouchHelper(
                 new ItemTouchHelper.SimpleCallback(0,

@@ -1,6 +1,7 @@
 package com.milesmagusruber.secretserviceflickrsearch.fs;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
@@ -8,6 +9,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -15,9 +17,9 @@ public class FileHelper implements IFileHandler {
 
 
     private final String USER_PHOTOS_FILE_PATH = "photos/"; //photos made by user
-    private final String FLICKR_PHOTOS_FILE_PATH="flickr_photos/"; //photos download from flickr
+    private final String FLICKR_PHOTOS_FILE_PATH = "flickr_photos/"; //photos download from flickr
 
-    public final String TAG_FILE_HELPER="FILE_HELPER";
+    public final String TAG_FILE_HELPER = "FILE_HELPER";
 
     private String login;
 
@@ -47,8 +49,8 @@ public class FileHelper implements IFileHandler {
         //File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), directoryName);
         if (!userPhotosDirectory.mkdirs()) {
             Log.e(TAG_FILE_HELPER, "User photos directory not created");
-        }else{
-            Log.e(TAG_FILE_HELPER,"User photos directory is created");
+        } else {
+            Log.e(TAG_FILE_HELPER, "User photos directory is created");
         }
 
         //Creating public directory where user saves photos from Flickr
@@ -56,8 +58,8 @@ public class FileHelper implements IFileHandler {
         //File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), directoryName);
         if (!flickrPhotosDirectory.mkdirs()) {
             Log.e(TAG_FILE_HELPER, "Flickr photos directory not created");
-        }else{
-            Log.e(TAG_FILE_HELPER,"Flickr photos directory is created");
+        } else {
+            Log.e(TAG_FILE_HELPER, "Flickr photos directory is created");
         }
 
     }
@@ -79,36 +81,69 @@ public class FileHelper implements IFileHandler {
         return file;
     }
 
+    @Override
+    public void addFlickrPhoto(Context context, String filename, Bitmap bitmap) {
+        FileOutputStream outputStream;
+        try {
+            File file = new File(flickrPhotosDirectory, filename);
+            outputStream = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            outputStream.close();
+        } catch (Exception error) {
+            error.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean deleteFlickrPhoto(String filename) {
+        return deletePhotoFile(new File(flickrPhotosDirectory, filename));
+    }
+
+    @Override
+    public boolean isFlickrPhotoSaved(String filename) {
+        try {
+            File file = new File(flickrPhotosDirectory, filename);
+
+            if (file.exists()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     //returns all user files from
     @Override
-    public ArrayList<File> getAllUserPhotos(){
+    public ArrayList<File> getAllUserPhotos() {
         ArrayList<File> userPhotos = new ArrayList<File>();
         try {
             for (File photo : userPhotosDirectory.listFiles()) {
                 userPhotos.add(photo);
             }
             return userPhotos;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
     @Override
-    public ArrayList<File> getAllFlickrPhotos(){
+    public ArrayList<File> getAllFlickrPhotos() {
         ArrayList<File> flickrPhotos = new ArrayList<File>();
         try {
             for (File photo : flickrPhotosDirectory.listFiles()) {
                 flickrPhotos.add(photo);
             }
             return flickrPhotos;
-        }catch (Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
     //deletes file from the device
     @Override
-    public boolean deletePhotoFile(File file){
+    public boolean deletePhotoFile(File file) {
         return file.delete();
     }
 

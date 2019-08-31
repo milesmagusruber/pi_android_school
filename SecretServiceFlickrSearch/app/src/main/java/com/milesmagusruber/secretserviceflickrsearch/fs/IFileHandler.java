@@ -1,6 +1,8 @@
 package com.milesmagusruber.secretserviceflickrsearch.fs;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -17,7 +19,13 @@ public interface IFileHandler {
 
 
     //add FlickrPhoto
-    //public void addFlickrPhoto();
+    public void addFlickrPhoto(Context context, String filename, Bitmap bitmap);
+
+    //delete FlickrPhoto
+    public boolean deleteFlickrPhoto(String filename);
+
+    //checks if Flick Photo saved
+    public boolean isFlickrPhotoSaved(String filename);
 
     //deletes any photo from device User or Flickr
     public boolean deletePhotoFile(File file);
