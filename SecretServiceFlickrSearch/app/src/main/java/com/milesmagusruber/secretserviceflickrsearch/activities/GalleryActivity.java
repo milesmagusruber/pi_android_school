@@ -4,27 +4,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
+import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotoFilesAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.yalantis.ucrop.UCrop;
 
@@ -35,11 +33,14 @@ public class GalleryActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 30;
     static final int REQUEST_CAMERA_AND_STORAGE = 42;
+    public static final String EXTRA_GALLERY_ITEM=BuildConfig.APPLICATION_ID + ".extra.gallery.item";
 
     //Layout elements
     private Button buttonTakeAPhoto;
     private RecyclerView rvGallery;
-    private TextView textView;
+
+
+    private ItemTouchHelper itemTouchHelper; //For touch swipes
 
     //Permissions
     private String[] permissions;
@@ -49,9 +50,8 @@ public class GalleryActivity extends AppCompatActivity {
     //PhotoPath
     private String currentPhotoPath = "";
 
-    //camera user file
-    private ArrayList<File> userPhotoFiles;
-
+    //photo files adapter
+    private PhotoFilesAdapter photoFilesAdapter;
 
 
     @Override
@@ -59,25 +59,33 @@ public class GalleryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         buttonTakeAPhoto = findViewById(R.id.button_take_a_photo);
-        //rvGallery = findViewById(R.id.rv_gallery);
-        textView = findViewById(R.id.text_view);
+        rvGallery = findViewById(R.id.rv_gallery);
         //file helper
         fileHelper=FileHelper.getInstance();
         fileHelper.initializeUser(this);
 
-        //init file list
-        String result="";
-        userPhotoFiles = fileHelper.getAllUserPhotos();
-        if(userPhotoFiles!=null){
-            StringBuilder str=new StringBuilder();
-            for(File photoFile: userPhotoFiles){
-                str.append(photoFile.getName()+"\n\n");
-            }
-            result=str.toString();
-        }else{
-            result="Something is wrong, list is null";
-        }
-        textView.setText(result);
+        //Initialize itemTouchHelper
+        itemTouchHelper = new ItemTouchHelper(
+                new ItemTouchHelper.SimpleCallback(0,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView,
+                                          RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(RecyclerView.ViewHolder viewHolder,
+                                         int direction) {
+                        int position = viewHolder.getAdapterPosition();
+                        removePhotoFile(position);
+                    }
+                });
+
+        //init recyclerview list
+        showPhotoFiles(fileHelper.getAllUserPhotos());
+
         //permissions
         permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         //checkingGalleryPermissions
@@ -142,7 +150,8 @@ public class GalleryActivity extends AppCompatActivity {
     //This method shows image in imageView
     private void showImage(Uri imageUri) {
         try {
-            textView.setText(imageUri.toString());
+            //textView.setText(imageUri.toString());
+            photoFilesAdapter.addNewPhotoFile(new File(imageUri.getPath()));
 
         } catch (Exception e) {
             Toast.makeText(this,"Having problems with showing image",Toast.LENGTH_LONG).show();
@@ -185,6 +194,39 @@ public class GalleryActivity extends AppCompatActivity {
         });
     }
 
+    //shows photos in recycler view
+    public void showPhotoFiles(ArrayList<File> photoFiles){
+        photoFilesAdapter = new PhotoFilesAdapter(photoFiles, new PhotoFilesAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(File photoFile) {
+                //go to GalleryViewItemActivity
+                Intent intent = new Intent(GalleryActivity.this, GalleryViewItemActivity.class);
+                intent.putExtra(EXTRA_GALLERY_ITEM, photoFile.getAbsolutePath());
+                startActivity(intent);
+            }
+
+        });
+        // Attach the adapter to the recyclerview to populate items
+        rvGallery.setAdapter(photoFilesAdapter);
+
+        // Set layout manager
+        rvGallery.setLayoutManager(new LinearLayoutManager(this));
+
+        // Add the functionality to swipe items in the
+        // recycler view to delete that item
+        itemTouchHelper.attachToRecyclerView(rvGallery);
+
+        rvGallery.setVisibility(View.VISIBLE);
+    }
+
+    //removes file from recycler view
+    public void removePhotoFile(int position){
+        if(fileHelper.deletePhotoFile(photoFilesAdapter.getPhotoFileAtPosition(position))) {
+            photoFilesAdapter.removePhotoFile(position);
+        }else{
+            Toast.makeText(this,R.string.file_not_removed,Toast.LENGTH_LONG).show();
+        }
+    }
 
 
 }

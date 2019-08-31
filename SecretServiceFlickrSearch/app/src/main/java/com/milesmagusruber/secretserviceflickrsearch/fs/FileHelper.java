@@ -106,5 +106,11 @@ public class FileHelper implements IFileHandler {
         }
     }
 
+    //deletes file from the device
+    @Override
+    public boolean deletePhotoFile(File file){
+        return file.delete();
+    }
+
 
 }

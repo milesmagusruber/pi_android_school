@@ -38,5 +38,7 @@
     <string name="take_a_photo">Take a photo</string>
     <string name="no_camera_app">Camera applications are not available!</string>
     <string name="problem_with_filesystem">Got some problems with filesystem</string>
+    <string name="file_not_removed">File is not removed!</string>
+    <string name="cd_photo_image">Some photo image</string>
 
 </resources>

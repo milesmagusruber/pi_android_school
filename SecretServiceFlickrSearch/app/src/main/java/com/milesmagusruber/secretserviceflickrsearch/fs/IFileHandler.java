@@ -15,11 +15,12 @@ public interface IFileHandler {
     //return a list of flickr photo files
     public ArrayList<File> getAllFlickrPhotos();
 
+
     //add FlickrPhoto
     //public void addFlickrPhoto();
 
     //deletes any photo from device User or Flickr
-    //public void deletePhoto();
+    public boolean deletePhotoFile(File file);
 
 
 }

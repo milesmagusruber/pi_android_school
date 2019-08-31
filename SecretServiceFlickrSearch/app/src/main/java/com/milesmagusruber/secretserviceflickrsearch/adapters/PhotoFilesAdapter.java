@@ -1,6 +1,8 @@
 package com.milesmagusruber.secretserviceflickrsearch.adapters;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.fs.model.PhotoFile;
 
-import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
 
 public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.ViewHolder> {
 
@@ -29,7 +31,7 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
             itemPhotoFileImage = (ImageView) itemView.findViewById(R.id.item_card_photo_file_image);
         }
 
-        public void bind(final PhotoFile photoFile, final PhotoFilesAdapter.OnItemClickListener listener) {
+        public void bind(final File photoFile, final PhotoFilesAdapter.OnItemClickListener listener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
                     listener.onItemClick(photoFile);
@@ -38,17 +40,17 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
         }
     }
 
-    private List<PhotoFile> photoFiles;
+    private ArrayList<File> photoFiles;
     private final PhotoFilesAdapter.OnItemClickListener listener;
 
     private String searchRequest;
     // Pass in the favorites array into the constructor
-    public PhotoFilesAdapter(List<PhotoFile> photoFiles, PhotoFilesAdapter.OnItemClickListener listener) {
+    public PhotoFilesAdapter(ArrayList<File> photoFiles, PhotoFilesAdapter.OnItemClickListener listener) {
         this.photoFiles = photoFiles;
         this.listener=listener;
     }
     public interface OnItemClickListener {
-        void onItemClick(PhotoFile photoFile);
+        void onItemClick(File photoFile);
     }
 
     @NonNull
@@ -66,10 +68,11 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull PhotoFilesAdapter.ViewHolder holder, int position) {
         // Get the data model based on position
-        PhotoFile photoFile = photoFiles.get(position);
+        File photoFile = photoFiles.get(position);
         // Set item views based on your views and data model
-        holder.itemPhotoFileTitle.setText(photoFile.getTitle());
-        holder.itemPhotoFileImage.setImageURI(photoFile.getFileURI());
+        holder.itemPhotoFileTitle.setText(photoFile.getName());
+        Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getPath());
+        holder.itemPhotoFileImage.setImageBitmap(bitmap);
         holder.bind(photoFile, listener);
     }
 
@@ -79,17 +82,18 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
     }
 
     //to get a photoFile at a given position
-    public PhotoFile getPhotoFileAtPosition (int position) {
+    public File getPhotoFileAtPosition (int position) {
         return photoFiles.get(position);
     }
 
     //this method is used to remove photoFile
-    public void removePhoto(int position) {
+    public void removePhotoFile(int position) {
         photoFiles.remove(position);
+        notifyItemRemoved(position);
     }
 
     //this method is user to add new photoFile
-    public void addNewPhoto(PhotoFile newPhotoFile){
+    public void addNewPhotoFile(File newPhotoFile){
         photoFiles.add(newPhotoFile);
         notifyDataSetChanged();
     }
