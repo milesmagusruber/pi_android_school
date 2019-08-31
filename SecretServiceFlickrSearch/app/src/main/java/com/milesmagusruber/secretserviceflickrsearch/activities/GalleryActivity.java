@@ -20,7 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
@@ -29,8 +29,7 @@ import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
+import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -40,7 +39,7 @@ public class GalleryActivity extends AppCompatActivity {
     //Layout elements
     private Button buttonTakeAPhoto;
     private RecyclerView rvGallery;
-    private ImageView imageView;
+    private TextView textView;
 
     //Permissions
     private String[] permissions;
@@ -50,16 +49,35 @@ public class GalleryActivity extends AppCompatActivity {
     //PhotoPath
     private String currentPhotoPath = "";
 
+    //camera user file
+    private ArrayList<File> userPhotoFiles;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         buttonTakeAPhoto = findViewById(R.id.button_take_a_photo);
         //rvGallery = findViewById(R.id.rv_gallery);
-        imageView = findViewById(R.id.image_view);
+        textView = findViewById(R.id.text_view);
         //file helper
         fileHelper=FileHelper.getInstance();
-        fileHelper.checkLogin();
+        fileHelper.initializeUser(this);
+
+        //init file list
+        String result="";
+        userPhotoFiles = fileHelper.getAllUserPhotos();
+        if(userPhotoFiles!=null){
+            StringBuilder str=new StringBuilder();
+            for(File photoFile: userPhotoFiles){
+                str.append(photoFile.getName()+"\n\n");
+            }
+            result=str.toString();
+        }else{
+            result="Something is wrong, list is null";
+        }
+        textView.setText(result);
         //permissions
         permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
         //checkingGalleryPermissions
@@ -124,10 +142,7 @@ public class GalleryActivity extends AppCompatActivity {
     //This method shows image in imageView
     private void showImage(Uri imageUri) {
         try {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            Bitmap bitmap = BitmapFactory.decodeFile(imageUri.getPath(), options);
-            imageView.setImageBitmap(bitmap);
+            textView.setText(imageUri.toString());
 
         } catch (Exception e) {
             Toast.makeText(this,"Having problems with showing image",Toast.LENGTH_LONG).show();
