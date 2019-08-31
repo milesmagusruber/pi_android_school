@@ -1,11 +1,13 @@
 package com.milesmagusruber.secretserviceflickrsearch.fs;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileHelper implements IFileHandler {
 
@@ -18,8 +20,8 @@ public class FileHelper implements IFileHandler {
 
     //private constructor
     private FileHelper(Context context) {
-        String directoryName=FILE_PATH + CurrentUser.getInstance().getUser().getLogin();
-        userPrivateRepository=context.getDir(directoryName,Context.MODE_PRIVATE);
+        //String directoryName=FILE_PATH + CurrentUser.getInstance().getUser().getLogin();
+        //userPrivateRepository=context.getDir(directoryName,Context.MODE_PRIVATE);
     }
 
     //Singleton implementation
@@ -31,5 +33,21 @@ public class FileHelper implements IFileHandler {
         return instance;
     }
 
-
+    @Override
+    public File createUserPhotoFile() {
+        String imageFileName = "userphoto_" + System.currentTimeMillis();
+        File storageDir = new File(
+                Environment.getExternalStoragePublicDirectory(
+                        Environment.DIRECTORY_DCIM
+                ), "Camera"
+        );
+        try {
+            File file = File.createTempFile(
+                    imageFileName, ".jpg", storageDir
+            );
+            return file;
+        }catch (IOException e){
+            return null;
+        }
+    }
 }

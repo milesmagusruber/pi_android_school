@@ -2,6 +2,7 @@ package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
+import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -30,14 +32,20 @@ import java.io.IOException;
 public class GalleryActivity extends AppCompatActivity {
 
     static final int REQUEST_IMAGE_CAPTURE = 30;
-    static final int REQUEST_EXTERNAL_STORAGE = 42;
+    static final int REQUEST_CAMERA_AND_STORAGE = 42;
 
     //Layout elements
     private Button buttonTakeAPhoto;
     private RecyclerView rvGallery;
     private ImageView imageView;
 
+    //Permissions
+    private String[] permissions;
 
+    //FileHelper
+    private FileHelper fileHelper;
+    //PhotoPath
+    private String currentPhotoPath = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,23 +54,20 @@ public class GalleryActivity extends AppCompatActivity {
         buttonTakeAPhoto = findViewById(R.id.button_take_a_photo);
         //rvGallery = findViewById(R.id.rv_gallery);
         imageView = findViewById(R.id.image_view);
-
-        ActivityCompat.requestPermissions(this, new String[]
-                {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA}, REQUEST_EXTERNAL_STORAGE);
-        buttonTakeAPhoto.setClickable(false);
-
-        buttonTakeAPhoto.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-
-                openCamera();
-
-            }
-        });
-
+        //file helper
+        fileHelper=FileHelper.getInstance(this);
+        //permissions
+        permissions=new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.CAMERA};
+        //checkingGalleryPermissions
+        if(checkGalleryPermissions()){
+            activateCameraButton();
+        }else{
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_AND_STORAGE);
+        }
     }
 
-    //...
+    /*if we get result from camera go to uCrop activity
+    * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             //If we get photo from camera
@@ -75,38 +80,27 @@ public class GalleryActivity extends AppCompatActivity {
         }
     }
 
-    private void openCamera() {
+    //This method is used to take a photo via camera
+    private void takeAPhoto() {
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File file = getImageFile(); // 1
-        Uri uri;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) // 2
-            uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
-        else
-            uri = Uri.fromFile(file); // 3
-        pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // 4
-        startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
-    }
-
-    String currentPhotoPath = "";
-
-    private File getImageFile(){
-        String imageFileName = "JPEG_" + System.currentTimeMillis() + "_";
-        File storageDir = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_DCIM
-                ), "Camera"
-        );
         try {
-            File file = File.createTempFile(
-                    imageFileName, ".jpg", storageDir
-            );
+            //File file = createImageFile(); // 1
+            File file = fileHelper.createUserPhotoFile();
             currentPhotoPath = "file:" + file.getAbsolutePath();
-            return file;
-        }catch (IOException e){
-            return null;
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) // 2
+                uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
+            else
+                uri = Uri.fromFile(file); // 3
+            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri); // 4
+            startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
+        }catch (NullPointerException e){
+            Toast.makeText(this,R.string.problem_with_filesystem,Toast.LENGTH_LONG).show();
         }
     }
 
+
+    //this method is used to process photo with UCrop library
     private void openCropActivity(Uri sourceUri, Uri destinationUri) {
         int maxWidth=1600;
         int maxHeight=1600;
@@ -116,6 +110,7 @@ public class GalleryActivity extends AppCompatActivity {
                 .start(this);
     }
 
+    //This method shows image in imageView
     private void showImage(Uri imageUri) {
         try {
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -128,19 +123,42 @@ public class GalleryActivity extends AppCompatActivity {
         }
     }
 
+    //If we have permissions for camera and storage camera button will work
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_EXTERNAL_STORAGE: {
+            case REQUEST_CAMERA_AND_STORAGE: {
                 if(grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 && grantResults[2]==PackageManager.PERMISSION_GRANTED) {
-                    buttonTakeAPhoto.setClickable(true);
+                    activateCameraButton();
                 }else{
                     Toast.makeText(this,"Having problems with permission requests!!",Toast.LENGTH_LONG).show();
                 }
             }
         }
     }
+
+    //checks gallery permissions
+    public boolean checkGalleryPermissions(){
+        boolean result = true;
+        for(String perm: permissions){
+            result = result && (ContextCompat.checkSelfPermission(this,perm) == PackageManager.PERMISSION_GRANTED);
+        }
+        return result;
+    }
+
+    //activate camera button
+    public void activateCameraButton(){
+        buttonTakeAPhoto.setClickable(true);
+        buttonTakeAPhoto.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                takeAPhoto();
+            }
+        });
+    }
+
+
 
 }
