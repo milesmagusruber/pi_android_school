@@ -16,11 +16,13 @@ import android.location.LocationManager;
 import android.location.LocationProvider;
 
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -29,10 +31,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 
 import java.util.Locale;
 
+import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_LATITUDE;
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_LONGITUDE;
 
@@ -79,6 +84,9 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
         mapFragment.getMapAsync(this);
     }
 
+
+
+
     @Override
     public void onMapReady(GoogleMap gMap) {
         googleMap = gMap;
@@ -120,25 +128,26 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     private void getLocation(){
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             googleMap.setMyLocationEnabled(true);
-                try{
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                Location location=null;
-                location=locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                if(location==null){
-                    location=locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                    if(location==null){
-                        location=locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                    }
-                }
-                if(location!=null){
-                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    setMarker(latLng);
-                }else{
-                    setDefaultLocation(R.string.geo_location_problem);
-                }
-                }catch (Exception e){
-                    setDefaultLocation(R.string.geo_location_problem);
-                }
+            // Get last known recent location using Google Play Services SDK
+            FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
+            locationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            if (location != null) {
+                                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                setMarker(latLng);
+                            }else{
+                                setDefaultLocation(R.string.geo_location_problem);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            setDefaultLocation(R.string.geo_location_problem);
+                        }
+                    });
 
         } else {
             ActivityCompat.requestPermissions(this, new String[]
@@ -160,8 +169,8 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     }
 
     public void setDefaultLocation(int stringResId){
-        Toast.makeText(this, stringResId, Toast.LENGTH_LONG);
         setMarker(new LatLng(DEFAULT_LATITUDE,DEFAULT_LONGITUDE));
+        Toast.makeText(this, stringResId, Toast.LENGTH_LONG).show();
     }
 
 }

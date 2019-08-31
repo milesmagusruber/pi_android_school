@@ -15,7 +15,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -26,9 +25,7 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 public class GalleryActivity extends AppCompatActivity {
 
@@ -127,7 +124,7 @@ public class GalleryActivity extends AppCompatActivity {
             imageView.setImageBitmap(bitmap);
 
         } catch (Exception e) {
-            Toast.makeText(this,"ТЫ ПИДОР!!!",Toast.LENGTH_LONG);
+            Toast.makeText(this,"Having problems with showing image",Toast.LENGTH_LONG).show();
         }
     }
 
@@ -140,7 +137,7 @@ public class GalleryActivity extends AppCompatActivity {
                 && grantResults[2]==PackageManager.PERMISSION_GRANTED) {
                     buttonTakeAPhoto.setClickable(true);
                 }else{
-                    Toast.makeText(this,"ТЫ ГНИЛОЙ ПИДОР!!!",Toast.LENGTH_LONG);
+                    Toast.makeText(this,"Having problems with permission requests!!",Toast.LENGTH_LONG).show();
                 }
             }
         }

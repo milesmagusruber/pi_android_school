@@ -7,7 +7,7 @@
     <!-- Add your API keys here -->
     <string name="flickr_api_key">b2af56de6a8c4738adaca9de6d7b1d9d</string>
     <string name="flickr_secret">69ee187bd66fa34e</string>
-    <string name="google_maps_key"></string>
+    <string name="google_maps_key">your_key</string>
 
     <!-- Titles -->
     <string name="title_favorites">Favorites</string>
