@@ -1,24 +1,19 @@
 # PI-school 2019
 
-## Week 6
- - Internal & external storage & camera 
+## Week 7
+ - Resources and styling
  
-   - https://developer.android.com/training/data-storage/files.html
-   - https://developer.android.com/training/camera
-   - https://github.com/Yalantis/uCrop
+   - https://developer.android.com/guide/topics/ui/look-and-feel?hl=en - всю секцию
+   - https://guides.codepath.com/android/Styles-and-Themes
+   - https://www.vogella.com/tutorials/AndroidStylesThemes/article.html
+   - https://developer.android.com/guide/topics/resources/available-resources - вся секция
+   - https://material.io/
+   - https://material.io/design/color/dark-theme.html#properties
+   - https://material.io/tools/build-a-material-theme/#how-to-using-android-studio
  - Задания и codelabs
-    - https://codelabs.developers.google.com/codelabs/android-storage-permissions/#0
-    - Работаем на основе приложения с прошлой недели
-      - Необходимо завести отдельную папку, в которой ваше приложение будет сохранять фотографии сделанные пользователем
-      - Создаём новый экран Галерея
-      - Когда пользователь попадет на этот экран, нужно отображать фотографии в списке подобно тому как мы это делаем на остальных экранах (фото из папки выше)
-      - В галерее должна быть кнопка, тап по которой запускает камеру
-      - После того как пользователь сделает фотографию, запускаем обработку фото с помощью библиотеки uCrop
-      - После обработки сохраняем полученный результат в папку и отображаем как новый элемент списка
-      - На экране просмотра фото из Flickr добавляем возможность сохранить фото на устройстве
-      - Фотографии сделанные из приложения с камеры пользователя сохранять в приватное хранилище вашего приложения, фотографии из фликера загружать в какую то папку в общем хранилище устройства
-      - Свайп фотографии в списке физически удаляет фото с устройства
-
-
-Дополнительные материалы:
-- https://medium.com/@babul.sust.cse/understanding-of-android-storage-system-17b6134f873
+    - https://material.io/collections/developer-tutorials/#android-java все в секции java
+    - https://codelabs.developers.google.com/codelabs/android-training-drawables-styles-and-themes/index.html?index=..%2F..android-training#0
+    - Работаем на основане приложения с прошлой недели:
+      - Стилизуем приложение в Material стиле
+      - Если у нас есть View, которое переиспользуется на разных экранах - пишем единый стиль для такой View (например для стандартной кнопки)
+      - Внедряем light и dark темы, добавляем возможность переключения между ними
