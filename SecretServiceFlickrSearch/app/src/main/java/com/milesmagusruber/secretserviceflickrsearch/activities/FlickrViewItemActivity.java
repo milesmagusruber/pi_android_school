@@ -66,7 +66,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flickr_view_item);
         currentUser = CurrentUser.getInstance();
-        fileHelper = FileHelper.getInstance();
+
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
         buttonIsFavorite = (Button) findViewById(R.id.button_is_favorite);
@@ -257,7 +257,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
                                 public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                    fileHelper.addFlickrPhoto(FlickrViewItemActivity.this, fileName, resource);
+                                    fileHelper.addFlickrPhoto(fileName, resource);
                                 }
                             });
                     isSaved = true;
@@ -271,8 +271,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     }
 
     private void initializeSavingFlickrFiles() {
-        fileHelper = FileHelper.getInstance();
-        fileHelper.initializeUser(this);
+        currentUser.setFileHelper(this);
+        fileHelper = currentUser.getFileHelper();
         activateButtonIsSaved();
     }
 

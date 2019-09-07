@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public interface IFileHandler {
 
     //adds photo into private directory that will be captured by user's camera
-    public File createUserPhotoFile(Context context);
+    public File createUserPhotoFile();
 
     //returns a list of camera user photo files
     public ArrayList<File> getAllUserPhotos();
@@ -19,7 +19,7 @@ public interface IFileHandler {
 
 
     //add FlickrPhoto
-    public void addFlickrPhoto(Context context, String filename, Bitmap bitmap);
+    public void addFlickrPhoto(String filename, Bitmap bitmap);
 
     //delete FlickrPhoto
     public boolean deleteFlickrPhoto(String filename);

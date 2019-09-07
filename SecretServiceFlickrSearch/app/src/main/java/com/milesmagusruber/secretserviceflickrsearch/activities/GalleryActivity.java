@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotoFilesAdapter;
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.yalantis.ucrop.UCrop;
 
@@ -113,7 +114,7 @@ public class GalleryActivity extends AppCompatActivity {
     private void takeAPhoto() {
         Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
-            File file = fileHelper.createUserPhotoFile(this);
+            File file = fileHelper.createUserPhotoFile();
 
             currentPhotoPath = "file:" + file.getAbsolutePath();
             Uri uri;
@@ -145,7 +146,6 @@ public class GalleryActivity extends AppCompatActivity {
     //This method shows image in imageView
     private void showImage(Uri imageUri) {
         try {
-            //textView.setText(imageUri.toString());
             photoFilesAdapter.addNewPhotoFile(new File(imageUri.getPath()));
 
         } catch (Exception e) {
@@ -226,9 +226,8 @@ public class GalleryActivity extends AppCompatActivity {
     private void initializeCameraAndStorageFunctionaly() {
         activateCameraButton();
         //file helper
-        fileHelper = FileHelper.getInstance();
-        fileHelper.initializeUser(this);
-        //init recyclerview list
+        CurrentUser.getInstance().setFileHelper(this);
+        fileHelper = CurrentUser.getInstance().getFileHelper();
         ArrayList<File> photoFiles = new ArrayList<File>();
         photoFiles.addAll(fileHelper.getAllUserPhotos());
         photoFiles.addAll(fileHelper.getAllFlickrPhotos());

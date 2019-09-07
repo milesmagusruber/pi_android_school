@@ -20,9 +20,7 @@ public class FileHelper implements IFileHandler {
     private final String USER_PHOTOS_FILE_PATH = "photos/"; //photos made by user
     private final String FLICKR_PHOTOS_FILE_PATH = "flickr_photos/"; //photos download from flickr
 
-    public final String TAG_FILE_HELPER = "FILE_HELPER";
-
-    private String login;
+    private final String TAG_FILE_HELPER = "FILE_HELPER";
 
     private String userPhotosDirectoryName; //user photos directory name
     private String flickrPhotosDirectoryName; //flickr photos directory name
@@ -31,58 +29,40 @@ public class FileHelper implements IFileHandler {
     private File userPhotosDirectory; //user photos directory
     private File flickrPhotosDirectory; // flickr photos directory
 
-    //FileHelper instance
-    private static FileHelper instance;
-
-    //private constructor
-    private FileHelper() {
-    }
-
-    //method is used to initialize new user and create folders for him
-    public void initializeUser(Context context) {
-        login = CurrentUser.getInstance().getUser().getLogin();
+    //public constructor
+    public FileHelper(String login, Context context) {
         userPhotosDirectoryName = USER_PHOTOS_FILE_PATH + login;
         flickrPhotosDirectoryName = FLICKR_PHOTOS_FILE_PATH + login;
 
         //Creating private directory where user saves his camera photos
 
         userPhotosDirectory = new File(context.getFilesDir(), userPhotosDirectoryName);
-        //File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), directoryName);
+
         if (!userPhotosDirectory.mkdirs()) {
-            Log.e(TAG_FILE_HELPER, "User photos directory not created");
+            Log.d(TAG_FILE_HELPER, "User photos directory not created");
         } else {
-            Log.e(TAG_FILE_HELPER, "User photos directory is created");
+            Log.d(TAG_FILE_HELPER, "User photos directory is created");
         }
 
         //Creating public directory where user saves photos from Flickr
         flickrPhotosDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), flickrPhotosDirectoryName);
-        //File storageDir = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), directoryName);
         if (!flickrPhotosDirectory.mkdirs()) {
-            Log.e(TAG_FILE_HELPER, "Flickr photos directory not created");
+            Log.d(TAG_FILE_HELPER, "Flickr photos directory not created");
         } else {
-            Log.e(TAG_FILE_HELPER, "Flickr photos directory is created");
+            Log.d(TAG_FILE_HELPER, "Flickr photos directory is created");
         }
-
-    }
-
-    //Singleton implementation
-    public static synchronized FileHelper getInstance() {
-
-        if (instance == null) {
-            instance = new FileHelper();
-        }
-        return instance;
     }
 
     //creates new photofile from user camera
     @Override
-    public File createUserPhotoFile(Context context) {
+    public File createUserPhotoFile() {
         String imageFileName = "userphoto_" + System.currentTimeMillis() + ".jpg";
         return new File(userPhotosDirectory, imageFileName);
     }
 
+    //downloads flickr photo to the device
     @Override
-    public void addFlickrPhoto(Context context, String filename, Bitmap bitmap) {
+    public void addFlickrPhoto(String filename, Bitmap bitmap) {
         FileOutputStream outputStream;
         try {
             File file = new File(flickrPhotosDirectory, filename);
@@ -94,11 +74,13 @@ public class FileHelper implements IFileHandler {
         }
     }
 
+    //deletes FlickrPhoto
     @Override
     public boolean deleteFlickrPhoto(String filename) {
         return deletePhotoFile(new File(flickrPhotosDirectory, filename));
     }
 
+    //returns true if Flickr Photo is already saved on the device
     @Override
     public boolean isFlickrPhotoSaved(String filename) {
         try {
@@ -109,12 +91,13 @@ public class FileHelper implements IFileHandler {
         }
     }
 
-    //returns all user files from
+    //returns all user files from private directory
     @Override
     public ArrayList<File> getAllUserPhotos() {
         return new ArrayList<>(Arrays.asList(userPhotosDirectory.listFiles()));
     }
 
+    //return all public flickr photos
     @Override
     public ArrayList<File> getAllFlickrPhotos() {
         return new ArrayList<>(Arrays.asList(flickrPhotosDirectory.listFiles()));
