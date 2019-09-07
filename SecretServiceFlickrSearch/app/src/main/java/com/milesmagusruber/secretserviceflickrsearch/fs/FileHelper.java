@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FileHelper implements IFileHandler {
 
@@ -77,8 +78,7 @@ public class FileHelper implements IFileHandler {
     @Override
     public File createUserPhotoFile(Context context) {
         String imageFileName = "userphoto_" + System.currentTimeMillis() + ".jpg";
-        File file = new File(userPhotosDirectory, imageFileName);
-        return file;
+        return new File(userPhotosDirectory, imageFileName);
     }
 
     @Override
@@ -103,12 +103,7 @@ public class FileHelper implements IFileHandler {
     public boolean isFlickrPhotoSaved(String filename) {
         try {
             File file = new File(flickrPhotosDirectory, filename);
-
-            if (file.exists()) {
-                return true;
-            } else {
-                return false;
-            }
+            return file.exists();
         } catch (Exception e) {
             return false;
         }
@@ -117,28 +112,12 @@ public class FileHelper implements IFileHandler {
     //returns all user files from
     @Override
     public ArrayList<File> getAllUserPhotos() {
-        ArrayList<File> userPhotos = new ArrayList<File>();
-        try {
-            for (File photo : userPhotosDirectory.listFiles()) {
-                userPhotos.add(photo);
-            }
-            return userPhotos;
-        } catch (Exception e) {
-            return null;
-        }
+        return new ArrayList<>(Arrays.asList(userPhotosDirectory.listFiles()));
     }
 
     @Override
     public ArrayList<File> getAllFlickrPhotos() {
-        ArrayList<File> flickrPhotos = new ArrayList<File>();
-        try {
-            for (File photo : flickrPhotosDirectory.listFiles()) {
-                flickrPhotos.add(photo);
-            }
-            return flickrPhotos;
-        } catch (Exception e) {
-            return null;
-        }
+        return new ArrayList<>(Arrays.asList(flickrPhotosDirectory.listFiles()));
     }
 
     //deletes file from the device
