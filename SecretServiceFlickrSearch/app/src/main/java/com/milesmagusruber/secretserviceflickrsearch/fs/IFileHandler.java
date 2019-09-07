@@ -19,7 +19,7 @@ public interface IFileHandler {
 
 
     //add FlickrPhoto
-    public void addFlickrPhoto(String filename, Bitmap bitmap);
+    public Boolean addFlickrPhoto(String filename, Bitmap bitmap);
 
     //delete FlickrPhoto
     public boolean deleteFlickrPhoto(String filename);

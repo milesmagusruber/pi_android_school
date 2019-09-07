@@ -25,6 +25,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
 import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
@@ -51,8 +52,11 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     private boolean isFavorite = false;
     private boolean isSaved = false;
 
-    //Controlling asyncTasks in this activity
-    private AsyncTask<Void, Void, Integer> asyncTask;
+    //Controlling database asyncTasks in this activity
+    private AsyncTask<Void, Void, Integer> dbAsyncTask;
+
+    //dbAsyncTask to work with files
+    private AsyncTask<Void,Void,Boolean> fileWorkAsyncTask;
 
 
     //Permissions
@@ -93,8 +97,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
         textViewSearchRequestItem.setText(searchRequest);
         //finding image in favorites
-        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
-            asyncTask = new AsyncTask<Void, Void, Integer>() {
+        if ((dbAsyncTask == null) || (dbAsyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            dbAsyncTask = new AsyncTask<Void, Void, Integer>() {
                 @Override
                 protected void onPreExecute() {
                     buttonIsFavorite.setClickable(false);
@@ -121,7 +125,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                     }
                 }
             };
-            asyncTask.execute();
+            dbAsyncTask.execute();
         }
 
 
@@ -147,10 +151,10 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         buttonIsFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (asyncTask.getStatus() != AsyncTask.Status.RUNNING) {
+                if (dbAsyncTask.getStatus() != AsyncTask.Status.RUNNING) {
                     if (!isFavorite) {
 
-                        asyncTask = new AsyncTask<Void, Void, Integer>() {
+                        dbAsyncTask = new AsyncTask<Void, Void, Integer>() {
                             @Override
                             protected void onPreExecute() {
                                 buttonIsFavorite.setClickable(false);
@@ -171,11 +175,11 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                                 isFavorite = true;
                             }
                         };
-                        asyncTask.execute();
+                        dbAsyncTask.execute();
 
                     } else {
 
-                        asyncTask = new AsyncTask<Void, Void, Integer>() {
+                        dbAsyncTask = new AsyncTask<Void, Void, Integer>() {
 
                             @Override
                             protected void onPreExecute() {
@@ -197,7 +201,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                                 isFavorite = false;
                             }
                         };
-                        asyncTask.execute();
+                        dbAsyncTask.execute();
                     }
                 }
 
@@ -237,11 +241,32 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
     private void activateButtonIsSaved() {
         buttonIsSaved.setVisibility(View.VISIBLE);
-        buttonIsSaved.setClickable(true);
+        
         //checking if we've already saved flickr file
-        isSaved = fileHelper.isFlickrPhotoSaved(fileName);
-        if (isSaved) {
-            buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+        if ((fileWorkAsyncTask == null) || (fileWorkAsyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            fileWorkAsyncTask = new AsyncTask<Void, Void, Boolean>() {
+
+                @Override
+                protected void onPreExecute(){
+                    buttonIsSaved.setClickable(false);
+                }
+
+                @Override
+                protected Boolean doInBackground(Void... voids) {
+                    Boolean result = fileHelper.isFlickrPhotoSaved(fileName);
+                    return result;
+                }
+
+                @Override
+                protected void onPostExecute(Boolean result) {
+                    if (result) {
+                        buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                    }
+                    isSaved=result;
+                    buttonIsSaved.setClickable(true);
+                }
+            };
+            fileWorkAsyncTask.execute();
         }
 
         //Button that saves Flickr image to the local device
@@ -256,15 +281,61 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             .load(webLink)
                             .into(new SimpleTarget<Bitmap>() {
                                 @Override
-                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                                    fileHelper.addFlickrPhoto(fileName, resource);
+                                public void onResourceReady(final Bitmap resource, Transition<? super Bitmap> transition) {
+                                    //adding Flickr photo to the device
+                                    if ((fileWorkAsyncTask == null) || (fileWorkAsyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+                                        fileWorkAsyncTask = new AsyncTask<Void, Void, Boolean>() {
+
+                                            @Override
+                                            protected void onPreExecute(){
+                                                buttonIsSaved.setClickable(false);
+                                            }
+
+                                            @Override
+                                            protected Boolean doInBackground(Void... voids) {
+                                                return fileHelper.addFlickrPhoto(fileName,resource);
+                                            }
+
+                                            @Override
+                                            protected void onPostExecute(Boolean result) {
+                                                if (result) {
+                                                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                                                }
+                                                buttonIsSaved.setClickable(true);
+                                                isSaved=result;
+                                            }
+                                        };
+                                        fileWorkAsyncTask.execute();
+                                    }
+
                                 }
                             });
-                    isSaved = true;
                 } else {
-                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_not_saved);
-                    fileHelper.deleteFlickrPhoto(fileName);
-                    isSaved = false;
+                    //deleting FlickrPhoto from device
+                    if ((fileWorkAsyncTask == null) || (fileWorkAsyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+                        fileWorkAsyncTask = new AsyncTask<Void, Void, Boolean>() {
+
+                            @Override
+                            protected void onPreExecute(){
+                                buttonIsSaved.setClickable(false);
+                            }
+
+                            @Override
+                            protected Boolean doInBackground(Void... voids) {
+                                return fileHelper.deleteFlickrPhoto(fileName);
+                            }
+
+                            @Override
+                            protected void onPostExecute(Boolean result) {
+                                if (result) {
+                                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_not_saved);
+                                    isSaved=false;
+                                }
+                                buttonIsSaved.setClickable(true);
+                            }
+                        };
+                        fileWorkAsyncTask.execute();
+                    }
                 }
             }
         });

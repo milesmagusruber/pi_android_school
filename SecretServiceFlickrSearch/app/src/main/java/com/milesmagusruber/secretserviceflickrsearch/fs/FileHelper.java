@@ -62,15 +62,17 @@ public class FileHelper implements IFileHandler {
 
     //downloads flickr photo to the device
     @Override
-    public void addFlickrPhoto(String filename, Bitmap bitmap) {
+    public Boolean addFlickrPhoto(String filename, Bitmap bitmap) {
         FileOutputStream outputStream;
         try {
             File file = new File(flickrPhotosDirectory, filename);
             outputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
             outputStream.close();
+            return true;
         } catch (Exception error) {
-            error.printStackTrace();
+            //error.printStackTrace();
+            return false;
         }
     }
 
