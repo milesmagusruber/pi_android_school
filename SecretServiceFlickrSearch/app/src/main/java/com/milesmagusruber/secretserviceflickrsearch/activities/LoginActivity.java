@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -16,7 +17,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button buttonEnter;
+    private MaterialButton buttonEnter;
     private EditText editTextlogin;
     private String login;
     DatabaseHelper db;
@@ -27,10 +28,10 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        setTheme(R.style.AppTheme);
+        setTheme(R.style.Theme_SSFS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        buttonEnter = (Button) findViewById(R.id.button_enter);
+        buttonEnter = findViewById(R.id.button_enter);
         editTextlogin = (EditText) findViewById(R.id.edittext_login);
 
         //Going to main flickr search functionality

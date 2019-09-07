@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotoFilesAdapter;
@@ -38,7 +39,7 @@ public class GalleryActivity extends AppCompatActivity {
     public static final String EXTRA_GALLERY_ITEM = BuildConfig.APPLICATION_ID + ".extra.gallery.item";
 
     //Layout elements
-    private Button buttonTakeAPhoto;
+    private MaterialButton buttonTakeAPhoto;
     private RecyclerView rvGallery;
 
 
@@ -96,6 +97,7 @@ public class GalleryActivity extends AppCompatActivity {
     /*if we get result from camera go to uCrop activity
      * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             Log.d("FILETT", Integer.toString(resultCode));
         }

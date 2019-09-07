@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".activity.MapsActivity" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_geo_result"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

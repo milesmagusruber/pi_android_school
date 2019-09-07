@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview_item_favorite"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,7 +24,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_favorite_search_request"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -40,7 +39,7 @@
             app:layout_constraintStart_toEndOf="@+id/item_card_favorite_image"
             app:layout_constraintTop_toBottomOf="@+id/item_card_favorite_button_remove" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_favorite_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,16 +57,15 @@
             app:layout_constraintTop_toBottomOf="@+id/item_card_favorite_search_request"
             app:layout_constraintVertical_bias="0.19999999" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/item_card_favorite_button_remove"
-            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="@drawable/ic_delete"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_favorite_header_search"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -84,4 +82,4 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

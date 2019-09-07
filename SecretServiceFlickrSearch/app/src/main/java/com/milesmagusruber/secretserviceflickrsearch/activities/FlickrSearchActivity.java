@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +23,7 @@ import android.widget.Toast;
 import java.util.List;
 import java.util.Locale;
 
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
@@ -57,8 +57,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private String lastSearchRequest;
 
     //Declaring UI elements
-    private Button buttonTextSearch;
-    private Button buttonGeoSearch;
+    private MaterialButton buttonTextSearch;
+    private MaterialButton buttonGeoSearch;
     private EditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
     private ProgressBar scrollProgressBar;
@@ -107,8 +107,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
         geoResult=false;
 
         //Initialising UI elements
-        buttonTextSearch = (Button) findViewById(R.id.button_text_search);
-        buttonGeoSearch = (Button) findViewById(R.id.button_geo_search);
+        buttonTextSearch = findViewById(R.id.button_text_search);
+        buttonGeoSearch = findViewById(R.id.button_geo_search);
         editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
@@ -265,6 +265,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     //Using this method to get geo coords from GoogleMapsSearchActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+        super.onActivityResult(requestCode,resultCode,intent);
         if (requestCode == GEO_SEARCH_REQUEST) {
             if (resultCode == RESULT_OK) {
                 if (intent != null) {

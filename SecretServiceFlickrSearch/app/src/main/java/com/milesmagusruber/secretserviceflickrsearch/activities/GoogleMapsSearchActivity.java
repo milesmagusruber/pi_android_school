@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 
 import java.util.Locale;
@@ -49,7 +50,7 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
 
 
     //Button that returns result coordinates
-    private Button buttonGeoSearch;
+    private MaterialButton buttonGeoSearch;
 
 
     @Override

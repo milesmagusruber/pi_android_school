@@ -10,9 +10,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.FavoritesAdapter;
@@ -38,7 +38,7 @@ public class FavoritesActivity extends AppCompatActivity {
     private ArrayList<Favorite> favorites;
     private RecyclerView rvFavorites;
     private EditText editTextFavoritesFilter;
-    private Button buttonFavoritesFilter;
+    private MaterialButton buttonFavoritesFilter;
     private DatabaseHelper db;
     private FavoritesAdapter adapter;
     private ItemTouchHelper helper;
@@ -53,7 +53,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
         editTextFavoritesFilter = (EditText) findViewById(R.id.edittext_favorites_filter);
 
-        buttonFavoritesFilter = (Button) findViewById(R.id.button_favorites_filter);
+        buttonFavoritesFilter = (MaterialButton) findViewById(R.id.button_favorites_filter);
 
         // Add the functionality to swipe items in the
         // recycler view to delete that item

@@ -14,13 +14,13 @@ import android.view.View;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -42,8 +42,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
     private WebView webViewFlickrItem; //WebView representation
     private TextView textViewSearchRequestItem; //Search Request
-    private Button buttonIsFavorite; //Button that checks if Flickr image is favorite
-    private Button buttonIsSaved; // Button that checks if Flickr image saved on device
+    private MaterialButton buttonIsFavorite; //Button that checks if Flickr image is favorite
+    private MaterialButton buttonIsSaved; // Button that checks if Flickr image saved on device
     private DatabaseHelper db;
     private String searchRequest;
     private String title;
@@ -73,8 +73,8 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
         textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
-        buttonIsFavorite = (Button) findViewById(R.id.button_is_favorite);
-        buttonIsSaved = (Button) findViewById(R.id.button_is_saved);
+        buttonIsFavorite = findViewById(R.id.button_is_favorite);
+        buttonIsSaved = findViewById(R.id.button_is_saved);
 
 
         //Search Request that was used to find image
@@ -241,7 +241,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
     private void activateButtonIsSaved() {
         buttonIsSaved.setVisibility(View.VISIBLE);
-        
+
         //checking if we've already saved flickr file
         if ((fileWorkAsyncTask == null) || (fileWorkAsyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             fileWorkAsyncTask = new AsyncTask<Void, Void, Boolean>() {

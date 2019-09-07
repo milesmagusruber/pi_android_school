@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
@@ -24,7 +25,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         public TextView itemFavoriteSearchRequest;
         public ImageView itemFavoriteImage;
         public TextView itemFavoriteTitle;
-        public Button itemFavoriteButtonRemove;
+        public MaterialButton itemFavoriteButtonRemove;
         public TextView itemFavoriteHeaderSearch;
 
 
@@ -34,7 +35,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             itemFavoriteSearchRequest = (TextView) itemView.findViewById(R.id.item_card_favorite_search_request);
             itemFavoriteTitle = (TextView) itemView.findViewById(R.id.item_card_favorite_title);
             itemFavoriteImage = (ImageView) itemView.findViewById(R.id.item_card_favorite_image);
-            itemFavoriteButtonRemove = (Button) itemView.findViewById(R.id.item_card_favorite_button_remove);
+            itemFavoriteButtonRemove = itemView.findViewById(R.id.item_card_favorite_button_remove);
             itemFavoriteHeaderSearch = (TextView) itemView.findViewById(R.id.item_card_favorite_header_search);
 
         }

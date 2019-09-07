@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".activities.FavoritesActivity">
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/favorites_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -30,15 +30,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="@+id/button_last_search_requests"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/favorites_label" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button_favorites_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
