@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.SSFS.CardView"
     android:id="@+id/cardview_item_favorite"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -31,6 +32,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:textAppearance="@style/TextAppearance.SSFS.CardTextType1"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="italic"
@@ -41,6 +43,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_favorite_title"
+            android:textAppearance="@style/TextAppearance.SSFS.CardTextType2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -59,7 +62,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/item_card_favorite_button_remove"
-            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            style="@style/Widget.SSFS.IconButton"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
@@ -74,6 +77,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_favorite_header_search"
+            android:textAppearance="@style/TextAppearance.SSFS.CardCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

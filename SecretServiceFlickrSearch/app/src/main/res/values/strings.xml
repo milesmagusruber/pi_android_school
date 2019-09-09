@@ -43,5 +43,6 @@
     <string name="login_hint">Enter your login</string>
     <string name="button_enter">Enter</string>
     <string name="edittext_favorites_filter">Enter filter</string>
+    <string name="button_filter">Filter</string>
 
 </resources>

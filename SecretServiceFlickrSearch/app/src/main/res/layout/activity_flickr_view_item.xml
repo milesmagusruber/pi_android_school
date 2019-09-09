@@ -18,6 +18,7 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/search_request_item"
+        android:textAppearance="@style/TextAppearance.SSFS.Heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -40,7 +41,7 @@
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:iconSize="40dp"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/Widget.SSFS.IconButton"
         app:iconTint="@android:color/holo_orange_light"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -52,7 +53,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginBottom="8dp"
-        style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+        style="@style/Widget.SSFS.IconButton"
         app:icon="@drawable/ic_file_not_saved"
         app:iconGravity="textStart"
         app:iconPadding="0dp"

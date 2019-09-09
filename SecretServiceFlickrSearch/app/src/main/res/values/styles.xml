@@ -22,50 +22,67 @@
         <item name="colorPrimaryDark">@android:color/black</item>
     </style>
 
-    <!--Input Text Layout Style-->
+    <!--Input Text Layout Style ###-->
     <style name="Widget.SSFS.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-
+        <item name="hintTextAppearance">@style/TextAppearance.SSFS.TextInputLayout.HintText</item>
     </style>
 
-    <!--Button Style-->
+
+    <!--Button Style ### -->
     <style name="Widget.SSFS.Button" parent="Widget.MaterialComponents.Button">
 
     </style>
 
-    <!--Icon Button Style-->
+    <!--Icon Button Style ###-->
     <style name="Widget.SSFS.IconButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
 
     </style>
 
-    <!--Card style-->
+    <!--Card style ###-->
     <style name="Widget.SSFS.CardView" parent="Widget.MaterialComponents.CardView">
 
     </style>
 
-    <!--Headline of Activity Text-->
+    <!--Card Search Request style ###-->
+    <style name="Widget.SSFS.CardView.SearchRequest" parent="Widget.MaterialComponents.CardView">
+
+    </style>
+
+    <!--ProgressBar style ###-->
+    <style name="Widget.SSFS.ProgressBar" parent="Widget.AppCompat.ProgressBar">
+
+    </style>
+
+    <!--Headline of Activity Text ###-->
     <style name="TextAppearance.SSFS.Heading" parent="TextAppearance.MaterialComponents.Headline1">
 
     </style>
 
-    <!--Card caption text-->
+    <!--Card caption text ###-->
     <style name="TextAppearance.SSFS.CardCaption" parent="TextAppearance.MaterialComponents.Headline2">
 
     </style>
 
-    <!--Card text type1-->
+    <!--Card text type1 ###-->
     <style name="TextAppearance.SSFS.CardTextType1" parent="TextAppearance.MaterialComponents.Body1">
 
     </style>
 
-    <!--Card text type2-->
+    <!--Card text type2 ###-->
     <style name="TextAppearance.SSFS.CardTextType2" parent="TextAppearance.MaterialComponents.Body1">
 
     </style>
 
-    <!--Hint Text for TextInputLayout-->
+    <!--Hint Text for TextInputLayout ###-->
     <style name="TextAppearance.SSFS.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle1">
 
     </style>
+
+    <!--Error Text Style ###-->
+    <style name="TextAppearance.SSFS.ErrorText" parent="TextAppearance.MaterialComponents.Headline4">
+
+    </style>
+
 
 
 </resources>

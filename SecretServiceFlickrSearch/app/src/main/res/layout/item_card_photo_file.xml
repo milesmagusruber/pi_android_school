@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/Widget.SSFS.CardView"
     android:id="@+id/cardview_item_photo_file"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,6 +28,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_photo_file_title"
+            android:textAppearance="@style/TextAppearance.SSFS.CardTextType1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
