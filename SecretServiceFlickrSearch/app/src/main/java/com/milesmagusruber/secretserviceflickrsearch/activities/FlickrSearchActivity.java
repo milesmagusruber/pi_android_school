@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
@@ -59,7 +59,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     //Declaring UI elements
     private MaterialButton buttonTextSearch;
     private MaterialButton buttonGeoSearch;
-    private EditText editTextFlickrSearch;
+    private TextInputEditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
     private ProgressBar scrollProgressBar;
     private TextView textViewFlickrError;
@@ -109,10 +109,10 @@ public class FlickrSearchActivity extends AppCompatActivity {
         //Initialising UI elements
         buttonTextSearch = findViewById(R.id.button_text_search);
         buttonGeoSearch = findViewById(R.id.button_geo_search);
-        editTextFlickrSearch = (EditText) findViewById(R.id.edittext_flickr_search);
+        editTextFlickrSearch = findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
-        textViewFlickrError = (TextView) findViewById(R.id.flickr_error);
+        textViewFlickrError = findViewById(R.id.flickr_error);
         scrollProgressBar = (ProgressBar) findViewById(R.id.scroll_progressbar);
         isLoading = false;
         photosPage = 1;//number of pages is 1

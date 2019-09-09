@@ -6,23 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".activities.FlickrSearchActivity">
 
-    <EditText
-        android:id="@+id/edittext_flickr_search"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edittext_flickr_search_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:ems="10"
+        android:layout_margin="4dp"
         android:hint="@string/edittext_flickr_search"
-        android:inputType="textPersonName"
-        android:text=""
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edittext_flickr_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_text_search"
@@ -37,7 +38,7 @@
         app:layout_constraintEnd_toStartOf="@+id/button_geo_search"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_flickr_search" />
+        app:layout_constraintTop_toBottomOf="@+id/edittext_flickr_search_layout" />
 
     <ProgressBar
         android:id="@+id/download_progressbar"

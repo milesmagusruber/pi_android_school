@@ -6,17 +6,43 @@
     android:layout_height="match_parent"
     tools:context=".activities.LoginActivity">
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/edittext_login_layout"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:hint="@string/login_hint"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.40">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edittext_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:inputType="textPersonName"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Enter"
+        android:text="@string/button_enter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_login" />
+        app:layout_constraintTop_toBottomOf="@+id/edittext_login_layout" />
 
-    <EditText
+    <!--<EditText
         android:id="@+id/edittext_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,11 +53,13 @@
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:ems="10"
-        android:hint="Enter your login"
+        android:hint="@string/login_hint"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.40" />
+        app:layout_constraintVertical_bias="0.40" />-->
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

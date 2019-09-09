@@ -40,5 +40,8 @@
     <string name="problem_with_filesystem">Got some problems with filesystem</string>
     <string name="file_not_removed">File is not removed!</string>
     <string name="cd_photo_image">Some photo image</string>
+    <string name="login_hint">Enter your login</string>
+    <string name="button_enter">Enter</string>
+    <string name="edittext_favorites_filter">Enter filter</string>
 
 </resources>

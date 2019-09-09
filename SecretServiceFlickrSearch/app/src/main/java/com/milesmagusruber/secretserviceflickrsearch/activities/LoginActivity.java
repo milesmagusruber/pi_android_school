@@ -6,10 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
@@ -18,7 +17,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 public class LoginActivity extends AppCompatActivity {
 
     private MaterialButton buttonEnter;
-    private EditText editTextlogin;
+    private TextInputEditText editTextlogin;
     private String login;
     DatabaseHelper db;
 
@@ -32,7 +31,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         buttonEnter = findViewById(R.id.button_enter);
-        editTextlogin = (EditText) findViewById(R.id.edittext_login);
+        editTextlogin = findViewById(R.id.edittext_login);
 
         //Going to main flickr search functionality
         buttonEnter.setOnClickListener(new View.OnClickListener() {
