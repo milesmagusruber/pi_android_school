@@ -18,7 +18,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.ViewHolder> {
-    public static final int HEADER_BACKGROUND_COLOR=0xFFFF4444;
+
     public static final int FAVORITE_BACKGROUND_COLOR=0xFFFFFFFF;
     public class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -119,7 +119,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             });
 
             viewHolder.bind(favorite, clickListener);
-            viewHolder.itemView.setBackgroundColor(FAVORITE_BACKGROUND_COLOR);
+            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
         }else{
 
             viewHolder.itemFavoriteHeaderSearch.setVisibility(View.VISIBLE);
@@ -134,7 +134,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
                 }
             });
-            viewHolder.itemView.setBackgroundColor(HEADER_BACKGROUND_COLOR); // set lightred color
+            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary)); // set lightred color
         }
     }
 

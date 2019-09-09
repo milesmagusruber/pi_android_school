@@ -71,7 +71,7 @@
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="40dp"
-            app:iconTint="@android:color/holo_red_light"
+            app:iconTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -81,7 +81,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:textStyle="bold|italic"
             android:visibility="invisible"
