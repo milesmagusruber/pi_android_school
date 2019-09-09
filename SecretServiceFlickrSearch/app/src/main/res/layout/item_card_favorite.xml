@@ -59,9 +59,16 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/item_card_favorite_button_remove"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:background="@drawable/ic_delete"
+            android:layout_gravity="center"
+            app:elevation="0dp"
+            app:icon="@drawable/ic_delete"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="40dp"
+            app:iconTint="@android:color/holo_red_light"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

@@ -117,10 +117,10 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                 protected void onPostExecute(Integer a) {
                     buttonIsFavorite.setClickable(true);
                     if (favorite != null) {
-                        buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_favorite);
+                        buttonIsFavorite.setIcon(getResources().getDrawable(R.drawable.ic_star_favorite));
                         isFavorite = true;
                     } else {
-                        buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                        buttonIsFavorite.setIcon(getResources().getDrawable(R.drawable.ic_star_not_favorite));
                         isFavorite = false;
                     }
                 }
@@ -171,7 +171,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             @Override
                             protected void onPostExecute(Integer a) {
                                 buttonIsFavorite.setClickable(true);
-                                buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_favorite);
+                                buttonIsFavorite.setIcon(getResources().getDrawable(R.drawable.ic_star_favorite));
                                 isFavorite = true;
                             }
                         };
@@ -197,7 +197,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             @Override
                             protected void onPostExecute(Integer a) {
                                 buttonIsFavorite.setClickable(true);
-                                buttonIsFavorite.setBackgroundResource(R.drawable.ic_star_not_favorite);
+                                buttonIsFavorite.setIcon(getResources().getDrawable(R.drawable.ic_star_not_favorite));
                                 isFavorite = false;
                             }
                         };
@@ -260,7 +260,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(Boolean result) {
                     if (result) {
-                        buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                        buttonIsSaved.setIcon(getResources().getDrawable(R.drawable.ic_file_saved));
                     }
                     isSaved=result;
                     buttonIsSaved.setClickable(true);
@@ -274,7 +274,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (!isSaved) {
-                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                    buttonIsSaved.setIcon(getResources().getDrawable(R.drawable.ic_file_saved));
                     //loading image to file with glide
                     Glide.with(FlickrViewItemActivity.this)
                             .asBitmap()
@@ -299,7 +299,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                                             @Override
                                             protected void onPostExecute(Boolean result) {
                                                 if (result) {
-                                                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_saved);
+                                                    buttonIsSaved.setIcon(getResources().getDrawable(R.drawable.ic_file_saved));
                                                 }
                                                 buttonIsSaved.setClickable(true);
                                                 isSaved=result;
@@ -328,7 +328,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                             @Override
                             protected void onPostExecute(Boolean result) {
                                 if (result) {
-                                    buttonIsSaved.setBackgroundResource(R.drawable.ic_file_not_saved);
+                                    buttonIsSaved.setIcon(getResources().getDrawable(R.drawable.ic_file_not_saved));
                                     isSaved=false;
                                 }
                                 buttonIsSaved.setClickable(true);
