@@ -15,11 +15,12 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_search_request_value"
+            android:textAppearance="@style/TextAppearance.SSFS.CardCaption"
+            android:textColor="@color/colorElement"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:textAppearance="@style/TextAppearance.SSFS.CardCaption" />
+            android:gravity="center" />
 
     </LinearLayout>
 

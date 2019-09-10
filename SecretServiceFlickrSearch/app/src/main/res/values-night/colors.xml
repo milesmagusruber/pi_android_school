@@ -7,6 +7,6 @@
     <color name="colorSurface">#303030</color>
     <color name="colorError">#dd6666</color>
     <color name="colorText">#FFFFFF</color>
-    <color name="colorTextPrimary">#000000</color>
+    <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorElement">#FFFFFF</color>
 </resources>
