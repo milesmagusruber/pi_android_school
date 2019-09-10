@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
@@ -119,7 +120,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             });
 
             viewHolder.bind(favorite, clickListener);
-            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorBackground));
+            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorSurface));
         }else{
 
             viewHolder.itemFavoriteHeaderSearch.setVisibility(View.VISIBLE);
@@ -134,7 +135,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
 
                 }
             });
-            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary)); // set lightred color
+            viewHolder.itemView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
         }
     }
 

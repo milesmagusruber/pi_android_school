@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/Widget.SSFS.CardView"
     android:id="@+id/cardview_item_photo"
@@ -34,9 +35,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="16dp"
             android:textAppearance="@style/TextAppearance.SSFS.CardTextType1"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="italic"
             app:layout_constraintBottom_toTopOf="@+id/item_card_photo_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -51,9 +49,6 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

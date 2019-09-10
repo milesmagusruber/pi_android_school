@@ -28,7 +28,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_card_photo_file_title"
-            android:textAppearance="@style/TextAppearance.SSFS.CardTextType1"
+            android:textAppearance="@style/TextAppearance.SSFS.CardTextType2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -36,9 +36,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

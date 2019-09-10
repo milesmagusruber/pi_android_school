@@ -19,10 +19,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.SSFS.CardCaption"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:textStyle="bold|italic" />
+            android:textAppearance="@style/TextAppearance.SSFS.CardCaption" />
 
     </LinearLayout>
 

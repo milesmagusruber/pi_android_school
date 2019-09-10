@@ -3,8 +3,8 @@
     <color name="colorPrimary">#0055CC</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#AF0097</color>
-    <color name="colorBackground">#353535</color>
-    <color name="colorSurface">#505050</color>
+    <color name="colorBackground">#202020</color>
+    <color name="colorSurface">#303030</color>
     <color name="colorError">#dd6666</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorTextPrimary">#000000</color>
