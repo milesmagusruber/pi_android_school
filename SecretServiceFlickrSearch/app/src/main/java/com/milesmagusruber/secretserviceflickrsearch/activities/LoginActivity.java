@@ -1,10 +1,14 @@
 package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
@@ -28,6 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         setTheme(R.style.Theme_SSFS);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         buttonEnter = findViewById(R.id.button_enter);
@@ -55,6 +60,42 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume(){
+        //setting day or night themes
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dark_theme",false)){
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        super.onResume();
+    }
+
+    //Creating login menu of our application
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.login_menu, menu);
+        return true;
+    }
+
+    //Using just for Settings menu
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id){
+            case R.id.activity_settings :
+                //going to Settings
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    //AsyncTask for logging process
     private class LoginTask extends AsyncTask<Void, Void, Integer> {
 
         @Override
