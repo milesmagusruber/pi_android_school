@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.milesmagusruber.secretserviceflickrsearch">
-    <!-- Permissions to work with Flickr via Internet -->
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,18 +16,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity" />
         </activity>
-        <activity android:name=".activities.GalleryViewItemActivity" />
+        <activity
+            android:name=".activities.GalleryViewItemActivity"
+            android:theme="@style/Theme.SSFS.NoActionBar"/>
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <activity android:name=".activities.GalleryActivity" />
+        <activity
+            android:name=".activities.GalleryActivity"
+            android:label="@string/title_gallery"/>
         <activity android:name=".activities.GoogleMapsSearchActivity" />
 
         <activity
             android:name=".activities.LoginActivity"
+            android:label="@string/title_authorization"
             android:theme="@style/Theme.SSFS.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,8 +41,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.LastSearchRequestsActivity" />
-        <activity android:name=".activities.FavoritesActivity" />
+        <activity
+            android:name=".activities.LastSearchRequestsActivity"
+            android:label="@string/title_last_search_requests"/>
+
+        <activity
+            android:name=".activities.FavoritesActivity"
+            android:label="@string/title_favorites"/>
+
         <activity
             android:name=".activities.FlickrViewItemActivity"
             android:label="@string/title_activity_flickr_view_item"
@@ -49,6 +60,7 @@
         </activity>
         <activity
             android:name=".activities.FlickrSearchActivity"
+            android:label="@string/title_flickr_search"
             android:screenOrientation="portrait" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -63,12 +75,12 @@
                 android:resource="@xml/file_paths" />
         </provider>
     </application>
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- Permission to use geolocation services -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Permissions to work with photos and save them on the device -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

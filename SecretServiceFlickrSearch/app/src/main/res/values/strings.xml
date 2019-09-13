@@ -13,6 +13,8 @@
     <string name="title_favorites">Favorites</string>
     <string name="title_gallery">Gallery</string>
     <string name="title_last_search_requests">Last Search Requests</string>
+    <string name="title_flickr_search">Flickr Search</string>
+    <string name="title_authorization">Authorization</string>
 
     <string name="logo_description">Image shows two secret agents listening to you and searching information about you using Flickr</string>
     <string name="turn_on_internet">Please, turn on the internet connection!</string>
