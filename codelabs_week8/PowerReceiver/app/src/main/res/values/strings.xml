@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">PowerReceiver</string>
+    <string name="send_custom_broadcast">Send Custom Broadcast</string>
+    <string name="broadcast_unknown">unknown intent action</string>
+    <string name="broadcast_power_connected">Power connected!</string>
+    <string name="broadcast_power_disconnected">Power disconnected!</string>
+    <string name="broadcast_headset_plugged">Headset plugged!</string>
+    <string name="broadcast_headset_unplugged">Headset unplugged!</string>
+    <string name="broadcast_custom">Custom Broadcast Received\nSquare of the random number is: %1$d</string>
+</resources>
