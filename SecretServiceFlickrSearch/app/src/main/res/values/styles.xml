@@ -29,7 +29,7 @@
     </style>
 
     <!--Input Text Layout Style -->
-    <style name="Widget.SSFS.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="Widget.SSFS.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="hintTextAppearance">@style/TextAppearance.SSFS.TextInputLayout.HintText</item>
         <item name="boxStrokeColor">@color/colorPrimary</item>
         <item name="hintTextColor">@color/colorText</item>
@@ -100,7 +100,7 @@
 
     <!--Hint Text for TextInputLayout -->
     <style name="TextAppearance.SSFS.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle1">
-
+        <item name="android:textSize">@dimen/subtitle_font_size</item>
     </style>
 
     <!--Error Text Style -->

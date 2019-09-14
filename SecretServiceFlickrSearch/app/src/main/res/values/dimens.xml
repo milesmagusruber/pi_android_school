@@ -6,6 +6,7 @@
     <dimen name="progress_bar_dimen">100dp</dimen>
     <dimen name="progress_bar_margin">50dp</dimen>
     <dimen name="header_font_size">24sp</dimen>
+    <dimen name="subtitle_font_size">12sp</dimen>
     <dimen name="body_font_size">16sp</dimen>
     <dimen name="error_font_size">18sp</dimen>
     <dimen name="icon_size">40dp</dimen>
