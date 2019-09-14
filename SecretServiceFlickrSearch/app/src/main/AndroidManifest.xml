@@ -28,7 +28,10 @@
         <activity
             android:name=".activities.GalleryActivity"
             android:label="@string/title_gallery"/>
-        <activity android:name=".activities.GoogleMapsSearchActivity" />
+
+        <activity
+            android:name=".activities.GoogleMapsSearchActivity"
+            android:theme="@style/Theme.SSFS.NoActionBar"/>
 
         <activity
             android:name=".activities.LoginActivity"

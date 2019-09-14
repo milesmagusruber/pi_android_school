@@ -71,7 +71,6 @@ public class FileHelper implements IFileHandler {
             outputStream.close();
             return true;
         } catch (Exception error) {
-            //error.printStackTrace();
             return false;
         }
     }
@@ -96,13 +95,24 @@ public class FileHelper implements IFileHandler {
     //returns all user files from private directory
     @Override
     public ArrayList<File> getAllUserPhotos() {
-        return new ArrayList<>(Arrays.asList(userPhotosDirectory.listFiles()));
+        ArrayList<File> photosList = new ArrayList<>();
+        File[] photos = userPhotosDirectory.listFiles();
+        if (photos != null) {
+            photosList.addAll(Arrays.asList(photos));
+        }
+        return photosList;
+
     }
 
     //return all public flickr photos
     @Override
     public ArrayList<File> getAllFlickrPhotos() {
-        return new ArrayList<>(Arrays.asList(flickrPhotosDirectory.listFiles()));
+        ArrayList<File> photosList = new ArrayList<>();
+        File[] photos = flickrPhotosDirectory.listFiles();
+        if (photos != null) {
+            photosList.addAll(Arrays.asList(photos));
+        }
+        return photosList;
     }
 
     //deletes file from the device
