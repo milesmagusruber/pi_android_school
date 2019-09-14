@@ -2,6 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.milesmagusruber.secretserviceflickrsearch">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SSFS">
+        <activity android:name=".activities.MainActivity"></activity>
         <activity
             android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings">
@@ -18,21 +29,17 @@
         </activity>
         <activity
             android:name=".activities.GalleryViewItemActivity"
-            android:theme="@style/Theme.SSFS.NoActionBar"/>
-
+            android:theme="@style/Theme.SSFS.NoActionBar" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".activities.GalleryActivity"
-            android:label="@string/title_gallery"/>
-
+            android:label="@string/title_gallery" />
         <activity
             android:name=".activities.GoogleMapsSearchActivity"
-            android:theme="@style/Theme.SSFS.NoActionBar"/>
-
+            android:theme="@style/Theme.SSFS.NoActionBar" />
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/title_authorization"
@@ -43,15 +50,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activities.LastSearchRequestsActivity"
-            android:label="@string/title_last_search_requests"/>
-
+            android:label="@string/title_last_search_requests" />
         <activity
             android:name=".activities.FavoritesActivity"
-            android:label="@string/title_favorites"/>
-
+            android:label="@string/title_favorites" />
         <activity
             android:name=".activities.FlickrViewItemActivity"
             android:label="@string/title_activity_flickr_view_item"
@@ -65,9 +69,11 @@
             android:name=".activities.FlickrSearchActivity"
             android:label="@string/title_flickr_search"
             android:screenOrientation="portrait" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.milesmagusruber.secretserviceflickrsearch.fileprovider"
@@ -79,11 +85,5 @@
         </provider>
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>
