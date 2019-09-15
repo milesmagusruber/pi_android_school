@@ -42,16 +42,17 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         //setting requested orientation for smartphone or wide screen device (such as tablet)
+        if(findViewById(R.id.fragment_container_master)!=null){
+            twoPaneMode=true;
+        }
         if(twoPaneMode){
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }else{
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
-
-        setContentView(R.layout.activity_main);
-
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(toolbar);
@@ -138,7 +139,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        if(!twoPaneMode) {
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        }else{
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).commit();
+            try {
+                Fragment fragmentSecond = (Fragment) TestFragment1.class.newInstance();
+                fragmentManager.beginTransaction().replace(R.id.fragment_container_detail,fragmentSecond).commit();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
