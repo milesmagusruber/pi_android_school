@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,7 +30,7 @@ public class LastSearchRequestsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_last_search_requests);
+        setContentView(R.layout.fragment_last_search_requests);
         currentUser = CurrentUser.getInstance();
         rvSearchRequests = (RecyclerView) findViewById(R.id.rv_search_requests);
         searchRequestsTask = new SearchRequestsTask();

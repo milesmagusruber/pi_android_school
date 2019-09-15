@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -12,7 +12,6 @@ import android.location.Location;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,8 +31,8 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import java.util.Locale;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_LATITUDE;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_LONGITUDE;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_LATITUDE;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_LONGITUDE;
 
 public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -56,7 +55,7 @@ public class GoogleMapsSearchActivity extends FragmentActivity implements OnMapR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_google_maps_search);
+        setContentView(R.layout.fragment_google_maps_search);
         buttonGeoSearch = findViewById(R.id.button_geo_result);
         buttonGeoSearch.setOnClickListener(new View.OnClickListener() {
             @Override

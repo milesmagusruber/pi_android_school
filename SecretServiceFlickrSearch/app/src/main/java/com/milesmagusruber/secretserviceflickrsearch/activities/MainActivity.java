@@ -19,8 +19,6 @@ import com.google.android.material.navigation.NavigationView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment1;
-import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment2;
-import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment3;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -122,10 +120,10 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = TestFragment1.class;
                 break;
             case R.id.nav_geo_search_fragment:
-                fragmentClass = TestFragment2.class;
+                fragmentClass = TestFragment1.class;
                 break;
             case R.id.nav_last_search_requests_fragment:
-                fragmentClass = TestFragment3.class;
+                fragmentClass = TestFragment1.class;
                 break;
             default:
                 fragmentClass = TestFragment1.class;

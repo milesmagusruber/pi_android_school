@@ -18,48 +18,48 @@
         </activity>
 
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".fragments.SettingsActivity"
             android:label="@string/title_settings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.milesmagusruber.secretserviceflickrsearch.activities.LoginActivity" />
+                android:value="com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity" />
         </activity>
         <activity
-            android:name=".activities.GalleryViewItemActivity"
+            android:name=".fragments.GalleryViewItemActivity"
             android:theme="@style/Theme.SSFS.NoActionBar" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
-            android:name=".activities.GalleryActivity"
+            android:name=".fragments.GalleryActivity"
             android:label="@string/title_gallery" />
         <activity
-            android:name=".activities.GoogleMapsSearchActivity"
+            android:name=".fragments.GoogleMapsSearchActivity"
             android:theme="@style/Theme.SSFS.NoActionBar" />
         <activity
-            android:name=".activities.LoginActivity"
+            android:name=".fragments.LoginActivity"
             android:label="@string/title_authorization"
             android:theme="@style/Theme.SSFS.Launcher">
 
         </activity>
         <activity
-            android:name=".activities.LastSearchRequestsActivity"
+            android:name=".fragments.LastSearchRequestsActivity"
             android:label="@string/title_last_search_requests" />
         <activity
-            android:name=".activities.FavoritesActivity"
+            android:name=".fragments.FavoritesActivity"
             android:label="@string/title_favorites" />
         <activity
-            android:name=".activities.FlickrViewItemActivity"
+            android:name=".fragments.FlickrViewItemActivity"
             android:label="@string/title_activity_flickr_view_item"
-            android:parentActivityName=".activities.FlickrSearchActivity"
+            android:parentActivityName=".fragments.FlickrSearchActivity"
             android:theme="@style/Theme.SSFS.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity" />
+                android:value="com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity" />
         </activity>
         <activity
-            android:name=".activities.FlickrSearchActivity"
+            android:name=".fragments.FlickrSearchActivity"
             android:label="@string/title_flickr_search"
             android:screenOrientation="portrait" />
         <meta-data

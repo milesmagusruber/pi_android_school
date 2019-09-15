@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import com.google.android.material.button.MaterialButton;
@@ -21,8 +20,8 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 
 import java.util.ArrayList;
 
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
 
 public class FavoritesActivity extends AppCompatActivity {
 
@@ -46,7 +45,7 @@ public class FavoritesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites);
+        setContentView(R.layout.fragment_favorites);
 
         currentUser = CurrentUser.getInstance();
         rvFavorites = findViewById(R.id.rv_favorites);

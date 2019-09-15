@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -100,7 +100,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_flickr_search);
+        setContentView(R.layout.fragment_flickr_search);
 
         networkHelper = NetworkHelper.getInstance(this);
         currentUser = CurrentUser.getInstance();

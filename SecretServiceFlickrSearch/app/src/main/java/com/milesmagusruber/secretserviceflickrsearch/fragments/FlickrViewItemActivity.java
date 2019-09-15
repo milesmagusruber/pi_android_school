@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -25,12 +25,11 @@ import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_TITLE;
-import static com.milesmagusruber.secretserviceflickrsearch.activities.FlickrSearchActivity.EXTRA_WEBLINK;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_TITLE;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
 
 public class FlickrViewItemActivity extends AppCompatActivity {
 
@@ -68,7 +67,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_flickr_view_item);
+        setContentView(R.layout.fragment_flickr_view_item);
         currentUser = CurrentUser.getInstance();
 
         webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);

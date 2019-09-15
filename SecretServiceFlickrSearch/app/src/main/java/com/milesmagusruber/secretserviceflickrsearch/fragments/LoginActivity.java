@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
         setTheme(R.style.Theme_SSFS);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.fragment_login);
         buttonEnter = findViewById(R.id.button_enter);
         editTextlogin = findViewById(R.id.edittext_login);
 

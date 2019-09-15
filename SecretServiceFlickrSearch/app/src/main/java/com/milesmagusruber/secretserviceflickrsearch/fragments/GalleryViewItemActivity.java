@@ -1,4 +1,4 @@
-package com.milesmagusruber.secretserviceflickrsearch.activities;
+package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.widget.ImageView;
 
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 
 import java.io.File;
 
-import static com.milesmagusruber.secretserviceflickrsearch.activities.GalleryActivity.EXTRA_GALLERY_ITEM;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryActivity.EXTRA_GALLERY_ITEM;
 
 public class GalleryViewItemActivity extends AppCompatActivity {
 
@@ -28,7 +26,7 @@ public class GalleryViewItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery_view_item);
+        setContentView(R.layout.fragment_gallery_view_item);
         galleryViewItem = findViewById(R.id.gallery_view_item_imageview);
 
         //file operation, getting image
