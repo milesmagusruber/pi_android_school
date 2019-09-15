@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -29,12 +30,26 @@ public class MainActivity extends AppCompatActivity {
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
 
+    /**
+     * Whether or not the activity is in two-pane mode,
+     * i.e. running on a tablet device.
+     */
+    private boolean twoPaneMode = false;
+
     //Power Broadcast Receiver
     private PowerReceiver powerReceiver = new PowerReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //setting requested orientation for smartphone or wide screen device (such as tablet)
+        if(twoPaneMode){
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }else{
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+
         setContentView(R.layout.activity_main);
 
         // Set a Toolbar to replace the ActionBar.
