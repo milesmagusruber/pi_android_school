@@ -8,6 +8,7 @@
    - https://developer.android.com/guide/topics/ui/controls/togglebutton
    - https://developer.android.com/reference/android/widget/PopupWindow.html
    - https://developer.android.com/training/custom-views/create-view
+   - https://medium.com/@douglas.iacovelli/the-beauty-of-custom-views-and-how-to-do-it-79c7d78e2088
    
  - Задания и codelabs
     - https://codelabs.developers.google.com/codelabs/motion-layout/#0
