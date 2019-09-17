@@ -24,7 +24,6 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
-import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -160,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).commit();
             try {
-                Fragment fragmentSecond = (Fragment) TestFragment1.class.newInstance();
+                Fragment fragmentSecond = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");;
                 fragmentManager.beginTransaction().replace(R.id.fragment_container_detail,fragmentSecond).commit();
             }catch (Exception e){
                 e.printStackTrace();
