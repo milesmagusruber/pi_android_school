@@ -2,11 +2,13 @@ package com.milesmagusruber.secretserviceflickrsearch.activities;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,6 +26,9 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
+
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -97,6 +102,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume(){
+        //setting day or night themes
+        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_THEME,false)){
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_YES);
+        }else{
+            AppCompatDelegate.setDefaultNightMode(
+                    AppCompatDelegate.MODE_NIGHT_NO);
+        }
+        super.onResume();
+    }
+
+    @Override
     protected void onDestroy() {
         //Unregister the receiver
         this.unregisterReceiver(powerReceiver);
@@ -141,8 +159,10 @@ public class MainActivity extends AppCompatActivity {
                     fragment = GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg");
                     break;
                 case R.id.nav_last_search_requests_fragment:
-                    fragmentClass = LastSearchRequestsFragment.class;
-                    fragment = (Fragment) fragmentClass.newInstance();
+                    fragment = LastSearchRequestsFragment.newInstance();
+                    break;
+                case R.id.nav_settings_fragment:
+                    fragment= new SettingsFragment();
                     break;
                 default:
                     fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
