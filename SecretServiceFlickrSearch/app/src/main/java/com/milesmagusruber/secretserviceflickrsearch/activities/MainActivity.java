@@ -18,6 +18,11 @@ import android.view.MenuItem;
 import com.google.android.material.navigation.NavigationView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
+import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
+import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment1;
 
 public class MainActivity extends AppCompatActivity {
@@ -77,6 +82,18 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         this.registerReceiver(powerReceiver, filter);
+
+        //USER WORK PLACEHOLDER
+        String login="alan";
+        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+        User user = db.getUser(login);
+        if (user == null) {
+            db.addUser(new User(login));
+            user = db.getUser(login);
+        }
+        CurrentUser currentUser = CurrentUser.getInstance();
+        currentUser.setUser(user);
+        db.close();
     }
 
     @Override
@@ -123,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentClass = TestFragment1.class;
                 break;
             case R.id.nav_last_search_requests_fragment:
-                fragmentClass = TestFragment1.class;
+                fragmentClass = LastSearchRequestsFragment.class;
                 break;
             default:
                 fragmentClass = TestFragment1.class;

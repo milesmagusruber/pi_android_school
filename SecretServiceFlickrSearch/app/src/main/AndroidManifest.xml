@@ -44,9 +44,6 @@
 
         </activity>
         <activity
-            android:name=".fragments.LastSearchRequestsActivity"
-            android:label="@string/title_last_search_requests" />
-        <activity
             android:name=".fragments.FavoritesActivity"
             android:label="@string/title_favorites" />
         <activity
