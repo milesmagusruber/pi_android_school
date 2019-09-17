@@ -9,10 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SSFS">
-        <activity android:name=".activities.MainActivity">
+        <activity
+            android:name=".activities.MainActivity"
+            android:theme="@style/Theme.SSFS.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -27,12 +28,7 @@
         <activity
             android:name=".fragments.GoogleMapsSearchActivity"
             android:theme="@style/Theme.SSFS.NoActionBar" />
-        <activity
-            android:name=".fragments.LoginActivity"
-            android:label="@string/title_authorization"
-            android:theme="@style/Theme.SSFS.Launcher">
 
-        </activity>
         <activity
             android:name=".fragments.FavoritesActivity"
             android:label="@string/title_favorites" />
@@ -40,7 +36,9 @@
         <activity
             android:name=".fragments.FlickrSearchActivity"
             android:label="@string/title_flickr_search"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

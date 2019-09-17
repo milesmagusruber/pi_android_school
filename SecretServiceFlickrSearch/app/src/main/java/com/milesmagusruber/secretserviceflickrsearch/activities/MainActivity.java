@@ -14,30 +14,31 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
-import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener{
 
     //Navigation Drawer variables
     private DrawerLayout drawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+
+    //Working with fragments
+    private FragmentManager fragmentManager;
 
     /**
      * Whether or not the activity is in two-pane mode,
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.Theme_SSFS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -66,40 +68,16 @@ public class MainActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(toolbar);
 
-        // This will display an Up icon (<-), we will replace it with hamburger later
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Find our drawer view
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerToggle = setupDrawerToggle();
-        // Setup toggle to display hamburger icon with nice animation
-        drawerToggle.setDrawerIndicatorEnabled(true);
-        drawerToggle.syncState();
-        // Tie DrawerLayout events to the ActionBarToggle
-        drawer.addDrawerListener(drawerToggle);
-
-
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
-        // Setup drawer view
-        setupDrawerContent(nvDrawer);
-
         // Register the power receiver using the activity context.
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_BATTERY_CHANGED);
         this.registerReceiver(powerReceiver, filter);
 
-        //USER WORK PLACEHOLDER
-        String login="alan";
-        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
-        User user = db.getUser(login);
-        if (user == null) {
-            db.addUser(new User(login));
-            user = db.getUser(login);
-        }
-        CurrentUser currentUser = CurrentUser.getInstance();
-        currentUser.setUser(user);
-        db.close();
+
+        //user Initialization
+        Fragment fragment= LoginFragment.newInstance();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment).commit();
     }
 
     @Override
@@ -168,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.nav_settings_fragment:
                     fragment= new SettingsFragment();
                     break;
+                case R.id.nav_login_fragment:
+                    fragment=new LoginFragment();
+                    break;
                 default:
                     fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
             }
@@ -177,11 +158,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
         if(!twoPaneMode) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
         }else{
-            fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).addToBackStack(null).commit();
             try {
                 Fragment fragmentSecond = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");;
                 fragmentManager.beginTransaction().replace(R.id.fragment_container_detail,fragmentSecond).commit();
@@ -207,4 +187,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    //authorization process when we press Enter Button in LoginFragment
+    @Override
+    public void onLoginButtonEnter() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+        // Find our drawer view
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerToggle = setupDrawerToggle();
+        // Setup toggle to display hamburger icon with nice animation
+        drawerToggle.setDrawerIndicatorEnabled(true);
+        drawerToggle.syncState();
+        // Tie DrawerLayout events to the ActionBarToggle
+        drawer.addDrawerListener(drawerToggle);
+
+
+        // Find our drawer view
+        nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
+        // Setup drawer view
+        setupDrawerContent(nvDrawer);
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg"))
+                .addToBackStack(null).commit();
+
+        Toast.makeText(this,CurrentUser.getInstance().getUser().getLogin(),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void getRidOfNavigationDrawer() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
 }

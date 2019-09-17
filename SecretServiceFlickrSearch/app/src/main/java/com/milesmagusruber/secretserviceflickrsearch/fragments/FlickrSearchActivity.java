@@ -30,6 +30,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
+import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
@@ -101,6 +102,18 @@ public class FlickrSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_flickr_search);
+
+        //placeholder
+        db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+        String login="alan";
+        User user = db.getUser(login);
+        if (user == null) {
+            db.addUser(new User(login));
+            user = db.getUser(login);
+        }
+        currentUser = CurrentUser.getInstance();
+        currentUser.setUser(user);
+        db.close();
 
         networkHelper = NetworkHelper.getInstance(this);
         currentUser = CurrentUser.getInstance();
