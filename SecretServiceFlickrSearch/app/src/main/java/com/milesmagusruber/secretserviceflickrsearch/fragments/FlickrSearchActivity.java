@@ -310,11 +310,13 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Photo photo) {
                 //get to FlickViewItemActivity
-                Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
+                /*Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
                 intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
                 intent.putExtra(EXTRA_TITLE, photo.getTitle());
                 intent.putExtra(EXTRA_SEARCH_REQUEST, searchRequest);
-                startActivity(intent);
+                startActivity(intent);*/
+                Toast.makeText(FlickrSearchActivity.this,"FlickrViewItemActivity: "+photo.getPhotoUrl(),Toast.LENGTH_LONG).show();
+
             }
 
         });

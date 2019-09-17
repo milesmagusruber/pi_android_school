@@ -23,6 +23,7 @@ import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerRe
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
@@ -160,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case R.id.nav_last_search_requests_fragment:
                     fragment = LastSearchRequestsFragment.newInstance();
+                    break;
+                case R.id.nav_favourites_fragment:
+                    fragment = FlickrViewItemFragment.newInstance("lion","https://live.staticflickr.com/65535/48750550773_950fd58407_m.jpg","The little Lion King");
                     break;
                 case R.id.nav_settings_fragment:
                     fragment= new SettingsFragment();

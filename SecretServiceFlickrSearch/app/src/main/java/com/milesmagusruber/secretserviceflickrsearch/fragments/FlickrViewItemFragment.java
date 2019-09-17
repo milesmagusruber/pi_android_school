@@ -6,11 +6,14 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.URLUtil;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -31,7 +34,7 @@ import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSear
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_TITLE;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
 
-public class FlickrViewItemActivity extends AppCompatActivity {
+public class FlickrViewItemFragment extends Fragment {
 
     static final int REQUEST_STORAGE = 62;
     //Current user
@@ -64,25 +67,44 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     //FileHelper
     private FileHelper fileHelper;
 
+    //empty constructor
+    public FlickrViewItemFragment(){
+
+    }
+
+    public static FlickrViewItemFragment newInstance(String searchRequest, String webLink, String title){
+        FlickrViewItemFragment fragment = new FlickrViewItemFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_SEARCH_REQUEST, searchRequest);
+        bundle.putString(EXTRA_WEBLINK, webLink);
+        bundle.putString(EXTRA_TITLE, title);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_flickr_view_item);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_flickr_view_item, container, false);
+
         currentUser = CurrentUser.getInstance();
 
-        webViewFlickrItem = (WebView) findViewById(R.id.webview_flickr_item);
-        textViewSearchRequestItem = (TextView) findViewById(R.id.search_request_item);
-        buttonIsFavorite = findViewById(R.id.button_is_favorite);
-        buttonIsSaved = findViewById(R.id.button_is_saved);
+        webViewFlickrItem = view.findViewById(R.id.webview_flickr_item);
+        textViewSearchRequestItem = view.findViewById(R.id.search_request_item);
+        buttonIsFavorite = view.findViewById(R.id.button_is_favorite);
+        buttonIsSaved = view.findViewById(R.id.button_is_saved);
+
 
 
         //Search Request that was used to find image
-        searchRequest = getIntent().getStringExtra(EXTRA_SEARCH_REQUEST);
-        webLink = getIntent().getStringExtra(EXTRA_WEBLINK);
-        title = getIntent().getStringExtra(EXTRA_TITLE);
+        if (getArguments() != null) {
+            searchRequest = getArguments().getString(EXTRA_SEARCH_REQUEST);
+            webLink = getArguments().getString(EXTRA_WEBLINK);
+            title = getArguments().getString(EXTRA_TITLE);
+            //get name of server file from weblink
+            getFileNameFromWebLink();
+        }
 
-        //get name of server file from weblink
-        getFileNameFromWebLink();
 
         //checking permissions
         permissions = new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -90,7 +112,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
         if (checkStoragePermissions()) {
             initializeSavingFlickrFiles();
         } else {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_STORAGE);
+            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_STORAGE);
         }
 
 
@@ -106,7 +128,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                 @Override
                 protected Integer doInBackground(Void... data) {
                     //Initialize SearchRequests
-                    db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                    db = DatabaseHelper.getInstance(getActivity());
                     favorite = db.getFavorite(currentUser.getUser().getId(), webLink);
                     db.close();
                     return 0;
@@ -161,7 +183,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                             @Override
                             protected Integer doInBackground(Void... voids) {
-                                db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                                db = DatabaseHelper.getInstance(getActivity());
                                 db.addFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 db.close();
                                 return 0;
@@ -187,7 +209,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
                             @Override
                             protected Integer doInBackground(Void... voids) {
-                                db = DatabaseHelper.getInstance(FlickrViewItemActivity.this);
+                                db = DatabaseHelper.getInstance(getActivity());
                                 db.deleteFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 db.close();
                                 return 0;
@@ -206,7 +228,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
 
             }
         });
-
+        return view;
     }
 
     //getting filename for web url
@@ -217,7 +239,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     private boolean checkStoragePermissions() {
         boolean result = true;
         for (String perm : permissions) {
-            result = result && (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED);
+            result = result && (ContextCompat.checkSelfPermission(getActivity(), perm) == PackageManager.PERMISSION_GRANTED);
         }
         return result;
     }
@@ -232,7 +254,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                     initializeSavingFlickrFiles();
 
                 } else {
-                    Toast.makeText(this, "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -275,7 +297,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
                 if (!isSaved) {
                     buttonIsSaved.setIcon(getResources().getDrawable(R.drawable.ic_file_saved));
                     //loading image to file with glide
-                    Glide.with(FlickrViewItemActivity.this)
+                    Glide.with(FlickrViewItemFragment.this)
                             .asBitmap()
                             .load(webLink)
                             .into(new SimpleTarget<Bitmap>() {
@@ -341,7 +363,7 @@ public class FlickrViewItemActivity extends AppCompatActivity {
     }
 
     private void initializeSavingFlickrFiles() {
-        currentUser.setFileHelper(this);
+        currentUser.setFileHelper(getActivity());
         fileHelper = currentUser.getFileHelper();
         activateButtonIsSaved();
     }

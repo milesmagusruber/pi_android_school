@@ -36,15 +36,7 @@
         <activity
             android:name=".fragments.FavoritesActivity"
             android:label="@string/title_favorites" />
-        <activity
-            android:name=".fragments.FlickrViewItemActivity"
-            android:label="@string/title_activity_flickr_view_item"
-            android:parentActivityName=".fragments.FlickrSearchActivity"
-            android:theme="@style/Theme.SSFS.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity" />
-        </activity>
+
         <activity
             android:name=".fragments.FlickrSearchActivity"
             android:label="@string/title_flickr_search"

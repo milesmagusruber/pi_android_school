@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -21,6 +22,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import java.util.ArrayList;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_TITLE;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
 
 public class FavoritesActivity extends AppCompatActivity {
@@ -163,10 +165,12 @@ public class FavoritesActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(Favorite favorite) {
                             //get to Favorite Flick Photo from FavoritesActivity
-                            Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
+                            /*Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
+                            intent.putExtra(EXTRA_TITLE,favorite.getTitle());
                             intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
                             intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
-                            startActivity(intent);
+                            startActivity(intent);*/
+                            Toast.makeText(FavoritesActivity.this,"FlickrViewItemActivity: "+favorite.getWebLink(),Toast.LENGTH_LONG).show();
                         }
 
                     }, new FavoritesAdapter.OnRemoveFavoriteClickListener() {
