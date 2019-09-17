@@ -25,9 +25,6 @@
                 android:value="com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity" />
         </activity>
         <activity
-            android:name=".fragments.GalleryViewItemActivity"
-            android:theme="@style/Theme.SSFS.NoActionBar" />
-        <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

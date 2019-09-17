@@ -244,9 +244,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
         switch(id){
             case R.id.activity_last_search_requests :
                 //going to Last Search Requests
-                //TODO: LastSearchRequestsActivity became fragment
                 //intent = new Intent(this, LastSearchRequestsActivity.class);
                 //startActivity(intent);
+                Toast.makeText(this,"LastSearchRequestsActivity was here",Toast.LENGTH_LONG).show();
                 return true;
             case R.id.activity_favorites:
                 //going to Favorites

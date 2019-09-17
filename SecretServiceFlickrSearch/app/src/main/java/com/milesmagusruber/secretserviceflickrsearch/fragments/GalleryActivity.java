@@ -196,9 +196,10 @@ public class GalleryActivity extends AppCompatActivity {
             @Override
             public void onItemClick(File photoFile) {
                 //go to GalleryViewItemActivity
-                Intent intent = new Intent(GalleryActivity.this, GalleryViewItemActivity.class);
-                intent.putExtra(EXTRA_GALLERY_ITEM, photoFile.getAbsolutePath());
-                startActivity(intent);
+                Toast.makeText(GalleryActivity.this,"There was GalleryViewItemActivity",Toast.LENGTH_LONG).show();
+                //Intent intent = new Intent(GalleryActivity.this, GalleryViewItemActivity.class);
+                //intent.putExtra(EXTRA_GALLERY_ITEM, photoFile.getAbsolutePath());
+                //startActivity(intent);
             }
 
         });

@@ -21,6 +21,7 @@ import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerRe
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginActivity;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.TestFragment1;
@@ -132,25 +133,25 @@ public class MainActivity extends AppCompatActivity {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
         Class fragmentClass;
-        switch(menuItem.getItemId()) {
-            case R.id.nav_flickr_search_fragment:
-                fragmentClass = TestFragment1.class;
-                break;
-            case R.id.nav_geo_search_fragment:
-                fragmentClass = TestFragment1.class;
-                break;
-            case R.id.nav_last_search_requests_fragment:
-                fragmentClass = LastSearchRequestsFragment.class;
-                break;
-            default:
-                fragmentClass = TestFragment1.class;
-        }
-
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
+            switch (menuItem.getItemId()) {
+                case R.id.nav_flickr_search_fragment:
+                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
+                    break;
+                case R.id.nav_geo_search_fragment:
+                    fragment = GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg");
+                    break;
+                case R.id.nav_last_search_requests_fragment:
+                    fragmentClass = LastSearchRequestsFragment.class;
+                    fragment = (Fragment) fragmentClass.newInstance();
+                    break;
+                default:
+                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
+            }
+        }catch (Exception e){
             e.printStackTrace();
         }
+
 
         // Insert the fragment by replacing any existing fragment
         FragmentManager fragmentManager = getSupportFragmentManager();
