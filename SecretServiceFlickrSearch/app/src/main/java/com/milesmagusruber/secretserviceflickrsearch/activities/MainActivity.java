@@ -21,16 +21,19 @@ import com.google.android.material.navigation.NavigationView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.FavoritesFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GoogleMapsSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
+import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener, GoogleMapsSearchFragment.MapFragmentListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener,
+        GoogleMapsSearchFragment.MapFragmentListener, OnPhotoSelectedListener {
 
     //Navigation Drawer variables
     private DrawerLayout drawer;
@@ -142,7 +145,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     fragment = LastSearchRequestsFragment.newInstance();
                     break;
                 case R.id.nav_favourites_fragment:
-                    fragment = FlickrViewItemFragment.newInstance("lion","https://live.staticflickr.com/65535/48750550773_950fd58407_m.jpg","The little Lion King");
+                    fragment = FavoritesFragment.newInstance();
+                    break;
+                case R.id.nav_gallery_fragment:
+                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
                     break;
                 case R.id.nav_settings_fragment:
                     fragment= new SettingsFragment();
@@ -232,5 +238,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         String geoResult="Latitude: "+latitude+"\nLongtitude: "+longitude;
         Toast.makeText(this,geoResult,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onFlickrPhotoSelected(String searchRequest, String webLink, String title) {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                FlickrViewItemFragment.newInstance(searchRequest,webLink,title))
+                .addToBackStack(null).commit();
+    }
+
+    @Override
+    public void onPhotoFileSelected(String filePath) {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                GalleryViewItemFragment.newInstance(filePath))
+                .addToBackStack(null).commit();
     }
 }

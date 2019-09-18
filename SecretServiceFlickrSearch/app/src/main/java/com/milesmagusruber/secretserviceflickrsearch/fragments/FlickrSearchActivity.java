@@ -264,8 +264,9 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 return true;
             case R.id.activity_favorites:
                 //going to Favorites
-                intent = new Intent(this, FavoritesActivity.class);
-                startActivity(intent);
+                //intent = new Intent(this, FavoritesActivity.class);
+                //startActivity(intent);
+                Toast.makeText(this,"FavoritesActivity was here",Toast.LENGTH_LONG).show();
                 return true;
             case R.id.activity_gallery:
                 //going to gallery

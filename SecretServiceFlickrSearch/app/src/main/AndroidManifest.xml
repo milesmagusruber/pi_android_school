@@ -27,10 +27,6 @@
             android:label="@string/title_gallery" />
 
         <activity
-            android:name=".fragments.FavoritesActivity"
-            android:label="@string/title_favorites" />
-
-        <activity
             android:name=".fragments.FlickrSearchActivity"
             android:label="@string/title_flickr_search"
             android:screenOrientation="portrait" >

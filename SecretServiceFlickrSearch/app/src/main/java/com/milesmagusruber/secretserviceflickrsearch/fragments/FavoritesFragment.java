@@ -1,15 +1,16 @@
 package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,14 +19,11 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.FavoritesAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 
 import java.util.ArrayList;
 
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_TITLE;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
-
-public class FavoritesActivity extends AppCompatActivity {
+public class FavoritesFragment extends Fragment {
 
     //Current user
     private CurrentUser currentUser;
@@ -44,17 +42,46 @@ public class FavoritesActivity extends AppCompatActivity {
     private FavoritesAdapter adapter;
     private ItemTouchHelper helper;
 
+
+
+    //constructor
+    public FavoritesFragment() {
+    }
+
+    public static FavoritesFragment newInstance() {
+        return new FavoritesFragment();
+    }
+
+    private OnPhotoSelectedListener listener;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_favorites);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoginFragment.LoginFragmentListener) {
+            listener = (OnPhotoSelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement methods of OnPhotoSelectedListener");
+        }
+    }
+
+    @Override
+    public void onDetach(){
+        listener=null;
+        super.onDetach();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_favorites, container, false);
 
         currentUser = CurrentUser.getInstance();
-        rvFavorites = findViewById(R.id.rv_favorites);
+        rvFavorites = view.findViewById(R.id.rv_favorites);
 
-        editTextFavoritesFilter = findViewById(R.id.edittext_favorites_filter);
+        editTextFavoritesFilter = view.findViewById(R.id.edittext_favorites_filter);
 
-        buttonFavoritesFilter = findViewById(R.id.button_favorites_filter);
+        buttonFavoritesFilter = view.findViewById(R.id.button_favorites_filter);
 
         // Add the functionality to swipe items in the
         // recycler view to delete that item
@@ -84,7 +111,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
                                 @Override
                                 protected Integer doInBackground(Void... voids) {
-                                    db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                                    db = DatabaseHelper.getInstance(getActivity());
                                     db.deleteFavorite(favoriteForDelete);
                                     db.close();
                                     return 0;
@@ -137,7 +164,7 @@ public class FavoritesActivity extends AppCompatActivity {
             }
         });
 
-
+        return view;
     }
 
     //Getting favorites from db if we have filter or not
@@ -152,7 +179,7 @@ public class FavoritesActivity extends AppCompatActivity {
 
                 @Override
                 protected Integer doInBackground(Void... data) {
-                    db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                    db = DatabaseHelper.getInstance(getActivity());
                     favorites = db.getAllFavorites(currentUser.getUser().getId(), searchRequest);
                     db.close();
                     return 0;
@@ -161,16 +188,11 @@ public class FavoritesActivity extends AppCompatActivity {
                 @Override
                 protected void onPostExecute(Integer a) {
                     // Create adapter passing in the sample user data
-                    adapter = new FavoritesAdapter(favorites, FavoritesActivity.this, new FavoritesAdapter.OnItemClickListener() {
+                    adapter = new FavoritesAdapter(favorites, getActivity(), new FavoritesAdapter.OnItemClickListener() {
                         @Override
                         public void onItemClick(Favorite favorite) {
-                            //get to Favorite Flick Photo from FavoritesActivity
-                            /*Intent intent = new Intent(FavoritesActivity.this, FlickrViewItemActivity.class);
-                            intent.putExtra(EXTRA_TITLE,favorite.getTitle());
-                            intent.putExtra(EXTRA_WEBLINK, favorite.getWebLink());
-                            intent.putExtra(EXTRA_SEARCH_REQUEST, favorite.getSearchRequest());
-                            startActivity(intent);*/
-                            Toast.makeText(FavoritesActivity.this,"FlickrViewItemActivity: "+favorite.getWebLink(),Toast.LENGTH_LONG).show();
+                            //get to Favorite Flick Photo from FavoritesFragment
+                            listener.onFlickrPhotoSelected(favorite.getSearchRequest(),favorite.getWebLink(),favorite.getTitle());
                         }
 
                     }, new FavoritesAdapter.OnRemoveFavoriteClickListener() {
@@ -181,7 +203,7 @@ public class FavoritesActivity extends AppCompatActivity {
                                 asyncTask = new AsyncTask<Void, Void, Integer>() {
                                     @Override
                                     protected Integer doInBackground(Void... voids) {
-                                        db = DatabaseHelper.getInstance(FavoritesActivity.this);
+                                        db = DatabaseHelper.getInstance(getActivity());
                                         db.deleteFavorite(favoriteForDelete);
                                         db.close();
                                         return 0;
@@ -206,7 +228,7 @@ public class FavoritesActivity extends AppCompatActivity {
                     // Attach the adapter to the recyclerview to populate items
                     rvFavorites.setAdapter(adapter);
                     // Set layout manager to position the items
-                    rvFavorites.setLayoutManager(new LinearLayoutManager(FavoritesActivity.this));
+                    rvFavorites.setLayoutManager(new LinearLayoutManager(getActivity()));
 
                     helper.attachToRecyclerView(rvFavorites);
 
