@@ -1,0 +1,64 @@
+<resources>
+    <string name="app_name">SecretServiceFlickrSearch</string>
+    <string name="title_activity_flickr_view_item">FlickrViewItemActivity</string>
+    <string name="button_text_search">Search by text</string>
+    <string name="button_geo_search">Search by map</string>
+    <string name="edittext_flickr_search">Type here your search request...</string>
+    <!-- Add your API keys here -->
+    <string name="flickr_api_key">b2af56de6a8c4738adaca9de6d7b1d9d</string>
+    <string name="flickr_secret">69ee187bd66fa34e</string>
+    <string name="google_maps_key">your_key</string>
+
+    <!-- Titles -->
+    <string name="title_favorites">Favorites</string>
+    <string name="title_gallery">Gallery</string>
+    <string name="title_last_search_requests">Last Search Requests</string>
+    <string name="title_flickr_search">Flickr Search</string>
+    <string name="title_authorization">Authorization</string>
+    <string name="title_geo_search">Geo Search</string>
+    <string name="action_logout">Logout</string>
+
+    <string name="logo_description">Image shows two secret agents listening to you and searching information about you using Flickr</string>
+    <string name="turn_on_internet">Please, turn on the internet connection!</string>
+    <string name="request_error">Error processing the request</string>
+    <string name="input_search_request">Please, input your search request</string>
+    <string name="search_request_no_photos">Your search request hasn\'t found any photos</string>
+    <string name="favorites_adapter_search_request">Search request: %1$s</string>
+    <string name="favorites_adapter_weblink">Web link: %1$s</string>
+    <string name="incorrect_login">Incorrect login</string>
+    <string name="cd_flickr_photo_image">Some Flickr Photo</string>
+
+    <!--Geolocation strings-->
+    <string name="geo_search_flickr_photos">Search Flickr Photos</string>
+    <string name="geo_search_no_markers">This is no marker on the map. Please, place one to let us search photos!</string>
+    <string name="geo_snippet">Geo Request\nLatitude: %1$.6f\nLongitude: %2$.6f</string>
+    <string name="geo_location_problem">There is some problem with location services.
+        Can\'t get your location! Move to default spot! Please, turn on your geolocation or move
+        to the zone of better signal reception!</string>
+    <string name="geo_location_permission_not_granted">Location permission is not granted. Showing default location.</string>
+    <string name="marker_title">Coordinates</string>
+
+    <!--Gallery strings-->
+    <string name="take_a_photo">Take a photo</string>
+    <string name="no_camera_app">Camera applications are not available!</string>
+    <string name="problem_with_filesystem">Got some problems with filesystem</string>
+    <string name="file_not_removed">File is not removed!</string>
+    <string name="cd_photo_image">Some photo image</string>
+
+    <string name="login_hint">Enter your login</string>
+    <string name="button_enter">Enter</string>
+    <string name="edittext_favorites_filter">Enter filter</string>
+    <string name="button_filter">Filter</string>
+    <string name="title_settings">Settings</string>
+    <string name="settings_theme_title">Theme Settings</string>
+
+    <!--Battery level-->
+    <string name="battery_level">Battery charge level is %1$d%%</string>
+
+    <!--Drawer values-->
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
+
+
+
+</resources>
