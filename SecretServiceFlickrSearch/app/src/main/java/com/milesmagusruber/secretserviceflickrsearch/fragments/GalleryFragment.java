@@ -29,7 +29,6 @@ import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotoFilesAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
-import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,15 +69,27 @@ public class GalleryFragment extends Fragment {
 
     //Interface with MainActivity class
     private OnPhotoSelectedListener listener;
+    private OnTakePhotoListener takePhotoListener;
+
+    public interface OnTakePhotoListener {
+        void onTakePhoto();
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginFragment.LoginFragmentListener) {
+        if (context instanceof OnPhotoSelectedListener) {
             listener = (OnPhotoSelectedListener) context;
         } else {
             throw new ClassCastException(context.toString()
                     + " must implement methods of OnPhotoSelectedListener");
+        }
+
+        if (context instanceof OnTakePhotoListener) {
+            takePhotoListener = (OnTakePhotoListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement methods of OnTakePhotoListener");
         }
     }
 
@@ -151,16 +162,6 @@ public class GalleryFragment extends Fragment {
     }
 
 
-    //this method is used to process photo with UCrop library
-    public void openCropActivity(Uri sourceUri, Uri destinationUri) {
-        int maxWidth = 1600;
-        int maxHeight = 1600;
-        UCrop.of(sourceUri, destinationUri)
-                .withMaxResultSize(maxWidth, maxHeight)
-                .withAspectRatio(5f, 5f)
-                .start(getActivity());
-    }
-
     //This method shows image in imageView
     public void showImage(Uri imageUri) {
         try {
@@ -202,7 +203,7 @@ public class GalleryFragment extends Fragment {
         buttonTakeAPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                takeAPhoto();
+                takePhotoListener.onTakePhoto();
             }
         });
     }

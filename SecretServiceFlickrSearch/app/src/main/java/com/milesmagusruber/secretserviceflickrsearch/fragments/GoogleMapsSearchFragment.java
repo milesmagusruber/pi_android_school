@@ -62,7 +62,7 @@ public class GoogleMapsSearchFragment extends Fragment implements OnMapReadyCall
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginFragment.LoginFragmentListener) {
+        if (context instanceof MapFragmentListener) {
             listener = (MapFragmentListener) context;
         } else {
             throw new ClassCastException(context.toString()

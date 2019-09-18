@@ -57,7 +57,7 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginFragment.LoginFragmentListener) {
+        if (context instanceof OnPhotoSelectedListener) {
             listener = (OnPhotoSelectedListener) context;
         } else {
             throw new ClassCastException(context.toString()

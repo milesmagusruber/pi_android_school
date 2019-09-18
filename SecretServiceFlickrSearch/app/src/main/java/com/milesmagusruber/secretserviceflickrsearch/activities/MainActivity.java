@@ -4,6 +4,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -14,12 +15,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
+import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
@@ -32,14 +36,17 @@ import com.milesmagusruber.secretserviceflickrsearch.fragments.GoogleMapsSearchF
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 import com.yalantis.ucrop.UCrop;
+
+import java.io.File;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryFragment.REQUEST_IMAGE_CAPTURE;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener,
-        GoogleMapsSearchFragment.MapFragmentListener, OnPhotoSelectedListener {
+        GoogleMapsSearchFragment.MapFragmentListener, OnPhotoSelectedListener, GalleryFragment.OnTakePhotoListener {
 
     //Navigation Drawer variables
     private DrawerLayout drawer;
@@ -51,11 +58,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private FragmentManager fragmentManager;
 
     private final String currentFragmentTag="CURRENT_FRAGMENT";
+    public static final int REQUEST_IMAGE_CAPTURE = 30;
     /**
      * Whether or not the activity is in two-pane mode,
      * i.e. running on a tablet device.
      */
     private boolean twoPaneMode = false;
+    private String currentPhotoPath = "";
 
     //Power Broadcast Receiver
     private PowerReceiver powerReceiver = new PowerReceiver();
@@ -171,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         // Insert the fragment by replacing any existing fragment
         if(!twoPaneMode) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment, currentFragmentTag).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
         }else{
             fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).addToBackStack(null).commit();
             try {
@@ -203,25 +212,29 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
      * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode,resultCode,data);
-        Fragment fragment = fragmentManager.findFragmentByTag("MY_FRAGMENT");
-        if (fragment != null && fragment.isVisible() && (fragment instanceof GalleryFragment)) {
             // add your code here
-            GalleryFragment galleryFragment = (GalleryFragment) fragment;
             if (requestCode == REQUEST_IMAGE_CAPTURE) {
                 Log.d("FILETT", Integer.toString(resultCode));
             }
             if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
                 //If we get photo from camera
                 Log.d("FILETT", "Camera returns image");
-                Uri uri = Uri.parse(galleryFragment.currentPhotoPath);
-                galleryFragment.openCropActivity(uri, uri);
+                Uri uri = Uri.parse(currentPhotoPath);
+                openCropActivity(uri, uri);
             } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-                //If we get our photo cropped with UCrop library
-                Uri uri = UCrop.getOutput(data);
-                galleryFragment.showImage(uri);
+                //correct the bug
             }
-        }
 
+    }
+
+    //this method is used to process photo with UCrop library
+    public void openCropActivity(Uri sourceUri, Uri destinationUri) {
+        int maxWidth = 1600;
+        int maxHeight = 1600;
+        UCrop.of(sourceUri, destinationUri)
+                .withMaxResultSize(maxWidth, maxHeight)
+                .withAspectRatio(5f, 5f)
+                .start(this);
     }
 
 
@@ -252,7 +265,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 FlickrSearchFragment.newInstance())
                 .addToBackStack(null).commit();
 
-        Toast.makeText(this,CurrentUser.getInstance().getUser().getLogin(),Toast.LENGTH_LONG).show();
     }
 
     //Getting rid of Navigation Drawer if we go to LoginFragment and clean stack of fragments
@@ -269,6 +281,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
                 FlickrSearchFragment.newInstance(latitude,longitude))
                 .addToBackStack(null).commit();
+        toolbar.setTitle(R.string.title_flickr_search);
     }
 
     //If we selected Flickr Photo in FlickrSearchFragment or FavoritesFragment
@@ -285,5 +298,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
                 GalleryViewItemFragment.newInstance(filePath))
                 .addToBackStack(null).commit();
+    }
+
+    //taking photo with camera
+    @Override
+    public void onTakePhoto() {
+
+        Intent pictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            FileHelper fileHelper = CurrentUser.getInstance().getFileHelper();
+            File file = fileHelper.createUserPhotoFile();
+
+            currentPhotoPath = "file:" + file.getAbsolutePath();
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
+            else
+                uri = Uri.fromFile(file);
+            Log.d("FILETT", uri.toString());
+            pictureIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            pictureIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
+        } catch (NullPointerException e) {
+            Toast.makeText(this, R.string.problem_with_filesystem, Toast.LENGTH_LONG).show();
+        }
+
     }
 }
