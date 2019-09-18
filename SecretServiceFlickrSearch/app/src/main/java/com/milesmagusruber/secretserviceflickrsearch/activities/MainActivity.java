@@ -24,6 +24,7 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FavoritesFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         try {
             switch (menuItem.getItemId()) {
                 case R.id.nav_flickr_search_fragment:
-                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
+                    fragment = FlickrSearchFragment.newInstance();
                     break;
                 case R.id.nav_geo_search_fragment:
                     fragment = GoogleMapsSearchFragment.newInstance();
@@ -248,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         // Setup drawer view
         setupDrawerContent(nvDrawer);
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg"))
+                FlickrSearchFragment.newInstance())
                 .addToBackStack(null).commit();
 
         Toast.makeText(this,CurrentUser.getInstance().getUser().getLogin(),Toast.LENGTH_LONG).show();
@@ -261,17 +262,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
+    //If the place on the map is selected transfer latitude and longitude to FlickrSearchFragment
     @Override
     public void onPlaceSelected(double latitude, double longitude) {
 
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg"))
+                FlickrSearchFragment.newInstance(latitude,longitude))
                 .addToBackStack(null).commit();
-
-        String geoResult="Latitude: "+latitude+"\nLongtitude: "+longitude;
-        Toast.makeText(this,geoResult,Toast.LENGTH_LONG).show();
     }
 
+    //If we selected Flickr Photo in FlickrSearchFragment or FavoritesFragment
     @Override
     public void onFlickrPhotoSelected(String searchRequest, String webLink, String title) {
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
@@ -279,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 .addToBackStack(null).commit();
     }
 
+    //If we selected photo file in gallery fragment
     @Override
     public void onPhotoFileSelected(String filePath) {
         fragmentManager.beginTransaction().replace(R.id.fragment_container,

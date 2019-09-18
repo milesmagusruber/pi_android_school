@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
@@ -98,6 +100,48 @@ public class FlickrSearchFragment extends Fragment {
     //Controlling Retrofit calls in this activity
     private Call<FlickrResponse> call;
 
+    private OnPhotoSelectedListener listener;
+
+    //empty constructor
+    public FlickrSearchFragment(){
+
+    }
+
+
+    public static FlickrSearchFragment newInstance(){
+        FlickrSearchFragment fragment = new FlickrSearchFragment();
+        return fragment;
+    }
+
+
+    //Use for Geo Search
+    public static FlickrSearchFragment newInstance(double latitude, double longitude){
+        FlickrSearchFragment fragment = new FlickrSearchFragment();
+        Bundle bundle = new Bundle();
+        bundle.putDouble(EXTRA_LATITUDE, latitude);
+        bundle.putDouble(EXTRA_LONGITUDE, longitude);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    //listener
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoginFragment.LoginFragmentListener) {
+            listener = (OnPhotoSelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement methods of OnPhotoSelectedListener");
+        }
+    }
+
+    @Override
+    public void onDetach(){
+        listener=null;
+        super.onDetach();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flickr_search, container, false);
@@ -108,7 +152,6 @@ public class FlickrSearchFragment extends Fragment {
 
         //Initialising UI elements
         buttonTextSearch = view.findViewById(R.id.button_text_search);
-        buttonGeoSearch = view.findViewById(R.id.button_geo_search);
         editTextFlickrSearch = view.findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) view.findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) view.findViewById(R.id.flickr_result);
@@ -189,14 +232,6 @@ public class FlickrSearchFragment extends Fragment {
 
         //Main function of out app to search photos via Flickr API
 
-        buttonGeoSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //startActivityForResult(new Intent(FlickrSearchActivity.this, GoogleMapsSearchActivity.class), GEO_SEARCH_REQUEST);
-                Toast.makeText(getActivity(),"GoogleMapsSearchActivity was here",Toast.LENGTH_LONG).show();
-            }
-        });
-
         buttonTextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,46 +263,39 @@ public class FlickrSearchFragment extends Fragment {
                 }
             }
         });
-        return view;
-    }
 
-    //Using this method to get geo coords from GoogleMapsSearchActivity
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
-        super.onActivityResult(requestCode,resultCode,intent);
-        if (requestCode == GEO_SEARCH_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                if (intent != null) {
-                    geoResult=true;
-                    geoResultLatitude=intent.getDoubleExtra(EXTRA_LATITUDE,0);
-                    geoResultLongitude = intent.getDoubleExtra(EXTRA_LONGITUDE,0);
-                    photosPage=1;
-                    photosEndReached = false;
+        //If we used GeoSearch
+        if (getArguments() != null) {
+            geoResult=true;
+            geoResultLatitude=getArguments().getDouble(EXTRA_LATITUDE,0);
+            geoResultLongitude = getArguments().getDouble(EXTRA_LONGITUDE,0);
+            photosPage=1;
+            photosEndReached = false;
 
-                    final String searchRequest=String.format(Locale.getDefault(),
-                            getString(R.string.geo_snippet),
-                            geoResultLatitude,
-                            geoResultLongitude);
+            final String searchRequest=String.format(Locale.getDefault(),
+                    getString(R.string.geo_snippet),
+                    geoResultLatitude,
+                    geoResultLongitude);
 
-                    editTextFlickrSearch.setText("");
-                    Toast.makeText(getActivity(),searchRequest,Toast.LENGTH_LONG).show();
-                    textViewFlickrError.setVisibility(View.INVISIBLE);
-                    rvFlickrResult.setVisibility(View.INVISIBLE);
-                    if (!networkHelper.haveNetworkConnection(getActivity())) {
-                        textViewFlickrError.setVisibility(TextView.VISIBLE);
-                        textViewFlickrError.setText(getString(R.string.turn_on_internet));
-                    }else{
-                        downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
-                        //adding Search Request to Database
-                        addSearchRequestToDB(searchRequest);
+            editTextFlickrSearch.setText("");
+            Toast.makeText(getActivity(),searchRequest,Toast.LENGTH_LONG).show();
+            textViewFlickrError.setVisibility(View.INVISIBLE);
+            rvFlickrResult.setVisibility(View.INVISIBLE);
+            if (!networkHelper.haveNetworkConnection(getActivity())) {
+                textViewFlickrError.setVisibility(TextView.VISIBLE);
+                textViewFlickrError.setText(getString(R.string.turn_on_internet));
+            }else{
+                downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
+                //adding Search Request to Database
+                addSearchRequestToDB(searchRequest);
 
-                        //working with response from Flickr
-                        call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
-                        initialFlickrSearchCall(searchRequest);
-                    }
-                }
+                //working with response from Flickr
+                call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
+                initialFlickrSearchCall(searchRequest);
             }
         }
+
+        return view;
     }
 
     //Use to show list of photos in our view
@@ -277,14 +305,8 @@ public class FlickrSearchFragment extends Fragment {
         photosAdapter = new PhotosAdapter(photos, searchRequest, new PhotosAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Photo photo) {
-                //get to FlickViewItemActivity
-                /*Intent intent = new Intent(FlickrSearchActivity.this, FlickrViewItemActivity.class);
-                intent.putExtra(EXTRA_WEBLINK, photo.getPhotoUrl());
-                intent.putExtra(EXTRA_TITLE, photo.getTitle());
-                intent.putExtra(EXTRA_SEARCH_REQUEST, searchRequest);
-                startActivity(intent);*/
-                Toast.makeText(getActivity(),"FlickrViewItemActivity: "+photo.getPhotoUrl(),Toast.LENGTH_LONG).show();
-
+                //get to FlickViewItemFragment
+                listener.onFlickrPhotoSelected(searchRequest,photo.getPhotoUrl(),photo.getTitle());
             }
 
         });
@@ -318,7 +340,6 @@ public class FlickrSearchFragment extends Fragment {
                 @Override
                 protected void onPreExecute() {
                     buttonTextSearch.setClickable(false);
-                    buttonGeoSearch.setClickable(false);
                 }
 
                 @Override
@@ -332,7 +353,6 @@ public class FlickrSearchFragment extends Fragment {
                 @Override
                 protected void onPostExecute(Integer a) {
                     buttonTextSearch.setClickable(true);
-                    buttonGeoSearch.setClickable(true);
                 }
             };
             asyncTask.execute();

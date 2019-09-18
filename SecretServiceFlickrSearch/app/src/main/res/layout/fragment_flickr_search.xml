@@ -28,17 +28,12 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_text_search"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginTop="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:text="@string/button_text_search"
         style="@style/Widget.SSFS.Button"
-        app:layout_constraintEnd_toStartOf="@+id/button_geo_search"
-        app:layout_constraintHorizontal_bias="0.5"
+        android:layout_width="@dimen/medium_element_width"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/button_text_search"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittext_flickr_search_layout" />
 
@@ -95,21 +90,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/flickr_result"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_geo_search"
-        style="@style/Widget.SSFS.Button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_small"
-        android:layout_marginLeft="@dimen/margin_small"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:text="@string/button_geo_search"
-        app:layout_constraintBaseline_toBaselineOf="@+id/button_text_search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/button_text_search" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
