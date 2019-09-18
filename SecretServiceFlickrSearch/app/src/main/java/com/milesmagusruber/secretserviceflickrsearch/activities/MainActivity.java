@@ -23,13 +23,14 @@ import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerRe
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.GoogleMapsSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener{
+public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener, GoogleMapsSearchFragment.MapFragmentListener {
 
     //Navigation Drawer variables
     private DrawerLayout drawer;
@@ -135,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
                     break;
                 case R.id.nav_geo_search_fragment:
-                    fragment = GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg");
+                    fragment = GoogleMapsSearchFragment.newInstance();
                     break;
                 case R.id.nav_last_search_requests_fragment:
                     fragment = LastSearchRequestsFragment.newInstance();
@@ -187,7 +188,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
 
-    //authorization process when we press Enter Button in LoginFragment
+    /*authorization process when we press Enter Button in LoginFragment
+    * setting up Navigation Drawer*/
     @Override
     public void onLoginButtonEnter() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -214,9 +216,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         Toast.makeText(this,CurrentUser.getInstance().getUser().getLogin(),Toast.LENGTH_LONG).show();
     }
 
+    //Getting rid of Navigation Drawer if we go to LoginFragment and clean stack of fragments
     @Override
     public void getRidOfNavigationDrawer() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public void onPlaceSelected(double latitude, double longitude) {
+
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                GalleryViewItemFragment.newInstance("/storage/emulated/0/Pictures/flickr_photos/alan/38122615645_1b943eb175_m.jpg"))
+                .addToBackStack(null).commit();
+
+        String geoResult="Latitude: "+latitude+"\nLongtitude: "+longitude;
+        Toast.makeText(this,geoResult,Toast.LENGTH_LONG).show();
     }
 }

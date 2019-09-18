@@ -25,9 +25,6 @@
         <activity
             android:name=".fragments.GalleryActivity"
             android:label="@string/title_gallery" />
-        <activity
-            android:name=".fragments.GoogleMapsSearchActivity"
-            android:theme="@style/Theme.SSFS.NoActionBar" />
 
         <activity
             android:name=".fragments.FavoritesActivity"

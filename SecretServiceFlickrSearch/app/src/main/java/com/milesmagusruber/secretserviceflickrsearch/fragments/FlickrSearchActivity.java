@@ -205,7 +205,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
         buttonGeoSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(new Intent(FlickrSearchActivity.this, GoogleMapsSearchActivity.class), GEO_SEARCH_REQUEST);
+                //startActivityForResult(new Intent(FlickrSearchActivity.this, GoogleMapsSearchActivity.class), GEO_SEARCH_REQUEST);
+                Toast.makeText(FlickrSearchActivity.this,"GoogleMapsSearchActivity was here",Toast.LENGTH_LONG).show();
             }
         });
 
