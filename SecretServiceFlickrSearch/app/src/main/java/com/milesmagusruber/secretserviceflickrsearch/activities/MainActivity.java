@@ -13,7 +13,9 @@ import androidx.preference.PreferenceManager;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -23,13 +25,16 @@ import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerRe
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FavoritesFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GoogleMapsSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
+import com.yalantis.ucrop.UCrop;
 
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryFragment.REQUEST_IMAGE_CAPTURE;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener,
@@ -44,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     //Working with fragments
     private FragmentManager fragmentManager;
 
+    private final String currentFragmentTag="CURRENT_FRAGMENT";
     /**
      * Whether or not the activity is in two-pane mode,
      * i.e. running on a tablet device.
@@ -144,11 +150,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 case R.id.nav_last_search_requests_fragment:
                     fragment = LastSearchRequestsFragment.newInstance();
                     break;
-                case R.id.nav_favourites_fragment:
+                case R.id.nav_favorites_fragment:
                     fragment = FavoritesFragment.newInstance();
                     break;
                 case R.id.nav_gallery_fragment:
-                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
+                    fragment = GalleryFragment.newInstance();
                     break;
                 case R.id.nav_settings_fragment:
                     fragment= new SettingsFragment();
@@ -156,8 +162,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 case R.id.nav_login_fragment:
                     fragment=new LoginFragment();
                     break;
-                default:
-                    fragment = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         // Insert the fragment by replacing any existing fragment
         if(!twoPaneMode) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment, currentFragmentTag).addToBackStack(null).commit();
         }else{
             fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).addToBackStack(null).commit();
             try {
@@ -192,6 +196,34 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
 
     }
+
+
+    /*if we get result from camera go to uCrop activity
+     * if we get result from uCrop activity show image in imageView*/
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        Fragment fragment = fragmentManager.findFragmentByTag("MY_FRAGMENT");
+        if (fragment != null && fragment.isVisible() && (fragment instanceof GalleryFragment)) {
+            // add your code here
+            GalleryFragment galleryFragment = (GalleryFragment) fragment;
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                Log.d("FILETT", Integer.toString(resultCode));
+            }
+            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                //If we get photo from camera
+                Log.d("FILETT", "Camera returns image");
+                Uri uri = Uri.parse(galleryFragment.currentPhotoPath);
+                galleryFragment.openCropActivity(uri, uri);
+            } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
+                //If we get our photo cropped with UCrop library
+                Uri uri = UCrop.getOutput(data);
+                galleryFragment.showImage(uri);
+            }
+        }
+
+    }
+
+
 
 
     /*authorization process when we press Enter Button in LoginFragment

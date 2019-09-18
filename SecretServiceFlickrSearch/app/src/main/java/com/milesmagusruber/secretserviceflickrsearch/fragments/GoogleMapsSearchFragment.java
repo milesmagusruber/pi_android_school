@@ -33,8 +33,6 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import java.util.Locale;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_LATITUDE;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_LONGITUDE;
 
 public class GoogleMapsSearchFragment extends Fragment implements OnMapReadyCallback {
 

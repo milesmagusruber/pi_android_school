@@ -2,7 +2,7 @@ package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,9 +12,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class FlickrSearchActivity extends AppCompatActivity {
+public class FlickrSearchFragment extends Fragment {
 
     public static final String EXTRA_WEBLINK = BuildConfig.APPLICATION_ID + ".extra.weblink";
     public static final String EXTRA_TITLE = BuildConfig.APPLICATION_ID + ".extra.title";
@@ -83,7 +83,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private LinearLayoutManager layoutManager;
 
 
-    public static final String TAG = "MainActivity";
+    public static final String TAG = "FlickrSearchFragment";
 
 
     //Working with database;
@@ -99,34 +99,21 @@ public class FlickrSearchActivity extends AppCompatActivity {
     private Call<FlickrResponse> call;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_flickr_search);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_flickr_search, container, false);
 
-        //placeholder
-        db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
-        String login="alan";
-        User user = db.getUser(login);
-        if (user == null) {
-            db.addUser(new User(login));
-            user = db.getUser(login);
-        }
-        currentUser = CurrentUser.getInstance();
-        currentUser.setUser(user);
-        db.close();
-
-        networkHelper = NetworkHelper.getInstance(this);
+        networkHelper = NetworkHelper.getInstance(getActivity());
         currentUser = CurrentUser.getInstance();
         geoResult=false;
 
         //Initialising UI elements
-        buttonTextSearch = findViewById(R.id.button_text_search);
-        buttonGeoSearch = findViewById(R.id.button_geo_search);
-        editTextFlickrSearch = findViewById(R.id.edittext_flickr_search);
-        downloadProgressBar = (ProgressBar) findViewById(R.id.download_progressbar);
-        rvFlickrResult = (RecyclerView) findViewById(R.id.flickr_result);
-        textViewFlickrError = findViewById(R.id.flickr_error);
-        scrollProgressBar = (ProgressBar) findViewById(R.id.scroll_progressbar);
+        buttonTextSearch = view.findViewById(R.id.button_text_search);
+        buttonGeoSearch = view.findViewById(R.id.button_geo_search);
+        editTextFlickrSearch = view.findViewById(R.id.edittext_flickr_search);
+        downloadProgressBar = (ProgressBar) view.findViewById(R.id.download_progressbar);
+        rvFlickrResult = (RecyclerView) view.findViewById(R.id.flickr_result);
+        textViewFlickrError = view.findViewById(R.id.flickr_error);
+        scrollProgressBar = (ProgressBar) view.findViewById(R.id.scroll_progressbar);
         isLoading = false;
         photosPage = 1;//number of pages is 1
         photosEndReached = false;
@@ -164,7 +151,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                         totalItemCount = layoutManager.getItemCount();
                         pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
                         if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                            if (!photosEndReached && networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
+                            if (!photosEndReached && networkHelper.haveNetworkConnection(getActivity())) {
                                 isLoading = true;
                                 loadMorePhotos();
                             }
@@ -173,7 +160,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 }
             }
         };
-        layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(getActivity());
         //getting last search request of the user
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
@@ -185,7 +172,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 @Override
                 protected Integer doInBackground(Void... data) {
                     //Initialize SearchRequests
-                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                    db = DatabaseHelper.getInstance(getActivity());
                     lastSearchRequest = db.getLastTextSearchRequest(currentUser.getUser().getId()).getSearchRequest();
                     db.close();
                     return 0;
@@ -206,7 +193,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //startActivityForResult(new Intent(FlickrSearchActivity.this, GoogleMapsSearchActivity.class), GEO_SEARCH_REQUEST);
-                Toast.makeText(FlickrSearchActivity.this,"GoogleMapsSearchActivity was here",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"GoogleMapsSearchActivity was here",Toast.LENGTH_LONG).show();
             }
         });
 
@@ -220,7 +207,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 photosPage = 1;
                 photosEndReached = false;
                 //At first check network connection
-                if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
+                if (!networkHelper.haveNetworkConnection(getActivity())) {
                     textViewFlickrError.setVisibility(TextView.VISIBLE);
                     textViewFlickrError.setText(getString(R.string.turn_on_internet));
                 } else if (textSearch.equals("")) {
@@ -241,42 +228,8 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 }
             }
         });
+        return view;
     }
-
-    //Creating main menu of our application
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    //Transitions between app activities via main menu
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        Intent intent=null;
-        switch(id){
-            case R.id.activity_last_search_requests :
-                //going to Last Search Requests
-                //intent = new Intent(this, LastSearchRequestsActivity.class);
-                //startActivity(intent);
-                Toast.makeText(this,"LastSearchRequestsActivity was here",Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.activity_favorites:
-                //going to Favorites
-                //intent = new Intent(this, FavoritesActivity.class);
-                //startActivity(intent);
-                Toast.makeText(this,"FavoritesActivity was here",Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.activity_gallery:
-                //going to gallery
-                intent = new Intent(this, GalleryActivity.class);
-                startActivity(intent);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 
     //Using this method to get geo coords from GoogleMapsSearchActivity
     @Override
@@ -297,10 +250,10 @@ public class FlickrSearchActivity extends AppCompatActivity {
                             geoResultLongitude);
 
                     editTextFlickrSearch.setText("");
-                    Toast.makeText(FlickrSearchActivity.this,searchRequest,Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),searchRequest,Toast.LENGTH_LONG).show();
                     textViewFlickrError.setVisibility(View.INVISIBLE);
                     rvFlickrResult.setVisibility(View.INVISIBLE);
-                    if (!networkHelper.haveNetworkConnection(FlickrSearchActivity.this)) {
+                    if (!networkHelper.haveNetworkConnection(getActivity())) {
                         textViewFlickrError.setVisibility(TextView.VISIBLE);
                         textViewFlickrError.setText(getString(R.string.turn_on_internet));
                     }else{
@@ -330,7 +283,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
                 intent.putExtra(EXTRA_TITLE, photo.getTitle());
                 intent.putExtra(EXTRA_SEARCH_REQUEST, searchRequest);
                 startActivity(intent);*/
-                Toast.makeText(FlickrSearchActivity.this,"FlickrViewItemActivity: "+photo.getPhotoUrl(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"FlickrViewItemActivity: "+photo.getPhotoUrl(),Toast.LENGTH_LONG).show();
 
             }
 
@@ -370,7 +323,7 @@ public class FlickrSearchActivity extends AppCompatActivity {
 
                 @Override
                 protected Integer doInBackground(Void... voids) {
-                    db = DatabaseHelper.getInstance(FlickrSearchActivity.this);
+                    db = DatabaseHelper.getInstance(getActivity());
                     db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), searchRequest));
                     db.close();
                     return 0;

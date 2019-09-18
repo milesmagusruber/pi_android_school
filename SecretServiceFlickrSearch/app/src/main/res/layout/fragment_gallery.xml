@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.GalleryActivity">
+    tools:context=".fragments.GalleryFragment">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_take_a_photo"

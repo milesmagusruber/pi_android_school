@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +29,9 @@ import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_SEARCH_REQUEST;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_TITLE;
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchActivity.EXTRA_WEBLINK;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment.EXTRA_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment.EXTRA_TITLE;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment.EXTRA_WEBLINK;
 
 public class FlickrViewItemFragment extends Fragment {
 

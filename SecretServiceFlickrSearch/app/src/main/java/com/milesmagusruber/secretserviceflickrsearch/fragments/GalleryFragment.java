@@ -1,14 +1,15 @@
 package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -16,7 +17,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
@@ -25,15 +28,16 @@ import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotoFilesAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
+import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.util.ArrayList;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryFragment extends Fragment {
 
-    static final int REQUEST_IMAGE_CAPTURE = 30;
-    static final int REQUEST_CAMERA_AND_STORAGE = 42;
+    public static final int REQUEST_IMAGE_CAPTURE = 30;
+    public static final int REQUEST_CAMERA_AND_STORAGE = 42;
     public static final String EXTRA_GALLERY_ITEM = BuildConfig.APPLICATION_ID + ".extra.gallery.item";
 
     //Layout elements
@@ -49,18 +53,47 @@ public class GalleryActivity extends AppCompatActivity {
     //FileHelper
     private FileHelper fileHelper;
     //PhotoPath
-    private String currentPhotoPath = "";
+    public String currentPhotoPath = "";
 
     //photo files adapter
     private PhotoFilesAdapter photoFilesAdapter;
 
 
+
+    //constructor
+    public GalleryFragment() {
+    }
+
+    public static GalleryFragment newInstance() {
+        return new GalleryFragment();
+    }
+
+    //Interface with MainActivity class
+    private OnPhotoSelectedListener listener;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_gallery);
-        buttonTakeAPhoto = findViewById(R.id.button_take_a_photo);
-        rvGallery = findViewById(R.id.rv_gallery);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof LoginFragment.LoginFragmentListener) {
+            listener = (OnPhotoSelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString()
+                    + " must implement methods of OnPhotoSelectedListener");
+        }
+    }
+
+    @Override
+    public void onDetach(){
+        listener=null;
+        super.onDetach();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_gallery, container, false);
+        buttonTakeAPhoto = view.findViewById(R.id.button_take_a_photo);
+        rvGallery = view.findViewById(R.id.rv_gallery);
 
         //Initialize itemTouchHelper
         itemTouchHelper = new ItemTouchHelper(
@@ -88,28 +121,12 @@ public class GalleryActivity extends AppCompatActivity {
         if (checkGalleryPermissions()) {
             initializeCameraAndStorageFunctionaly();
         } else {
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_CAMERA_AND_STORAGE);
+            ActivityCompat.requestPermissions(getActivity(), permissions, REQUEST_CAMERA_AND_STORAGE);
         }
+        return view;
     }
 
-    /*if we get result from camera go to uCrop activity
-     * if we get result from uCrop activity show image in imageView*/
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE) {
-            Log.d("FILETT", Integer.toString(resultCode));
-        }
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            //If we get photo from camera
-            Log.d("FILETT", "Camera returns image");
-            Uri uri = Uri.parse(currentPhotoPath);
-            openCropActivity(uri, uri);
-        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-            //If we get our photo cropped with UCrop library
-            Uri uri = UCrop.getOutput(data);
-            showImage(uri);
-        }
-    }
+
 
     //This method is used to take a photo via camera
     private void takeAPhoto() {
@@ -120,7 +137,7 @@ public class GalleryActivity extends AppCompatActivity {
             currentPhotoPath = "file:" + file.getAbsolutePath();
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
+                uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID.concat(".fileprovider"), file);
             else
                 uri = Uri.fromFile(file);
             Log.d("FILETT", uri.toString());
@@ -129,28 +146,28 @@ public class GalleryActivity extends AppCompatActivity {
             pictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
             startActivityForResult(pictureIntent, REQUEST_IMAGE_CAPTURE);
         } catch (NullPointerException e) {
-            Toast.makeText(this, R.string.problem_with_filesystem, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.problem_with_filesystem, Toast.LENGTH_LONG).show();
         }
     }
 
 
     //this method is used to process photo with UCrop library
-    private void openCropActivity(Uri sourceUri, Uri destinationUri) {
+    public void openCropActivity(Uri sourceUri, Uri destinationUri) {
         int maxWidth = 1600;
         int maxHeight = 1600;
         UCrop.of(sourceUri, destinationUri)
                 .withMaxResultSize(maxWidth, maxHeight)
                 .withAspectRatio(5f, 5f)
-                .start(this);
+                .start(getActivity());
     }
 
     //This method shows image in imageView
-    private void showImage(Uri imageUri) {
+    public void showImage(Uri imageUri) {
         try {
             photoFilesAdapter.addNewPhotoFile(new File(imageUri.getPath()));
 
         } catch (Exception e) {
-            Toast.makeText(this, "Having problems with showing image", Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Having problems with showing image", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -164,7 +181,7 @@ public class GalleryActivity extends AppCompatActivity {
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
                     initializeCameraAndStorageFunctionaly();
                 } else {
-                    Toast.makeText(this, "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Having problems with permission requests!!", Toast.LENGTH_LONG).show();
                 }
             }
         }
@@ -174,7 +191,7 @@ public class GalleryActivity extends AppCompatActivity {
     private boolean checkGalleryPermissions() {
         boolean result = true;
         for (String perm : permissions) {
-            result = result && (ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED);
+            result = result && (ContextCompat.checkSelfPermission(getActivity(), perm) == PackageManager.PERMISSION_GRANTED);
         }
         return result;
     }
@@ -195,11 +212,8 @@ public class GalleryActivity extends AppCompatActivity {
         photoFilesAdapter = new PhotoFilesAdapter(photoFiles, new PhotoFilesAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(File photoFile) {
-                //go to GalleryViewItemActivity
-                Toast.makeText(GalleryActivity.this,"There was GalleryViewItemActivity: "+photoFile.getAbsolutePath(),Toast.LENGTH_LONG).show();
-                //Intent intent = new Intent(GalleryActivity.this, GalleryViewItemActivity.class);
-                //intent.putExtra(EXTRA_GALLERY_ITEM, photoFile.getAbsolutePath());
-                //startActivity(intent);
+                //go to GalleryViewItemFragment
+                listener.onPhotoFileSelected(photoFile.getAbsolutePath());
             }
 
         });
@@ -207,7 +221,7 @@ public class GalleryActivity extends AppCompatActivity {
         rvGallery.setAdapter(photoFilesAdapter);
 
         // Set layout manager
-        rvGallery.setLayoutManager(new LinearLayoutManager(this));
+        rvGallery.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // Add the functionality to swipe items in the
         // recycler view to delete that item
@@ -221,14 +235,14 @@ public class GalleryActivity extends AppCompatActivity {
         if (fileHelper.deletePhotoFile(photoFilesAdapter.getPhotoFileAtPosition(position))) {
             photoFilesAdapter.removePhotoFile(position);
         } else {
-            Toast.makeText(this, R.string.file_not_removed, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), R.string.file_not_removed, Toast.LENGTH_LONG).show();
         }
     }
 
     private void initializeCameraAndStorageFunctionaly() {
         activateCameraButton();
         //file helper
-        CurrentUser.getInstance().setFileHelper(this);
+        CurrentUser.getInstance().setFileHelper(getActivity());
         fileHelper = CurrentUser.getInstance().getFileHelper();
         ArrayList<File> photoFiles = new ArrayList<File>();
         photoFiles.addAll(fileHelper.getAllUserPhotos());

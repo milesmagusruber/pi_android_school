@@ -15,7 +15,7 @@
             android:icon="@drawable/ic_nav_last_search_requests"
             android:title="@string/title_last_search_requests" />
         <item
-            android:id="@+id/nav_favourites_fragment"
+            android:id="@+id/nav_favorites_fragment"
             android:icon="@drawable/ic_nav_favorites"
             android:title="@string/title_favorites" />
         <item
