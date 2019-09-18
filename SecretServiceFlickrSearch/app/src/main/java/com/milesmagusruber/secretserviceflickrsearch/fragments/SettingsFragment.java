@@ -1,6 +1,7 @@
 package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.Preference;
@@ -24,7 +25,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
-
         SwitchPreferenceCompat themeSwitch = findPreference(KEY_THEME);
 
         if (themeSwitch != null) {

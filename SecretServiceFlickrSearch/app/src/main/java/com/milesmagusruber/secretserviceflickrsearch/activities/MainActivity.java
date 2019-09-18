@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     //Working with fragments
     private FragmentManager fragmentManager;
 
-    private final String currentFragmentTag="CURRENT_FRAGMENT";
+    private final String currentFragmentTag = "CURRENT_FRAGMENT";
     public static final int REQUEST_IMAGE_CAPTURE = 30;
     /**
      * Whether or not the activity is in two-pane mode,
@@ -71,17 +71,17 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         setTheme(R.style.Theme_SSFS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //setting requested orientation for smartphone or wide screen device (such as tablet)
-        if(findViewById(R.id.fragment_container_master)!=null){
-            twoPaneMode=true;
+        if (findViewById(R.id.fragment_container_master) != null) {
+            twoPaneMode = true;
         }
-        if(twoPaneMode){
+        if (twoPaneMode) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        }else{
+        } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         // Set a Toolbar to replace the ActionBar.
@@ -94,19 +94,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         this.registerReceiver(powerReceiver, filter);
 
 
-        //user Initialization
-        Fragment fragment= LoginFragment.newInstance();
         fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,fragment).commit();
+        Fragment fragment = LoginFragment.newInstance();
+        //user Initialization
+        if(!twoPaneMode){
+            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+        }else{
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_master, fragment).commit();
+        }
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         //setting day or night themes
-        if(PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_THEME,false)){
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean(KEY_THEME, false)) {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_YES);
-        }else{
+        } else {
             AppCompatDelegate.setDefaultNightMode(
                     AppCompatDelegate.MODE_NIGHT_NO);
         }
@@ -167,28 +171,22 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     fragment = GalleryFragment.newInstance();
                     break;
                 case R.id.nav_settings_fragment:
-                    fragment= new SettingsFragment();
+                    fragment = new SettingsFragment();
                     break;
                 case R.id.nav_login_fragment:
-                    fragment=new LoginFragment();
+                    fragment = new LoginFragment();
                     break;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         // Insert the fragment by replacing any existing fragment
-        if(!twoPaneMode) {
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
-        }else{
-            fragmentManager.beginTransaction().replace(R.id.fragment_container_master,fragment).addToBackStack(null).commit();
-            try {
-                Fragment fragmentSecond = GalleryViewItemFragment.newInstance("/data/user/0/com.milesmagusruber.secretserviceflickrsearch/files/photos/alan/userphoto_1568743044019.jpg");;
-                fragmentManager.beginTransaction().replace(R.id.fragment_container_detail,fragmentSecond).commit();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        if (!twoPaneMode) {
+            changeFragment(fragment);
+        } else {
+            changeFragmentTwoPaneModeMaster(fragment);
         }
 
         // Highlight the selected item has been done by NavigationView
@@ -201,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private ActionBarDrawerToggle setupDrawerToggle() {
         // NOTE: Make sure you pass in a valid toolbar reference.  ActionBarDrawToggle() does not require it
         // and will not render the hamburger icon without it.
-        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open,  R.string.drawer_close);
+        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
 
     }
 
@@ -209,19 +207,19 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     /*if we get result from camera go to uCrop activity
      * if we get result from uCrop activity show image in imageView*/
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-            // add your code here
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                Log.d("FILETT", Integer.toString(resultCode));
-            }
-            if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                //If we get photo from camera
-                Log.d("FILETT", "Camera returns image");
-                Uri uri = Uri.parse(currentPhotoPath);
-                openCropActivity(uri, uri);
-            } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
-                //correct the bug
-            }
+        super.onActivityResult(requestCode, resultCode, data);
+        // add your code here
+        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+            Log.d("FILETT", Integer.toString(resultCode));
+        }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            //If we get photo from camera
+            Log.d("FILETT", "Camera returns image");
+            Uri uri = Uri.parse(currentPhotoPath);
+            openCropActivity(uri, uri);
+        } else if (requestCode == UCrop.REQUEST_CROP && resultCode == RESULT_OK) {
+
+        }
 
     }
 
@@ -236,10 +234,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
 
-
-
     /*authorization process when we press Enter Button in LoginFragment
-    * setting up Navigation Drawer*/
+     * setting up Navigation Drawer*/
     @Override
     public void onLoginButtonEnter() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -259,9 +255,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
         // Setup drawer view
         setupDrawerContent(nvDrawer);
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                FlickrSearchFragment.newInstance())
-                .addToBackStack(null).commit();
+        if (!twoPaneMode) {
+            changeFragment(FlickrSearchFragment.newInstance());
+        } else {
+            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance());
+        }
 
     }
 
@@ -275,26 +273,31 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     //If the place on the map is selected transfer latitude and longitude to FlickrSearchFragment
     @Override
     public void onPlaceSelected(double latitude, double longitude) {
-
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                FlickrSearchFragment.newInstance(latitude,longitude))
-                .addToBackStack(null).commit();
+        if (!twoPaneMode) {
+            changeFragment(FlickrSearchFragment.newInstance(latitude, longitude));
+        } else {
+            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance(latitude, longitude));
+        }
     }
 
     //If we selected Flickr Photo in FlickrSearchFragment or FavoritesFragment
     @Override
     public void onFlickrPhotoSelected(String searchRequest, String webLink, String title) {
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                FlickrViewItemFragment.newInstance(searchRequest,webLink,title))
-                .addToBackStack(null).commit();
+        if (!twoPaneMode) {
+            changeFragment(FlickrViewItemFragment.newInstance(searchRequest, webLink, title));
+        } else {
+            changeFragmentTwoPaneModeDetail(FlickrViewItemFragment.newInstance(searchRequest, webLink, title));
+        }
     }
 
     //If we selected photo file in gallery fragment
     @Override
     public void onPhotoFileSelected(String filePath) {
-        fragmentManager.beginTransaction().replace(R.id.fragment_container,
-                GalleryViewItemFragment.newInstance(filePath))
-                .addToBackStack(null).commit();
+        if (!twoPaneMode) {
+            changeFragment(GalleryViewItemFragment.newInstance(filePath));
+        } else {
+            changeFragmentTwoPaneModeDetail(GalleryViewItemFragment.newInstance(filePath));
+        }
     }
 
     //taking photo with camera
@@ -321,5 +324,25 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
             Toast.makeText(this, R.string.problem_with_filesystem, Toast.LENGTH_LONG).show();
         }
 
+    }
+
+    //Changing fragments in small screen devices such as smartphones
+    public void changeFragment(Fragment fragment) {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                fragment)
+                .addToBackStack(null).commit();
+    }
+
+    //Changing master fragment in wide screen devices such as tablet
+    public void changeFragmentTwoPaneModeMaster(Fragment fragment) {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container_master,
+                fragment)
+                .addToBackStack(null).commit();
+    }
+
+    //Changing detail fragment in wide screen devices such as tablet
+    public void changeFragmentTwoPaneModeDetail(Fragment fragment) {
+        fragmentManager.beginTransaction().replace(R.id.fragment_container_detail,
+                fragment).commit();
     }
 }
