@@ -20,6 +20,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
@@ -42,7 +44,6 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 
-import static com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryFragment.REQUEST_IMAGE_CAPTURE;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener,
@@ -53,17 +54,33 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    private FrameLayout detailContainer;
 
     //Working with fragments
     private FragmentManager fragmentManager;
 
-    private final String currentFragmentTag = "CURRENT_FRAGMENT";
     public static final int REQUEST_IMAGE_CAPTURE = 30;
     /**
      * Whether or not the activity is in two-pane mode,
      * i.e. running on a tablet device.
      */
     private boolean twoPaneMode = false;
+
+    //use when we need to hide container
+    LinearLayout.LayoutParams layoutParamHideContainer=new LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            0
+    );
+
+    //use when we need to show container
+    LinearLayout.LayoutParams layoutParamShowContainer=new LinearLayout.LayoutParams(
+            0,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            2
+    );;
+
+
     private String currentPhotoPath = "";
 
     //Power Broadcast Receiver
@@ -75,9 +92,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         setTheme(R.style.Theme_SSFS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         //setting requested orientation for smartphone or wide screen device (such as tablet)
         if (findViewById(R.id.fragment_container_master) != null) {
             twoPaneMode = true;
+            detailContainer = findViewById(R.id.fragment_container_detail);
+            detailContainer.setLayoutParams(layoutParamHideContainer);
         }
         if (twoPaneMode) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -338,6 +359,11 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.beginTransaction().replace(R.id.fragment_container_master,
                 fragment)
                 .addToBackStack(null).commit();
+        if((fragment instanceof FlickrSearchFragment)||(fragment instanceof FavoritesFragment)||(fragment instanceof GalleryFragment)){
+            detailContainer.setLayoutParams(layoutParamShowContainer);
+        }else{
+            detailContainer.setLayoutParams(layoutParamHideContainer);
+        }
     }
 
     //Changing detail fragment in wide screen devices such as tablet
