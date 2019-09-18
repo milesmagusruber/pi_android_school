@@ -15,6 +15,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String KEY_THEME="dark_theme";
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().setTitle(R.string.title_settings);
+    }
+
+    @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
 

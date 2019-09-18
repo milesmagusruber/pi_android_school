@@ -143,6 +143,13 @@ public class FlickrSearchFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().setTitle(R.string.title_flickr_search);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flickr_search, container, false);
 

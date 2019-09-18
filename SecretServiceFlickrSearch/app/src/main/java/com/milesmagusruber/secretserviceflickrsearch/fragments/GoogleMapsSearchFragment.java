@@ -77,7 +77,12 @@ public class GoogleMapsSearchFragment extends Fragment implements OnMapReadyCall
     }
 
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Set title
+        getActivity().setTitle(R.string.title_geo_search);
+    }
 
     //constructor
     public GoogleMapsSearchFragment() {

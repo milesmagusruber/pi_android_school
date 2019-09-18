@@ -193,8 +193,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
         // Close the navigation drawer
         drawer.closeDrawers();
 
@@ -281,7 +279,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
                 FlickrSearchFragment.newInstance(latitude,longitude))
                 .addToBackStack(null).commit();
-        toolbar.setTitle(R.string.title_flickr_search);
     }
 
     //If we selected Flickr Photo in FlickrSearchFragment or FavoritesFragment
