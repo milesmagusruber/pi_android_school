@@ -187,7 +187,13 @@ public class FavoritesFragment extends Fragment {
                 @Override
                 protected Integer doInBackground(Void... data) {
                     db = DatabaseHelper.getInstance(getActivity());
-                    favorites = db.getAllFavorites(currentUser.getUser().getId(), searchRequest);
+                    if(searchRequest==null || searchRequest.equals("")){
+                        favorites=db.getAllFavorites(currentUser.getUser().getId());
+                        if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
+                    }else {
+                        favorites = db.getAllFavoritesBySearchRequest(currentUser.getUser().getId(), searchRequest);
+                        if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
+                    }
                     db.close();
                     return 0;
                 }
@@ -245,6 +251,25 @@ public class FavoritesFragment extends Fragment {
             asyncTask.execute();
         }
 
+    }
+
+    private void saturateFavoritesWithSearchRequestsObjects(){
+        String cunningSearchString = favorites.get(0).getSearchRequest(); //for FavoritesAdapter to have different cards
+        String searchReq;
+        int userId=currentUser.getUser().getId();
+        favorites.add(0,new Favorite(userId, cunningSearchString,"",""));
+        int index=1;
+        int sizeOfFavorites=favorites.size();
+        while (index<sizeOfFavorites){
+            searchReq = favorites.get(index).getSearchRequest();
+            if(!searchReq.equals(cunningSearchString)){
+                cunningSearchString=searchReq;
+                favorites.add(index,new Favorite(userId, cunningSearchString,"",""));
+                index++;
+                sizeOfFavorites++;
+            }
+            index++;
+        }
     }
 
 

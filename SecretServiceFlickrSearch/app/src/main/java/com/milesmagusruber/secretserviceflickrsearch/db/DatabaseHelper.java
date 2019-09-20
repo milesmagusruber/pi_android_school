@@ -206,34 +206,56 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         return null;
     }
 
+
     @Override
-    public ArrayList<Favorite> getAllFavorites(int user, String searchRequest) {
+    public ArrayList<Favorite> getAllFavorites(int user) {
         ArrayList<Favorite> favoritesList = new ArrayList<Favorite>();
         String selectQuery = null;
         SQLiteDatabase db = null;
         try {
             db = this.getWritableDatabase();
             Cursor cursor = null;
-            if (searchRequest == null) {
-                selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
-                        + " = ? ORDER BY "+KEY_SEARCH_REQUEST+" ASC";
-                cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
 
-            } else {
-                selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
-                        + " = ?" + " AND " + KEY_SEARCH_REQUEST + "= ? ORDER BY "+KEY_SEARCH_REQUEST+" ASC";
-                cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user), searchRequest});
-            }
-
-            String cunningSearchString=""; //for FavoritesAdapter to have different cards
+            selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
+                    + " = ? ORDER BY " + KEY_SEARCH_REQUEST + " ASC";
+            cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user)});
 
             if (cursor.moveToFirst()) {
                 do {
-                    String searchReq=cursor.getString(2);
-                    if(!cunningSearchString.equals(searchReq)){
-                        cunningSearchString=searchReq;
-                        favoritesList.add(new Favorite(user,cunningSearchString,"",""));
-                    }
+                    Favorite favorite = new Favorite();
+                    favorite.setId(Integer.parseInt(cursor.getString(0)));
+                    favorite.setUser(Integer.parseInt(cursor.getString(1)));
+                    favorite.setSearchRequest(cursor.getString(2));
+                    favorite.setTitle(cursor.getString(3));
+                    favorite.setWebLink(cursor.getString(4));
+                    favoritesList.add(favorite);
+                } while (cursor.moveToNext());
+            }
+            cursor.close();
+        } catch (Exception e) {
+            Log.e(LOG_DB, e.toString());
+        } finally {
+            if (db != null) db.close();
+        }
+
+        return favoritesList;
+    }
+
+    @Override
+    public ArrayList<Favorite> getAllFavoritesBySearchRequest(int user, String searchRequest) {
+        ArrayList<Favorite> favoritesList = new ArrayList<Favorite>();
+        String selectQuery = null;
+        SQLiteDatabase db = null;
+        try {
+            db = this.getWritableDatabase();
+            Cursor cursor = null;
+
+            selectQuery = "SELECT * FROM " + TABLE_FAVORITES + " WHERE " + KEY_USER
+                    + " = ?" + " AND " + KEY_SEARCH_REQUEST + "= ? ORDER BY " + KEY_SEARCH_REQUEST + " ASC";
+            cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user), searchRequest});
+
+            if (cursor.moveToFirst()) {
+                do {
                     Favorite favorite = new Favorite();
                     favorite.setId(Integer.parseInt(cursor.getString(0)));
                     favorite.setUser(Integer.parseInt(cursor.getString(1)));
@@ -276,10 +298,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         SQLiteDatabase db = null;
         try {
             db = this.getWritableDatabase();
-            if(!favorite.getWebLink().equals("")) {
+            if (!favorite.getWebLink().equals("")) {
                 db.delete(TABLE_FAVORITES, KEY_FAVORITE_WEB_LINK + " = ?", new String[]{String.valueOf(favorite.getWebLink())});
-            }else{
-                db.delete(TABLE_FAVORITES,KEY_SEARCH_REQUEST +" = ?", new String[]{String.valueOf(favorite.getSearchRequest())});
+            } else {
+                db.delete(TABLE_FAVORITES, KEY_SEARCH_REQUEST + " = ?", new String[]{String.valueOf(favorite.getSearchRequest())});
             }
         } catch (Exception e) {
             Log.e(LOG_DB, e.toString());
@@ -311,10 +333,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements IDatabaseHandler
         SQLiteDatabase db = null;
         try {
             db = this.getReadableDatabase();
-            String pattern="Geo Request%Latitude%Longitude%";
+            String pattern = "Geo Request%Latitude%Longitude%";
             String selectQuery = "SELECT * FROM " + TABLE_SEARCH_REQUESTS + " WHERE " + KEY_USER
-                    + "= ? AND "+KEY_SEARCH_REQUEST+" NOT LIKE ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
-            Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user),pattern});
+                    + "= ? AND " + KEY_SEARCH_REQUEST + " NOT LIKE ?" + " ORDER BY " + KEY_SEARCH_REQUEST_SDATETIME + " DESC LIMIT 1";
+            Cursor cursor = db.rawQuery(selectQuery, new String[]{Integer.toString(user), pattern});
             if (cursor != null) {
                 cursor.moveToFirst();
                 if (cursor.getCount() > 0) {
