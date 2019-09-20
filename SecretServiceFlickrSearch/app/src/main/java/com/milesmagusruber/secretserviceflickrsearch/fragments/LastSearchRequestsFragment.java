@@ -14,7 +14,7 @@ import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 
 import java.util.ArrayList;
 

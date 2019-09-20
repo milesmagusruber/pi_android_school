@@ -1,7 +1,6 @@
 package com.milesmagusruber.secretserviceflickrsearch.fragments;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,8 +28,7 @@ import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;

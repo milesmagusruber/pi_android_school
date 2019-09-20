@@ -1,13 +1,30 @@
-package com.milesmagusruber.secretserviceflickrsearch.db.model;
+package com.milesmagusruber.secretserviceflickrsearch.db.entities;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "favorites")
 public class Favorite {
-    int id;
-    int user;
-    String searchRequest;
-    String title;
-    String webLink;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
+
+    @ColumnInfo(name = "user")
+    private int user;
+
+    @ColumnInfo(name = "search_request")
+    private String searchRequest;
+
+    @ColumnInfo(name = "title")
+    private String title;
+
+    @ColumnInfo(name = "web_link")
+    private String webLink;
 
 
+    @Ignore
     public Favorite(){}
 
     public Favorite(int id, int user, String searchRequest, String title, String webLink){
@@ -18,6 +35,7 @@ public class Favorite {
         this.webLink = webLink;
     }
 
+    @Ignore
     public Favorite(int user, String searchRequest, String title, String webLink){
         this.user = user;
         this.searchRequest = searchRequest;

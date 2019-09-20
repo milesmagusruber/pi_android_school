@@ -1,12 +1,26 @@
-package com.milesmagusruber.secretserviceflickrsearch.db.model;
+package com.milesmagusruber.secretserviceflickrsearch.db.entities;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity(tableName = "search_requests")
 public class SearchRequest {
-    int id;
-    int user;
-    String searchRequest;
-    long sDateTime;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    private int id;
 
+    @ColumnInfo(name = "user")
+    private int user;
 
+    @ColumnInfo(name = "search_request")
+    private String searchRequest;
+
+    @ColumnInfo(name = "sdatetime")
+    private long sDateTime;
+
+    @Ignore
     public SearchRequest(){
 
     }
@@ -18,6 +32,7 @@ public class SearchRequest {
         this.sDateTime = dateTime;
     }
 
+    @Ignore
     public SearchRequest(int user, String searchRequest){
         this.user = user;
         this.searchRequest = searchRequest;

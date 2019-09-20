@@ -9,8 +9,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 
 import java.util.List;
 
@@ -50,9 +49,9 @@ public class SearchRequestsAdapter extends RecyclerView.Adapter<SearchRequestsAd
     // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(SearchRequestsAdapter.ViewHolder viewHolder, int position) {
-        // Get the data model based on position
+        // Get the data entities based on position
         SearchRequest searchRequest = searchRequests.get(position);
-        // Set item views based on your views and data model
+        // Set item views based on your views and data entities
         viewHolder.itemSearchRequest.setText(searchRequest.getSearchRequest());
     }
 

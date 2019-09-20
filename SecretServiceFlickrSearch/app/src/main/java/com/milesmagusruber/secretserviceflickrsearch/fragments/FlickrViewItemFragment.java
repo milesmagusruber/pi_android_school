@@ -26,7 +26,7 @@ import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment.EXTRA_SEARCH_REQUEST;

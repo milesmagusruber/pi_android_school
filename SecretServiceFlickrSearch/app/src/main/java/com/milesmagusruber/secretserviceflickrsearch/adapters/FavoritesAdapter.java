@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,9 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 
 import java.util.List;
 
@@ -90,7 +88,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
     // Involves populating data into the item through holder
     @Override
     public void onBindViewHolder(FavoritesAdapter.ViewHolder viewHolder, int position) {
-        // Get the data model based on position
+        // Get the data entities based on position
         Favorite favorite = favorites.get(position);
         if(!favorite.getWebLink().equals("")) {
             viewHolder.itemFavoriteHeaderSearch.setVisibility(View.GONE);
@@ -98,7 +96,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
             viewHolder.itemFavoriteTitle.setVisibility(View.VISIBLE);
             viewHolder.itemFavoriteSearchRequest.setVisibility(View.VISIBLE);
             viewHolder.itemFavoriteImage.setVisibility(View.VISIBLE);
-            // Set item views based on your views and data model
+            // Set item views based on your views and data entities
             viewHolder.itemFavoriteSearchRequest.setText(favorite.getSearchRequest());
             viewHolder.itemFavoriteTitle.setText(favorite.getTitle());
 

@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.milesmagusruber.secretserviceflickrsearch.db.model.Favorite;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.SearchRequest;
-import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.User;
 
 import java.util.ArrayList;
 

@@ -2,7 +2,7 @@ package com.milesmagusruber.secretserviceflickrsearch.db;
 
 import android.content.Context;
 
-import com.milesmagusruber.secretserviceflickrsearch.db.model.User;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.User;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
 public class CurrentUser {

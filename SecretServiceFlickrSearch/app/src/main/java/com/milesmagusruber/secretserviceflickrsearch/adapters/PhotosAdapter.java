@@ -69,9 +69,9 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull PhotosAdapter.ViewHolder holder, int position) {
-        // Get the data model based on position
+        // Get the data entities based on position
         Photo photo = photos.get(position);
-        // Set item views based on your views and data model
+        // Set item views based on your views and data entities
         holder.itemPhotoSearchRequest.setText(searchRequest);
         holder.itemPhotoTitle.setText(photo.getTitle());
 

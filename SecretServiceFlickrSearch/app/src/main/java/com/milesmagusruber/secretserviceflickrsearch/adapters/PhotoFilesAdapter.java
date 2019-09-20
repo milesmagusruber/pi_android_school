@@ -68,9 +68,9 @@ public class PhotoFilesAdapter extends RecyclerView.Adapter<PhotoFilesAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull PhotoFilesAdapter.ViewHolder holder, int position) {
-        // Get the data model based on position
+        // Get the data entities based on position
         File photoFile = photoFiles.get(position);
-        // Set item views based on your views and data model
+        // Set item views based on your views and data entities
         holder.itemPhotoFileTitle.setText(photoFile.getName());
         Glide.with(holder.itemView.getContext()).load(photoFile).into(holder.itemPhotoFileImage);
         holder.bind(photoFile, listener);
