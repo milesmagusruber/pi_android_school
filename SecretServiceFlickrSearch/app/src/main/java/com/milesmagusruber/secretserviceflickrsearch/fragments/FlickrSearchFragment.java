@@ -27,7 +27,7 @@ import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
@@ -46,9 +46,6 @@ public class FlickrSearchFragment extends Fragment {
     public static final String EXTRA_SEARCH_REQUEST = BuildConfig.APPLICATION_ID + ".extra.search.request";
     public static final String EXTRA_LATITUDE = BuildConfig.APPLICATION_ID + ".extra.latitude";
     public static final String EXTRA_LONGITUDE = BuildConfig.APPLICATION_ID + ".extra.longitude";
-
-
-    public static final int GEO_SEARCH_REQUEST = 1;
 
     //Current user
     private CurrentUser currentUser;
@@ -86,7 +83,7 @@ public class FlickrSearchFragment extends Fragment {
 
 
     //Working with database;
-    private DatabaseHelper db;
+    private SSFSDatabase db;
 
     //Working with Network
     private NetworkHelper networkHelper;
@@ -286,9 +283,13 @@ public class FlickrSearchFragment extends Fragment {
                 @Override
                 protected Integer doInBackground(Void... data) {
                     //Initialize SearchRequests
-                    db = DatabaseHelper.getInstance(getActivity());
-                    lastSearchRequest = db.getLastTextSearchRequest(currentUser.getUser().getId()).getSearchRequest();
-                    db.close();
+                    db = db.getInstance(getActivity());
+                    SearchRequest searchRequest = db.searchRequestDao().getLastForUser(currentUser.getUser().getId());
+                    if(searchRequest!=null){
+                        lastSearchRequest = searchRequest.getSearchRequest();
+                    }else{
+                        lastSearchRequest="";
+                    }
                     return 0;
                 }
 
@@ -351,9 +352,9 @@ public class FlickrSearchFragment extends Fragment {
 
                 @Override
                 protected Integer doInBackground(Void... voids) {
-                    db = DatabaseHelper.getInstance(getActivity());
-                    db.addSearchRequest(new SearchRequest(currentUser.getUser().getId(), searchRequest));
-                    db.close();
+                    db = db.getInstance(getActivity());
+
+                    db.searchRequestDao().insert(new SearchRequest(currentUser.getUser().getId(), searchRequest));
                     return 0;
                 }
 

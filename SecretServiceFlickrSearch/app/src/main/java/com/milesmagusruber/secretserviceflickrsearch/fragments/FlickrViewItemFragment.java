@@ -25,7 +25,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.button.MaterialButton;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 
@@ -45,7 +45,7 @@ public class FlickrViewItemFragment extends Fragment {
     private TextView textViewSearchRequestItem; //Search Request
     private MaterialButton buttonIsFavorite; //Button that checks if Flickr image is favorite
     private MaterialButton buttonIsSaved; // Button that checks if Flickr image saved on device
-    private DatabaseHelper db;
+    private SSFSDatabase db;
     private String searchRequest;
     private String title;
     private String webLink;
@@ -126,10 +126,9 @@ public class FlickrViewItemFragment extends Fragment {
 
                 @Override
                 protected Integer doInBackground(Void... data) {
-                    //Initialize SearchRequests
-                    db = DatabaseHelper.getInstance(getActivity());
-                    favorite = db.getFavorite(currentUser.getUser().getId(), webLink);
-                    db.close();
+                    //Getting Favorite
+                    db = db.getInstance(getActivity());
+                    favorite = db.favoriteDao().getByWebLinkForUser(currentUser.getUser().getId(), webLink);
                     return 0;
                 }
 
@@ -182,9 +181,8 @@ public class FlickrViewItemFragment extends Fragment {
 
                             @Override
                             protected Integer doInBackground(Void... voids) {
-                                db = DatabaseHelper.getInstance(getActivity());
-                                db.addFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
-                                db.close();
+                                db = db.getInstance(getActivity());
+                                db.favoriteDao().insert(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 return 0;
                             }
 
@@ -208,9 +206,8 @@ public class FlickrViewItemFragment extends Fragment {
 
                             @Override
                             protected Integer doInBackground(Void... voids) {
-                                db = DatabaseHelper.getInstance(getActivity());
-                                db.deleteFavorite(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
-                                db.close();
+                                db = db.getInstance(getActivity());
+                                db.favoriteDao().delete(new Favorite(currentUser.getUser().getId(), searchRequest, title, webLink));
                                 return 0;
                             }
 

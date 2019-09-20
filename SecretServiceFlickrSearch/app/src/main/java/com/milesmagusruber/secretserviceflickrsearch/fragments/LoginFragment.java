@@ -13,7 +13,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.User;
 
 public class LoginFragment extends Fragment{
@@ -21,13 +21,10 @@ public class LoginFragment extends Fragment{
     private MaterialButton buttonEnter;
     private TextInputEditText editTextlogin;
     private String login;
-    DatabaseHelper db;
+    private SSFSDatabase db;
 
     //Controlling AsyncTask
-    LoginTask loginTask;
-
-
-
+    private LoginTask loginTask;
 
     //empty LoginFragment constructor
     public LoginFragment(){
@@ -114,15 +111,16 @@ public class LoginFragment extends Fragment{
 
         @Override
         protected Integer doInBackground(Void... data) {
-            db = DatabaseHelper.getInstance(getActivity());
-            User user = db.getUser(login);
+            db = db.getInstance(getActivity());
+            //User user = db.getUser(login);
+            User user = db.userDao().getUser(login);
             if (user == null) {
-                db.addUser(new User(login));
-                user = db.getUser(login);
+                db.userDao().insert(new User(login));
+                user = db.userDao().getUser(login);
+
             }
             CurrentUser currentUser = CurrentUser.getInstance();
             currentUser.setUser(user);
-            db.close();
             return 0;
         }
 
@@ -130,8 +128,6 @@ public class LoginFragment extends Fragment{
         protected void onPostExecute(Integer a) {
             buttonEnter.setClickable(true);
             listener.onLoginButtonEnter();
-            //Intent intent = new Intent(LoginFragment.this, FlickrSearchActivity.class);
-            //startActivity(intent);
         }
     }
 

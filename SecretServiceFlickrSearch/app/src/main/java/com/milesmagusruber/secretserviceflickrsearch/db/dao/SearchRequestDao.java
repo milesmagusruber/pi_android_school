@@ -8,6 +8,7 @@ import androidx.room.Query;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Dao
 public interface SearchRequestDao {
@@ -17,7 +18,7 @@ public interface SearchRequestDao {
     SearchRequest getLastForUser(int user);
 
     @Query("SELECT * FROM search_requests WHERE user = :user ORDER BY sdatetime DESC LIMIT 20")
-    ArrayList<SearchRequest> getLast20ForUser(int user);
+    List<SearchRequest> getLast20ForUser(int user);
 
     @Insert
     void insert(SearchRequest searchRequest);

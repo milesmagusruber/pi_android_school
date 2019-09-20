@@ -25,17 +25,18 @@ public class SearchRequest {
 
     }
 
-    public SearchRequest(int id, int user, String searchRequest, long dateTime){
+    public SearchRequest(int id, int user, String searchRequest, long sDateTime){
         this.id=id;
         this.user = user;
         this.searchRequest = searchRequest;
-        this.sDateTime = dateTime;
+        this.sDateTime = sDateTime;
     }
 
     @Ignore
     public SearchRequest(int user, String searchRequest){
         this.user = user;
         this.searchRequest = searchRequest;
+        this.sDateTime = System.currentTimeMillis();
     }
 
     public int getId(){
@@ -62,11 +63,11 @@ public class SearchRequest {
         this.searchRequest = searchRequest;
     }
 
-    public long getDateTime(){
+    public long getSDateTime(){
         return this.sDateTime;
     }
 
-    public void setDate(long sDateTime){
+    public void setSDateTime(long sDateTime){
         this.sDateTime = sDateTime;
     }
 }

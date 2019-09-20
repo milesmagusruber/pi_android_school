@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.SearchRequestsAdapter;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class LastSearchRequestsFragment extends Fragment {
 
     private ArrayList<SearchRequest> searchRequests;
     private RecyclerView rvSearchRequests;
-    private DatabaseHelper db;
+    private SSFSDatabase db;
 
     //Controlling AsyncTask that gets search requests from db
     private SearchRequestsTask searchRequestsTask;
@@ -63,9 +63,8 @@ public class LastSearchRequestsFragment extends Fragment {
         @Override
         protected Integer doInBackground(Void... data) {
             //Initialize SearchRequests
-            db = DatabaseHelper.getInstance(getActivity());
-            searchRequests = db.getAllSearchRequests(currentUser.getUser().getId());
-            db.close();
+            db = db.getInstance(getActivity());
+            searchRequests =new ArrayList<SearchRequest>(db.searchRequestDao().getLast20ForUser(currentUser.getUser().getId()));
             return 0;
         }
 

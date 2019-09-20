@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
 
 import java.io.File;
 import java.io.FileOutputStream;

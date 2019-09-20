@@ -17,7 +17,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.FavoritesAdapter;
-import com.milesmagusruber.secretserviceflickrsearch.db.DatabaseHelper;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 
@@ -38,7 +38,7 @@ public class FavoritesFragment extends Fragment {
     private RecyclerView rvFavorites;
     private TextInputEditText editTextFavoritesFilter;
     private MaterialButton buttonFavoritesFilter;
-    private DatabaseHelper db;
+    private SSFSDatabase db;
     private FavoritesAdapter adapter;
     private ItemTouchHelper helper;
 
@@ -118,9 +118,8 @@ public class FavoritesFragment extends Fragment {
 
                                 @Override
                                 protected Integer doInBackground(Void... voids) {
-                                    db = DatabaseHelper.getInstance(getActivity());
-                                    db.deleteFavorite(favoriteForDelete);
-                                    db.close();
+                                    db=db.getInstance(getActivity());
+                                    db.favoriteDao().delete(favoriteForDelete);
                                     return 0;
                                 }
 
@@ -186,15 +185,14 @@ public class FavoritesFragment extends Fragment {
 
                 @Override
                 protected Integer doInBackground(Void... data) {
-                    db = DatabaseHelper.getInstance(getActivity());
+                    db = db.getInstance(getActivity());
                     if(searchRequest==null || searchRequest.equals("")){
-                        favorites=db.getAllFavorites(currentUser.getUser().getId());
+                        favorites=new ArrayList<>(db.favoriteDao().getAllForUser(currentUser.getUser().getId()));
                         if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
                     }else {
-                        favorites = db.getAllFavoritesBySearchRequest(currentUser.getUser().getId(), searchRequest);
+                        favorites=new ArrayList<>(db.favoriteDao().getAllBySearchRequestForUser(currentUser.getUser().getId(), searchRequest));
                         if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
                     }
-                    db.close();
                     return 0;
                 }
 
@@ -216,9 +214,8 @@ public class FavoritesFragment extends Fragment {
                                 asyncTask = new AsyncTask<Void, Void, Integer>() {
                                     @Override
                                     protected Integer doInBackground(Void... voids) {
-                                        db = DatabaseHelper.getInstance(getActivity());
-                                        db.deleteFavorite(favoriteForDelete);
-                                        db.close();
+                                        db = db.getInstance(getActivity());
+                                        db.favoriteDao().delete(favoriteForDelete);
                                         return 0;
                                     }
 
