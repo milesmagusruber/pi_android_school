@@ -211,31 +211,6 @@ public class FlickrSearchFragment extends Fragment {
             }
         };
         layoutManager = new LinearLayoutManager(getActivity());
-        //getting last search request of the user
-        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
-            asyncTask = new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected void onPreExecute() {
-                    buttonTextSearch.setClickable(false);
-                }
-
-                @Override
-                protected Integer doInBackground(Void... data) {
-                    //Initialize SearchRequests
-                    db = DatabaseHelper.getInstance(getActivity());
-                    lastSearchRequest = db.getLastTextSearchRequest(currentUser.getUser().getId()).getSearchRequest();
-                    db.close();
-                    return 0;
-                }
-
-                @Override
-                protected void onPostExecute(Integer a) {
-                    editTextFlickrSearch.setText(lastSearchRequest);
-                    buttonTextSearch.setClickable(true);
-                }
-            };
-            asyncTask.execute();
-        }
 
         //Main function of out app to search photos via Flickr API
 
@@ -294,12 +269,39 @@ public class FlickrSearchFragment extends Fragment {
             }else{
                 downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
                 //adding Search Request to Database
+
                 addSearchRequestToDB(searchRequest);
 
                 //working with response from Flickr
                 call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
                 initialFlickrSearchCall(searchRequest);
             }
+        }
+
+        //getting last search request of the user
+        if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
+            asyncTask = new AsyncTask<Void, Void, Integer>() {
+                @Override
+                protected void onPreExecute() {
+                    buttonTextSearch.setClickable(false);
+                }
+
+                @Override
+                protected Integer doInBackground(Void... data) {
+                    //Initialize SearchRequests
+                    db = DatabaseHelper.getInstance(getActivity());
+                    lastSearchRequest = db.getLastTextSearchRequest(currentUser.getUser().getId()).getSearchRequest();
+                    db.close();
+                    return 0;
+                }
+
+                @Override
+                protected void onPostExecute(Integer a) {
+                    editTextFlickrSearch.setText(lastSearchRequest);
+                    buttonTextSearch.setClickable(true);
+                }
+            };
+            asyncTask.execute();
         }
 
         return view;
@@ -342,6 +344,7 @@ public class FlickrSearchFragment extends Fragment {
 
     //This method is used to add text or geo search request to database
     private void addSearchRequestToDB(final String searchRequest){
+
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
                 @Override
@@ -358,7 +361,8 @@ public class FlickrSearchFragment extends Fragment {
                 }
 
                 @Override
-                protected void onPostExecute(Integer a) {
+                protected void onPostExecute(Integer a)
+                {
                     buttonTextSearch.setClickable(true);
                 }
             };
