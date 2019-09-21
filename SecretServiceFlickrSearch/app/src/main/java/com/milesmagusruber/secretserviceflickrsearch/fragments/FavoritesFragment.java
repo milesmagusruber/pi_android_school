@@ -119,7 +119,11 @@ public class FavoritesFragment extends Fragment {
                                 @Override
                                 protected Integer doInBackground(Void... voids) {
                                     db=db.getInstance(getActivity());
-                                    db.favoriteDao().delete(favoriteForDelete);
+                                    if(!favoriteForDelete.getWebLink().equals("")) {
+                                        db.favoriteDao().delete(favoriteForDelete);
+                                    }else{
+                                        db.favoriteDao().deleteAllBySearchRequestForUser(favoriteForDelete.getUser(),deleteSearchRequest);
+                                    }
                                     return 0;
                                 }
 

@@ -35,5 +35,8 @@ public interface FavoriteDao {
     @Delete
     void delete(Favorite favorite);
 
+    @Query("DELETE FROM favorites WHERE user = :user AND search_request=:searchRequest")
+    void deleteAllBySearchRequestForUser(int user, String searchRequest);
+
 
 }
