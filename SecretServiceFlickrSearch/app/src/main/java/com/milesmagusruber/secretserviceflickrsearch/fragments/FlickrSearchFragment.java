@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
@@ -34,9 +35,18 @@ import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.FlickrResponse;
 import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
 
+//importing retrofit libraries
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//importing rx libraries
+import com.jakewharton.rxbinding3.widget.RxTextView;
+import io.reactivex.Observable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 
 
 public class FlickrSearchFragment extends Fragment {
@@ -162,6 +172,39 @@ public class FlickrSearchFragment extends Fragment {
         photosPage = 1;//number of pages is 1
         photosEndReached = false;
 
+        //Using rxJava to react on text changes in edittext
+
+
+
+        Observable<String> rxEditTextFlickrSearchObservable = RxTextView.textChanges(editTextFlickrSearch)
+                .debounce(500, TimeUnit.MILLISECONDS).skip(1)
+                .observeOn(AndroidSchedulers.mainThread()).map(new Function<CharSequence, String>() {
+            @Override
+            public String apply(CharSequence charSequence) throws Exception {
+                return charSequence.toString();
+            }
+        });
+
+        rxEditTextFlickrSearchObservable.subscribe(new DisposableObserver<String>() {
+            @Override
+            public void onNext(String searchText) {
+                if(searchText.length()>=3) {
+                    //Toast.makeText(getActivity(), searchText, Toast.LENGTH_LONG).show();
+                    firstTextSearchLoad();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
 
 
         //Initialize itemTouchHelper
@@ -211,32 +254,7 @@ public class FlickrSearchFragment extends Fragment {
         buttonTextSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                geoResult=false;
-                textSearch = editTextFlickrSearch.getText().toString();
-                textViewFlickrError.setVisibility(View.INVISIBLE);
-                rvFlickrResult.setVisibility(View.INVISIBLE);
-                photosPage = 1;
-                photosEndReached = false;
-                //At first check network connection
-                if (!networkHelper.haveNetworkConnection(getActivity())) {
-                    textViewFlickrError.setVisibility(TextView.VISIBLE);
-                    textViewFlickrError.setText(getString(R.string.turn_on_internet));
-                } else if (textSearch.equals("")) {
-                    textViewFlickrError.setVisibility(TextView.VISIBLE);
-                    textViewFlickrError.setText(getString(R.string.input_search_request));
-
-                } else {
-
-                    downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
-
-                    //adding Search Request to Database
-                    addSearchRequestToDB(textSearch);
-
-                    //working with response from Flickr
-                    call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
-
-                    initialFlickrSearchCall(textSearch);
-                }
+                firstTextSearchLoad();
             }
         });
 
@@ -338,6 +356,35 @@ public class FlickrSearchFragment extends Fragment {
 
         photosAdapter.removePhoto(position);
         photosAdapter.notifyItemRemoved(position);
+    }
+
+    private void firstTextSearchLoad(){
+        geoResult=false;
+        textSearch = editTextFlickrSearch.getText().toString();
+        textViewFlickrError.setVisibility(View.INVISIBLE);
+        rvFlickrResult.setVisibility(View.INVISIBLE);
+        photosPage = 1;
+        photosEndReached = false;
+        //At first check network connection
+        if (!networkHelper.haveNetworkConnection(getActivity())) {
+            textViewFlickrError.setVisibility(TextView.VISIBLE);
+            textViewFlickrError.setText(getString(R.string.turn_on_internet));
+        } else if (textSearch.equals("")) {
+            textViewFlickrError.setVisibility(TextView.VISIBLE);
+            textViewFlickrError.setText(getString(R.string.input_search_request));
+
+        } else {
+
+            downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
+
+            //adding Search Request to Database
+            addSearchRequestToDB(textSearch);
+
+            //working with response from Flickr
+            call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
+
+            initialFlickrSearchCall(textSearch);
+        }
     }
 
     //This method is used to add text or geo search request to database
