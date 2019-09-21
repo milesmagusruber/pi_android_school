@@ -23,8 +23,8 @@ public interface FavoriteDao {
     @Query("SELECT * FROM favorites WHERE user = :user ORDER BY search_request")
     List<Favorite> getAllForUser(int user);
 
-    @Query("SELECT * FROM favorites WHERE user = :user AND search_request= :searchRequest ORDER BY search_request")
-    List<Favorite> getAllBySearchRequestForUser(int user, String searchRequest);
+    @Query("SELECT * FROM favorites WHERE user = :user AND search_request LIKE :filterSearchRequest ORDER BY search_request")
+    List<Favorite> getAllFilteredBySearchRequestForUser(int user, String filterSearchRequest);
 
     @Insert
     void insert(Favorite favorite);

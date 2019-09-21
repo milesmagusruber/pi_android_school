@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
-        Class fragmentClass;
         try {
             switch (menuItem.getItemId()) {
                 case R.id.nav_flickr_search_fragment:

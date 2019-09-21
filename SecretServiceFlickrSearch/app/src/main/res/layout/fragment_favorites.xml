@@ -18,18 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edittext_favorites_filter_layout" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button_favorites_filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
-        android:text="@string/button_filter"
-        style="@style/Widget.SSFS.Button"
-        app:layout_constraintBottom_toBottomOf="@+id/edittext_favorites_filter_layout"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/edittext_favorites_filter_layout"
         style="@style/Widget.SSFS.TextInputLayout"
@@ -41,7 +29,7 @@
         android:layout_marginEnd="@dimen/margin_small"
         android:layout_marginRight="@dimen/margin_small"
         android:hint="@string/edittext_favorites_filter"
-        app:layout_constraintEnd_toStartOf="@+id/button_favorites_filter"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

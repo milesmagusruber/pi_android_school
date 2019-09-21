@@ -42,6 +42,7 @@ import retrofit2.Response;
 
 //importing rx libraries
 import com.jakewharton.rxbinding3.widget.RxTextView;
+
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
@@ -103,19 +104,19 @@ public class FlickrSearchFragment extends Fragment {
     private OnPhotoSelectedListener listener;
 
     //empty constructor
-    public FlickrSearchFragment(){
+    public FlickrSearchFragment() {
 
     }
 
 
-    public static FlickrSearchFragment newInstance(){
+    public static FlickrSearchFragment newInstance() {
         FlickrSearchFragment fragment = new FlickrSearchFragment();
         return fragment;
     }
 
 
     //Use for Geo Search
-    public static FlickrSearchFragment newInstance(double latitude, double longitude){
+    public static FlickrSearchFragment newInstance(double latitude, double longitude) {
         FlickrSearchFragment fragment = new FlickrSearchFragment();
         Bundle bundle = new Bundle();
         bundle.putDouble(EXTRA_LATITUDE, latitude);
@@ -137,8 +138,8 @@ public class FlickrSearchFragment extends Fragment {
     }
 
     @Override
-    public void onDetach(){
-        listener=null;
+    public void onDetach() {
+        listener = null;
         super.onDetach();
     }
 
@@ -155,7 +156,7 @@ public class FlickrSearchFragment extends Fragment {
 
         networkHelper = NetworkHelper.getInstance(getActivity());
         currentUser = CurrentUser.getInstance();
-        geoResult=false;
+        geoResult = false;
 
         //Initialising UI elements
         editTextFlickrSearch = view.findViewById(R.id.edittext_flickr_search);
@@ -173,17 +174,17 @@ public class FlickrSearchFragment extends Fragment {
         Observable<String> rxEditTextFlickrSearchObservable = RxTextView.textChanges(editTextFlickrSearch)
                 .debounce(500, TimeUnit.MILLISECONDS).skip(1)
                 .observeOn(AndroidSchedulers.mainThread()).map(new Function<CharSequence, String>() {
-            @Override
-            public String apply(CharSequence charSequence) throws Exception {
-                return charSequence.toString();
-            }
-        });
+                    @Override
+                    public String apply(CharSequence charSequence) throws Exception {
+                        return charSequence.toString();
+                    }
+                });
 
         //Subscribing an Observer that will process input of characters
         rxEditTextFlickrSearchObservable.subscribe(new DisposableObserver<String>() {
             @Override
             public void onNext(String searchText) {
-                if(searchText.length()>=3) {
+                if (searchText.length() >= 3) {
                     firstTextSearchLoad();
                 }
             }
@@ -242,32 +243,32 @@ public class FlickrSearchFragment extends Fragment {
 
         //If we used GeoSearch
         if (getArguments() != null) {
-            geoResult=true;
-            geoResultLatitude=getArguments().getDouble(EXTRA_LATITUDE,0);
-            geoResultLongitude = getArguments().getDouble(EXTRA_LONGITUDE,0);
-            photosPage=1;
+            geoResult = true;
+            geoResultLatitude = getArguments().getDouble(EXTRA_LATITUDE, 0);
+            geoResultLongitude = getArguments().getDouble(EXTRA_LONGITUDE, 0);
+            photosPage = 1;
             photosEndReached = false;
 
-            final String searchRequest=String.format(Locale.getDefault(),
+            final String searchRequest = String.format(Locale.getDefault(),
                     getString(R.string.geo_snippet),
                     geoResultLatitude,
                     geoResultLongitude);
 
             editTextFlickrSearch.setText("");
-            Toast.makeText(getActivity(),searchRequest,Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), searchRequest, Toast.LENGTH_LONG).show();
             textViewFlickrError.setVisibility(View.INVISIBLE);
             rvFlickrResult.setVisibility(View.INVISIBLE);
             if (!networkHelper.haveNetworkConnection(getActivity())) {
                 textViewFlickrError.setVisibility(TextView.VISIBLE);
                 textViewFlickrError.setText(getString(R.string.turn_on_internet));
-            }else{
+            } else {
                 downloadProgressBar.setVisibility(ProgressBar.VISIBLE); //Making download process visible to user
                 //adding Search Request to Database
 
                 addSearchRequestToDB(searchRequest);
 
                 //working with response from Flickr
-                call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude,photosPage);
+                call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude, geoResultLongitude, photosPage);
                 initialFlickrSearchCall(searchRequest);
             }
         }
@@ -281,10 +282,10 @@ public class FlickrSearchFragment extends Fragment {
                     //Initialize SearchRequests
                     db = db.getInstance(getActivity());
                     SearchRequest searchRequest = db.searchRequestDao().getLastForUser(currentUser.getUser().getId());
-                    if(searchRequest!=null){
+                    if (searchRequest != null) {
                         lastSearchRequest = searchRequest.getSearchRequest();
-                    }else{
-                        lastSearchRequest="";
+                    } else {
+                        lastSearchRequest = "";
                     }
                     return 0;
                 }
@@ -308,7 +309,7 @@ public class FlickrSearchFragment extends Fragment {
             @Override
             public void onItemClick(Photo photo) {
                 //get to FlickViewItemFragment
-                listener.onFlickrPhotoSelected(searchRequest,photo.getPhotoUrl(),photo.getTitle());
+                listener.onFlickrPhotoSelected(searchRequest, photo.getPhotoUrl(), photo.getTitle());
             }
 
         });
@@ -336,8 +337,8 @@ public class FlickrSearchFragment extends Fragment {
 
 
     //Main function of out app to search photos via Flickr API
-    private void firstTextSearchLoad(){
-        geoResult=false;
+    private void firstTextSearchLoad() {
+        geoResult = false;
         textSearch = editTextFlickrSearch.getText().toString();
         textViewFlickrError.setVisibility(View.INVISIBLE);
         rvFlickrResult.setVisibility(View.INVISIBLE);
@@ -366,7 +367,7 @@ public class FlickrSearchFragment extends Fragment {
     }
 
     //This method is used to add text or geo search request to database
-    private void addSearchRequestToDB(final String searchRequest){
+    private void addSearchRequestToDB(final String searchRequest) {
 
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
@@ -384,7 +385,7 @@ public class FlickrSearchFragment extends Fragment {
     }
 
     //This method is used to process our response from the search request where we loaded first page of photos
-    private void initialFlickrSearchCall(final String searchRequest){
+    private void initialFlickrSearchCall(final String searchRequest) {
         call.enqueue(new Callback<FlickrResponse>() {
             @Override
             public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
@@ -399,7 +400,7 @@ public class FlickrSearchFragment extends Fragment {
                 }
                 //If photos not null show them
                 if (photos != null && !photos.isEmpty()) {
-                    showPhotos(photos,searchRequest);
+                    showPhotos(photos, searchRequest);
                     photosPage++;
                 } else {
                     textViewFlickrError.setVisibility(View.VISIBLE);
@@ -433,10 +434,10 @@ public class FlickrSearchFragment extends Fragment {
         //working with new page response from Flickr
         //Log.d(TAG,"Page number before:"+photosPage);
 
-        if(geoResult!=true) {
+        if (geoResult != true) {
             call = networkHelper.getSearchTextQueryPhotos(textSearch, photosPage);
-        }else{
-            call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude,geoResultLongitude, photosPage);
+        } else {
+            call = networkHelper.getSearchGeoQueryPhotos(geoResultLatitude, geoResultLongitude, photosPage);
         }
 
 

@@ -22,6 +22,17 @@ import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+
+//importing rx libraries
+import com.jakewharton.rxbinding3.widget.RxTextView;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
+
 
 public class FavoritesFragment extends Fragment {
 
@@ -37,11 +48,9 @@ public class FavoritesFragment extends Fragment {
     private ArrayList<Favorite> favorites;
     private RecyclerView rvFavorites;
     private TextInputEditText editTextFavoritesFilter;
-    private MaterialButton buttonFavoritesFilter;
     private SSFSDatabase db;
     private FavoritesAdapter adapter;
     private ItemTouchHelper helper;
-
 
 
     //constructor
@@ -66,8 +75,8 @@ public class FavoritesFragment extends Fragment {
     }
 
     @Override
-    public void onDetach(){
-        listener=null;
+    public void onDetach() {
+        listener = null;
         super.onDetach();
     }
 
@@ -88,7 +97,34 @@ public class FavoritesFragment extends Fragment {
 
         editTextFavoritesFilter = view.findViewById(R.id.edittext_favorites_filter);
 
-        buttonFavoritesFilter = view.findViewById(R.id.button_favorites_filter);
+        //Using rxJava to react on text changes in edittext
+
+        //Our Observable EditText field for editTextFavoritesFilter
+        Observable<String> rxEditTextFavoritesFilterObservable = RxTextView.textChanges(editTextFavoritesFilter)
+                .debounce(500, TimeUnit.MILLISECONDS).skip(1)
+                .observeOn(AndroidSchedulers.mainThread()).map(new Function<CharSequence, String>() {
+                    @Override
+                    public String apply(CharSequence charSequence) throws Exception {
+                        return charSequence.toString();
+                    }
+                });
+
+        //Subscribing an Observer that will process input of characters
+        rxEditTextFavoritesFilterObservable.subscribe(new DisposableObserver<String>() {
+            @Override
+            public void onNext(String filterSearchRequest) {
+                showFavorites(filterSearchRequest);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        });
+
 
         // Add the functionality to swipe items in the
         // recycler view to delete that item
@@ -107,50 +143,50 @@ public class FavoritesFragment extends Fragment {
                                          int direction) {
                         final int position = viewHolder.getAdapterPosition();
                         favoriteForDelete = adapter.getFavoriteAtPosition(position);
-                        if((favoriteForDelete!=null) && ( (asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))){
+                        if ((favoriteForDelete != null) && ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))) {
                             asyncTask = new AsyncTask<Void, Void, Integer>() {
                                 private String deleteSearchRequest;
 
                                 @Override
-                                protected void onPreExecute(){
-                                    deleteSearchRequest=favoriteForDelete.getSearchRequest();
+                                protected void onPreExecute() {
+                                    deleteSearchRequest = favoriteForDelete.getSearchRequest();
                                 }
 
                                 @Override
                                 protected Integer doInBackground(Void... voids) {
-                                    db=db.getInstance(getActivity());
-                                    if(!favoriteForDelete.getWebLink().equals("")) {
+                                    db = db.getInstance(getActivity());
+                                    if (!favoriteForDelete.getWebLink().equals("")) {
                                         db.favoriteDao().delete(favoriteForDelete);
-                                    }else{
-                                        db.favoriteDao().deleteAllBySearchRequestForUser(favoriteForDelete.getUser(),deleteSearchRequest);
+                                    } else {
+                                        db.favoriteDao().deleteAllBySearchRequestForUser(favoriteForDelete.getUser(), deleteSearchRequest);
                                     }
                                     return 0;
                                 }
 
                                 @Override
-                                protected void onPostExecute(Integer a){
-                                    if(!favoriteForDelete.getWebLink().equals("")) {
+                                protected void onPostExecute(Integer a) {
+                                    if (!favoriteForDelete.getWebLink().equals("")) {
                                         adapter.removeFavorite(position);
-                                        Favorite prevFav=adapter.getFavoriteAtPosition(position-1);
-                                        Favorite nextFav=adapter.getFavoriteAtPosition(position);
+                                        Favorite prevFav = adapter.getFavoriteAtPosition(position - 1);
+                                        Favorite nextFav = adapter.getFavoriteAtPosition(position);
                                         if (prevFav.getWebLink().equals("") && (
                                                 nextFav == null || nextFav.getWebLink().equals("")
-                                                )){
-                                            adapter.removeFavorite(position-1);
+                                        )) {
+                                            adapter.removeFavorite(position - 1);
                                         }
-                                    }else{
+                                    } else {
                                         //delete all favorites with header search after swipe of header
-                                        int currentPosition=position;
-                                        boolean isNotEnd=true;
+                                        int currentPosition = position;
+                                        boolean isNotEnd = true;
                                         adapter.removeFavorite(currentPosition);
-                                        Favorite fav=null;
-                                        do{
+                                        Favorite fav = null;
+                                        do {
                                             fav = adapter.getFavoriteAtPosition(currentPosition);
-                                            isNotEnd=(fav!=null) && (fav.getSearchRequest().equals(deleteSearchRequest));
-                                            if(isNotEnd) {
+                                            isNotEnd = (fav != null) && (fav.getSearchRequest().equals(deleteSearchRequest));
+                                            if (isNotEnd) {
                                                 adapter.removeFavorite(currentPosition);
                                             }
-                                        }while(isNotEnd);
+                                        } while (isNotEnd);
                                     }
                                 }
                             };
@@ -162,40 +198,26 @@ public class FavoritesFragment extends Fragment {
         // Initialize Favorites from database data
         showFavorites(null);
 
-        buttonFavoritesFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String filterText = editTextFavoritesFilter.getText().toString();
-                if (filterText.equals("")) {
-                    showFavorites(null);
-                } else {
-                    showFavorites(filterText);
-                }
-            }
-        });
-
         return view;
     }
 
     //Getting favorites from db if we have filter or not
-    private void showFavorites(final String searchRequest) {
+    private void showFavorites(final String filterSearchRequest) {
 
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected void onPreExecute() {
-                    buttonFavoritesFilter.setClickable(false);
-                }
 
                 @Override
                 protected Integer doInBackground(Void... data) {
                     db = db.getInstance(getActivity());
-                    if(searchRequest==null || searchRequest.equals("")){
-                        favorites=new ArrayList<>(db.favoriteDao().getAllForUser(currentUser.getUser().getId()));
-                        if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
-                    }else {
-                        favorites=new ArrayList<>(db.favoriteDao().getAllBySearchRequestForUser(currentUser.getUser().getId(), searchRequest));
-                        if(favorites!=null && favorites.size()>0) saturateFavoritesWithSearchRequestsObjects();
+                    if (filterSearchRequest == null || filterSearchRequest.equals("")) {
+                        favorites = new ArrayList<>(db.favoriteDao().getAllForUser(currentUser.getUser().getId()));
+                        if (favorites != null && favorites.size() > 0)
+                            saturateFavoritesWithSearchRequestsObjects();
+                    } else {
+                        favorites = new ArrayList<>(db.favoriteDao().getAllFilteredBySearchRequestForUser(currentUser.getUser().getId(), "%" + filterSearchRequest.trim() + "%"));
+                        if (favorites != null && favorites.size() > 0)
+                            saturateFavoritesWithSearchRequestsObjects();
                     }
                     return 0;
                 }
@@ -207,14 +229,14 @@ public class FavoritesFragment extends Fragment {
                         @Override
                         public void onItemClick(Favorite favorite) {
                             //get to Favorite Flick Photo from FavoritesFragment
-                            listener.onFlickrPhotoSelected(favorite.getSearchRequest(),favorite.getWebLink(),favorite.getTitle());
+                            listener.onFlickrPhotoSelected(favorite.getSearchRequest(), favorite.getWebLink(), favorite.getTitle());
                         }
 
                     }, new FavoritesAdapter.OnRemoveFavoriteClickListener() {
                         @Override
                         public void onClick(final int position) {
                             favoriteForDelete = adapter.getFavoriteAtPosition(position);
-                            if((favoriteForDelete!=null) && ( (asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))){
+                            if ((favoriteForDelete != null) && ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING))) {
                                 asyncTask = new AsyncTask<Void, Void, Integer>() {
                                     @Override
                                     protected Integer doInBackground(Void... voids) {
@@ -224,14 +246,14 @@ public class FavoritesFragment extends Fragment {
                                     }
 
                                     @Override
-                                    protected void onPostExecute(Integer a){
+                                    protected void onPostExecute(Integer a) {
                                         adapter.removeFavorite(position);
-                                        Favorite prevFav=adapter.getFavoriteAtPosition(position-1);
-                                        Favorite nextFav=adapter.getFavoriteAtPosition(position);
+                                        Favorite prevFav = adapter.getFavoriteAtPosition(position - 1);
+                                        Favorite nextFav = adapter.getFavoriteAtPosition(position);
                                         if (prevFav.getWebLink().equals("") && (
                                                 nextFav == null || nextFav.getWebLink().equals("")
-                                        )){
-                                            adapter.removeFavorite(position-1);
+                                        )) {
+                                            adapter.removeFavorite(position - 1);
                                         }
                                     }
                                 };
@@ -246,7 +268,6 @@ public class FavoritesFragment extends Fragment {
 
                     helper.attachToRecyclerView(rvFavorites);
 
-                    buttonFavoritesFilter.setClickable(true);
                 }
             };
             asyncTask.execute();
@@ -254,26 +275,24 @@ public class FavoritesFragment extends Fragment {
 
     }
 
-    private void saturateFavoritesWithSearchRequestsObjects(){
+    private void saturateFavoritesWithSearchRequestsObjects() {
         String cunningSearchString = favorites.get(0).getSearchRequest(); //for FavoritesAdapter to have different cards
         String searchReq;
-        int userId=currentUser.getUser().getId();
-        favorites.add(0,new Favorite(userId, cunningSearchString,"",""));
-        int index=1;
-        int sizeOfFavorites=favorites.size();
-        while (index<sizeOfFavorites){
+        int userId = currentUser.getUser().getId();
+        favorites.add(0, new Favorite(userId, cunningSearchString, "", ""));
+        int index = 1;
+        int sizeOfFavorites = favorites.size();
+        while (index < sizeOfFavorites) {
             searchReq = favorites.get(index).getSearchRequest();
-            if(!searchReq.equals(cunningSearchString)){
-                cunningSearchString=searchReq;
-                favorites.add(index,new Favorite(userId, cunningSearchString,"",""));
+            if (!searchReq.equals(cunningSearchString)) {
+                cunningSearchString = searchReq;
+                favorites.add(index, new Favorite(userId, cunningSearchString, "", ""));
                 index++;
                 sizeOfFavorites++;
             }
             index++;
         }
     }
-
-
 
 
 }
