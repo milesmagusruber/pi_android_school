@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.adapters.PhotosAdapter;
@@ -44,7 +43,6 @@ import retrofit2.Response;
 //importing rx libraries
 import com.jakewharton.rxbinding3.widget.RxTextView;
 import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 
@@ -64,8 +62,6 @@ public class FlickrSearchFragment extends Fragment {
     private String lastSearchRequest;
 
     //Declaring UI elements
-    private MaterialButton buttonTextSearch;
-    private MaterialButton buttonGeoSearch;
     private TextInputEditText editTextFlickrSearch;
     private ProgressBar downloadProgressBar;
     private ProgressBar scrollProgressBar;
@@ -162,7 +158,6 @@ public class FlickrSearchFragment extends Fragment {
         geoResult=false;
 
         //Initialising UI elements
-        buttonTextSearch = view.findViewById(R.id.button_text_search);
         editTextFlickrSearch = view.findViewById(R.id.edittext_flickr_search);
         downloadProgressBar = (ProgressBar) view.findViewById(R.id.download_progressbar);
         rvFlickrResult = (RecyclerView) view.findViewById(R.id.flickr_result);
@@ -174,8 +169,7 @@ public class FlickrSearchFragment extends Fragment {
 
         //Using rxJava to react on text changes in edittext
 
-
-
+        //Our Observable EditText field
         Observable<String> rxEditTextFlickrSearchObservable = RxTextView.textChanges(editTextFlickrSearch)
                 .debounce(500, TimeUnit.MILLISECONDS).skip(1)
                 .observeOn(AndroidSchedulers.mainThread()).map(new Function<CharSequence, String>() {
@@ -185,27 +179,23 @@ public class FlickrSearchFragment extends Fragment {
             }
         });
 
+        //Subscribing an Observer that will process input of characters
         rxEditTextFlickrSearchObservable.subscribe(new DisposableObserver<String>() {
             @Override
             public void onNext(String searchText) {
                 if(searchText.length()>=3) {
-                    //Toast.makeText(getActivity(), searchText, Toast.LENGTH_LONG).show();
                     firstTextSearchLoad();
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-
             }
 
             @Override
             public void onComplete() {
-
             }
         });
-
-
 
         //Initialize itemTouchHelper
         itemTouchHelper = new ItemTouchHelper(
@@ -249,14 +239,6 @@ public class FlickrSearchFragment extends Fragment {
         };
         layoutManager = new LinearLayoutManager(getActivity());
 
-        //Main function of out app to search photos via Flickr API
-
-        buttonTextSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firstTextSearchLoad();
-            }
-        });
 
         //If we used GeoSearch
         if (getArguments() != null) {
@@ -293,10 +275,6 @@ public class FlickrSearchFragment extends Fragment {
         //getting last search request of the user
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected void onPreExecute() {
-                    buttonTextSearch.setClickable(false);
-                }
 
                 @Override
                 protected Integer doInBackground(Void... data) {
@@ -314,7 +292,6 @@ public class FlickrSearchFragment extends Fragment {
                 @Override
                 protected void onPostExecute(Integer a) {
                     editTextFlickrSearch.setText(lastSearchRequest);
-                    buttonTextSearch.setClickable(true);
                 }
             };
             asyncTask.execute();
@@ -353,11 +330,12 @@ public class FlickrSearchFragment extends Fragment {
 
     //This method is used with swipe to remove photo list item from view
     private void removePhoto(int position) {
-
         photosAdapter.removePhoto(position);
         photosAdapter.notifyItemRemoved(position);
     }
 
+
+    //Main function of out app to search photos via Flickr API
     private void firstTextSearchLoad(){
         geoResult=false;
         textSearch = editTextFlickrSearch.getText().toString();
@@ -392,24 +370,14 @@ public class FlickrSearchFragment extends Fragment {
 
         if ((asyncTask == null) || (asyncTask.getStatus() != AsyncTask.Status.RUNNING)) {
             asyncTask = new AsyncTask<Void, Void, Integer>() {
-                @Override
-                protected void onPreExecute() {
-                    buttonTextSearch.setClickable(false);
-                }
 
                 @Override
                 protected Integer doInBackground(Void... voids) {
                     db = db.getInstance(getActivity());
-
                     db.searchRequestDao().insert(new SearchRequest(currentUser.getUser().getId(), searchRequest));
                     return 0;
                 }
 
-                @Override
-                protected void onPostExecute(Integer a)
-                {
-                    buttonTextSearch.setClickable(true);
-                }
             };
             asyncTask.execute();
         }
