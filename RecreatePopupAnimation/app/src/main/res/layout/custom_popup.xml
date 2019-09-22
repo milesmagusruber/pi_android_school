@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/popup_main_caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_main_caption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/popup_caption1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_caption1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/popup_icon_switch"
+        app:layout_constraintTop_toBottomOf="@id/popup_main_caption" />
+
+    <TextView
+        android:id="@+id/popup_caption2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_caption2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/popup_icon_switch"
+        app:layout_constraintTop_toBottomOf="@id/popup_main_caption" />
+
+    <com.polyak.iconswitch.IconSwitch
+        android:id="@+id/popup_icon_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:isw_active_tint_icon_left="#FF3A57"
+        app:isw_active_tint_icon_right="#3A6EF7"
+        app:isw_background_color="#BFBFC1"
+        app:isw_default_selection="left"
+        app:isw_icon_left="@drawable/ic_feed_red"
+        app:isw_icon_right="@drawable/ic_far_blue"
+        app:isw_icon_size="20dp"
+        app:isw_inactive_tint_icon_left="#888"
+        app:isw_inactive_tint_icon_right="#888"
+        app:isw_thumb_color_left="#fff"
+        app:isw_thumb_color_right="#fff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/popup_main_caption" />
+
+
+    <TextView
+        android:id="@+id/popup_description1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_description1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/popup_icon_switch"
+        app:layout_constraintTop_toBottomOf="@id/popup_caption1" />
+
+    <TextView
+        android:id="@+id/popup_description2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_description2"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/popup_icon_switch"
+        app:layout_constraintTop_toBottomOf="@id/popup_caption1" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/popup_button_caption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/popup_description1" />
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
