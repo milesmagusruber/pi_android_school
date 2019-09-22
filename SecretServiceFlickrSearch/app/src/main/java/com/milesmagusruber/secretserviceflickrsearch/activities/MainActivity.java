@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -108,6 +109,10 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         // Set a Toolbar to replace the ActionBar.
         toolbar = (Toolbar) findViewById(R.id.main_activity_toolbar);
         setSupportActionBar(toolbar);
+        // Find our drawer view
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
+
 
         // Register the power receiver using the activity context.
         IntentFilter filter = new IntentFilter();
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         fragmentManager = getSupportFragmentManager();
         Fragment fragment = LoginFragment.newInstance();
+        nvDrawer.setVisibility(View.INVISIBLE);
         //user Initialization
         if(!twoPaneMode){
             fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
@@ -260,9 +266,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public void onLoginButtonEnter() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
         // Find our drawer view
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerToggle = setupDrawerToggle();
         // Setup toggle to display hamburger icon with nice animation
         drawerToggle.setDrawerIndicatorEnabled(true);
@@ -270,10 +274,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         // Tie DrawerLayout events to the ActionBarToggle
         drawer.addDrawerListener(drawerToggle);
 
-
-        // Find our drawer view
-        nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
         // Setup drawer view
+
         setupDrawerContent(nvDrawer);
         if (!twoPaneMode) {
             changeFragment(FlickrSearchFragment.newInstance());

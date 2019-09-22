@@ -15,5 +15,6 @@
     <dimen name="subtitle_font_size">12sp</dimen>
     <dimen name="body_font_size">16sp</dimen>
     <dimen name="error_font_size">18sp</dimen>
+    <dimen name="info_msg_font_size">18sp</dimen>
     <dimen name="big_button_font_size">20sp</dimen>
 </resources>
