@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/app_logo</item>
+        <item name="colorPrimaryDark">#F0464F</item>
+    </style>
+
 </resources>

@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">RecreatePopupAnimation</string>
+    <string name="popup_caption">Two Modes - More Perks!</string>
+    <string name="popup_button_caption">OK, Got it!</string>
+    <string name="caption1">Close</string>
+    <string name="caption2">Far</string>
+    <string name="description1">Meet people around you</string>
+    <string name="description2">Flirt with anyone widely</string>
+
+
 </resources>
