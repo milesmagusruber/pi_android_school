@@ -30,4 +30,9 @@
         <item name="android:letterSpacing">@dimen/description_letter_spacing</item>
     </style>
 
+    <style name="Widget.AppTheme.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">#3A6EF7</item>
+    </style>
+
 </resources>
