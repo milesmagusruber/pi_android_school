@@ -1,0 +1,117 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="Theme.SSFS" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorSurface">@color/colorSurface</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="colorError">@color/colorError</item>
+
+    </style>
+
+    <style name="Theme.SSFS.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.SSFS.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar" />
+
+    <style name="Theme.SSFS.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="Theme.SSFS.Launcher">
+        <item name="android:windowBackground">@drawable/logo</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+    </style>
+
+    <!--Input Text Layout Style -->
+    <style name="Widget.SSFS.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="hintTextAppearance">@style/TextAppearance.SSFS.TextInputLayout.HintText</item>
+        <item name="boxStrokeColor">@color/colorPrimary</item>
+        <item name="hintTextColor">@color/colorText</item>
+    </style>
+
+
+    <!--Button Style -->
+    <style name="Widget.SSFS.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@color/colorElement</item>
+    </style>
+
+    <!--Icon Button Style -->
+    <style name="Widget.SSFS.IconButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">@dimen/icon_size</item>
+        <item name="android:layout_width">@dimen/icon_button_width</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <!--Card style -->
+    <style name="Widget.SSFS.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorSurface</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">10dp</item>
+    </style>
+
+    <!--Card Search Request style -->
+    <style name="Widget.SSFS.CardView.SearchRequest" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/colorPrimary</item>
+        <item name="cardElevation">2dp</item>
+        <item name="cardCornerRadius">10dp</item>
+    </style>
+
+    <!--ProgressBar style -->
+    <style name="Widget.SSFS.ProgressBar" parent="Widget.AppCompat.ProgressBar">
+        <item name="android:animationResolution">500</item>
+        <item name="android:color">?android:attr/colorAccent</item>
+    </style>
+
+    <!--Headline of Activity Text-->
+    <style name="TextAppearance.SSFS.Heading" parent="TextAppearance.MaterialComponents.Headline1">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">@dimen/header_font_size</item>
+        <item name="android:textStyle">bold</item>
+        <item name="textAllCaps">true</item>
+    </style>
+
+    <!--Card caption text-->
+    <style name="TextAppearance.SSFS.CardCaption" parent="TextAppearance.MaterialComponents.Headline2">
+        <item name="android:textColor">@color/colorElement</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/header_font_size</item>
+        <item name="android:textStyle">bold|italic</item>
+    </style>
+
+    <!--Card text type1 -->
+    <style name="TextAppearance.SSFS.CardTextType1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">@dimen/body_font_size</item>
+        <item name="android:textStyle">italic</item>
+    </style>
+
+    <!--Card text type2 -->
+    <style name="TextAppearance.SSFS.CardTextType2" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:textSize">@dimen/body_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--Hint Text for TextInputLayout -->
+    <style name="TextAppearance.SSFS.TextInputLayout.HintText" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="android:textSize">@dimen/subtitle_font_size</item>
+    </style>
+
+    <!--Error Text Style -->
+    <style name="TextAppearance.SSFS.ErrorText" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/error_font_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+</resources>

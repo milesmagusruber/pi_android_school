@@ -1,0 +1,20 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_norm">16dp</dimen>
+    <dimen name="margin_big">24dp</dimen>
+    <dimen name="margin_very_big">32dp</dimen>
+    <dimen name="progress_bar_dimen">100dp</dimen>
+    <dimen name="small_progress_bar_dimen">30dp</dimen>
+    <dimen name="progress_bar_margin">50dp</dimen>
+    <dimen name="icon_size">40dp</dimen>
+    <dimen name="icon_button_width">50dp</dimen>
+    <dimen name="medium_element_width">200dp</dimen>
+    <dimen name="medium_image_size">150dp</dimen>
+    <dimen name="header_font_size">24sp</dimen>
+    <dimen name="subtitle_font_size">12sp</dimen>
+    <dimen name="body_font_size">16sp</dimen>
+    <dimen name="error_font_size">18sp</dimen>
+    <dimen name="info_msg_font_size">18sp</dimen>
+    <dimen name="big_button_font_size">20sp</dimen>
+</resources>

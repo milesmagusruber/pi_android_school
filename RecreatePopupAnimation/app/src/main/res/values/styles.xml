@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/app_logo</item>
+        <item name="colorPrimaryDark">#F0464F</item>
+    </style>
+
+    <!--Popup caption text-->
+    <style name="TextAppearance.AppTheme.Popup.Caption" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/caption_font_size</item>
+        <item name="android:lineSpacingMultiplier">@dimen/caption_line_spacing</item>
+        <item name="android:letterSpacing">@dimen/caption_letter_spacing</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <!--Popup description text-->
+    <style name="TextAppearance.AppTheme.Popup.Description" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">@dimen/description_font_size</item>
+        <item name="android:lineSpacingMultiplier">@dimen/description_line_spacing</item>
+        <item name="android:letterSpacing">@dimen/description_letter_spacing</item>
+    </style>
+
+    <style name="Widget.AppTheme.Button" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">#3A6EF7</item>
+    </style>
+
+</resources>

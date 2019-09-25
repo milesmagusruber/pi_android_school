@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">RecreatePopupAnimation</string>
+    <string name="popup_main_caption">Two Modes - More Perks!</string>
+    <string name="popup_button_caption">OK, Got it!</string>
+    <string name="popup_caption1">Close</string>
+    <string name="popup_caption2">Far</string>
+    <string name="popup_description1">Meet people around you</string>
+    <string name="popup_description2">Flirt with anyone widely</string>
+
+    <string name="layout_caption">Where are you?</string>
+    <string name="layout_description">We need your approximate location to show nearby posts.</string>
+    <string name="layout_button">Show nearby posts</string>
+
+
+</resources>
