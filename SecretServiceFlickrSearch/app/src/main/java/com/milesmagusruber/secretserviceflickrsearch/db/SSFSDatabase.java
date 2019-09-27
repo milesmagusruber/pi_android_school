@@ -28,20 +28,11 @@ public abstract class SSFSDatabase extends RoomDatabase {
 
     private static final Object sLock = new Object();
 
-
-    /*static final Migration MIGRATION_1_2 = new Migration(1, 2) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-        }
-    };*/
-
     public static SSFSDatabase getInstance(Context context) {
         synchronized (sLock) {
             if (INSTANCE == null) {
                 INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                         SSFSDatabase.class, DATABASE_NAME).build();
-                        /*.addMigrations(MIGRATION_1_2)
-                        .build();*/
             }
             return INSTANCE;
         }
