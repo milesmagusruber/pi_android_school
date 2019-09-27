@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase;
 
 import com.milesmagusruber.secretserviceflickrsearch.db.dao.FavoriteDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.dao.SearchRequestDao;
-import com.milesmagusruber.secretserviceflickrsearch.db.dao.TempPhotoDao;
+import com.milesmagusruber.secretserviceflickrsearch.db.dao.RequestPhotoDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.dao.UserDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
@@ -27,7 +27,7 @@ public abstract class SSFSDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
 
-    public abstract TempPhotoDao tempPhotoDao();
+    public abstract RequestPhotoDao tempPhotoDao();
 
     private static final Object sLock = new Object();
 

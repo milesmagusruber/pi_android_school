@@ -6,25 +6,25 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.milesmagusruber.secretserviceflickrsearch.db.entities.TempPhoto;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestPhoto;
 
 import java.util.List;
 
 @Dao
-public interface TempPhotoDao {
+public interface RequestPhotoDao {
 
-    @Query("SELECT * FROM temp_photos")
-    List<TempPhoto> getAll();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(TempPhoto tempPhoto);
+    @Query("SELECT * FROM request_photos")
+    List<RequestPhoto> getAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<TempPhoto> tempPhotos);
+    void insert(RequestPhoto requestPhoto);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<RequestPhoto> requestPhotos);
 
     @Delete
-    void delete(TempPhoto tempPhoto);
+    void delete(RequestPhoto requestPhoto);
 
-    @Query("DELETE FROM temp_photos")
+    @Query("DELETE FROM request_photos")
     void deleteAll();
 }
