@@ -5,8 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "request_photos")
-public class RequestPhoto {
+@Entity(tableName = "requested_photos")
+public class RequestedPhoto {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
@@ -18,16 +18,16 @@ public class RequestPhoto {
     private String url;
 
     @Ignore
-    public RequestPhoto(){}
+    public RequestedPhoto(){}
 
-    public RequestPhoto(int id, String title, String url){
+    public RequestedPhoto(int id, String title, String url){
         this.id=id;
         this.title = title;
         this.url = url;
     }
 
     @Ignore
-    public RequestPhoto(String title, String url){
+    public RequestedPhoto(String title, String url){
         this.title = title;
         this.url = url;
     }
