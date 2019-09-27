@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="listBackgroundUpdatesIntervalsArray">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>6 hours</item>
+        <item>once per day</item>
+    </string-array>
+
+    <string-array name="listBackgroundUpdatesIntervalsValues">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>360</item>
+        <item>1440</item>
+    </string-array>
+</resources>
