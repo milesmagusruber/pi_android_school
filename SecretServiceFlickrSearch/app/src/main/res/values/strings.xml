@@ -12,6 +12,7 @@
     <!-- Titles -->
     <string name="title_favorites">Favorites</string>
     <string name="title_gallery">Gallery</string>
+    <string name="title_requested_photos">Requested Photos</string>
     <string name="title_last_search_requests">Last Search Requests</string>
     <string name="title_flickr_search">Flickr Search</string>
     <string name="title_authorization">Authorization</string>
@@ -61,6 +62,7 @@
 
     <string name="user_exists">User \'%1$s\' exists</string>
     <string name="user_doesnt_exist">User \'%1$s\' doesn\'t exist yet</string>
+
 
 
 </resources>

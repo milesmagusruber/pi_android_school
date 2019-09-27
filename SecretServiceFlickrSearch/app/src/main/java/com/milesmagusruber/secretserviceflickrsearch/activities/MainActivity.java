@@ -30,6 +30,7 @@ import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FavoritesFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
@@ -38,6 +39,7 @@ import com.milesmagusruber.secretserviceflickrsearch.fragments.GalleryViewItemFr
 import com.milesmagusruber.secretserviceflickrsearch.fragments.GoogleMapsSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LastSearchRequestsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.LoginFragment;
+import com.milesmagusruber.secretserviceflickrsearch.fragments.RequestedPhotosFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
@@ -192,6 +194,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     break;
                 case R.id.nav_favorites_fragment:
                     fragment = FavoritesFragment.newInstance();
+                    break;
+                case R.id.nav_requested_photos_fragment:
+                    fragment = RequestedPhotosFragment.newInstance();
                     break;
                 case R.id.nav_gallery_fragment:
                     fragment = GalleryFragment.newInstance();
@@ -360,7 +365,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         fragmentManager.beginTransaction().replace(R.id.fragment_container_master,
                 fragment)
                 .addToBackStack(null).commit();
-        if((fragment instanceof FlickrSearchFragment)||(fragment instanceof FavoritesFragment)||(fragment instanceof GalleryFragment)){
+        if((fragment instanceof FlickrSearchFragment)||(fragment instanceof FavoritesFragment)||(fragment instanceof GalleryFragment)
+        || (fragment instanceof RequestedPhotosFragment)){
             detailContainer.setLayoutParams(layoutParamShowContainer);
         }else{
             detailContainer.setLayoutParams(layoutParamHideContainer);

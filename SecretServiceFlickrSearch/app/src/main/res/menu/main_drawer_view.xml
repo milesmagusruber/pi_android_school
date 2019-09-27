@@ -19,6 +19,11 @@
             android:icon="@drawable/ic_nav_favorites"
             android:title="@string/title_favorites" />
         <item
+            android:id="@+id/nav_requested_photos_fragment"
+            android:icon="@drawable/ic_nav_requested_photos"
+            android:title="@string/title_requested_photos"
+            />
+        <item
             android:id="@+id/nav_gallery_fragment"
             android:icon="@drawable/ic_nav_gallery"
             android:title="@string/title_gallery" />

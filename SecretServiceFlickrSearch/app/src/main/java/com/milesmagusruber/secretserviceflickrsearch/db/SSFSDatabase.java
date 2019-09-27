@@ -11,10 +11,11 @@ import com.milesmagusruber.secretserviceflickrsearch.db.dao.SearchRequestDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.dao.RequestedPhotoDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.dao.UserDao;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.Favorite;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.SearchRequest;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.User;
 
-@Database(entities = {Favorite.class, SearchRequest.class, User.class}, version = 1)
+@Database(entities = {Favorite.class, SearchRequest.class, User.class, RequestedPhoto.class}, version = 1)
 public abstract class SSFSDatabase extends RoomDatabase {
 
     private static final String DATABASE_NAME = "ssfs.db";
