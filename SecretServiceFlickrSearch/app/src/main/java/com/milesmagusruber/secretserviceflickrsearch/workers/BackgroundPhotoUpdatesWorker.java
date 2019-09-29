@@ -1,7 +1,5 @@
 package com.milesmagusruber.secretserviceflickrsearch.workers;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -10,10 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -44,7 +38,6 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
     //Working with Flickr via network
     private NetworkHelper networkHelper;
     private Call<FlickrResponse> call;
-    private boolean downloadSuccess;
 
     public BackgroundPhotoUpdatesWorker(
             @NonNull Context appContext,
@@ -76,23 +69,18 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
                 photos = flickrResponse.getPhotos().getPhoto();
 
             }
-            //If photos not null show them
-            if (photos != null && !photos.isEmpty()) {
-                for(Photo photo: photos){
-                    requestedPhotos.add(new RequestedPhoto(photo));
-                }
-                downloadSuccess=true;
-            } else {
-                //do another
-            }
-            Log.d(TAG,"level2");
-
-            //If download wasn't successful return failure
-            if(!downloadSuccess){
+            if(photos==null){
                 showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
                         applicationContext.getString(R.string.requested_photos_notification_body_fail),null);
                 return Result.failure();
             }
+            //If photos not null show them
+            if (!photos.isEmpty()) {
+                for(Photo photo: photos){
+                    requestedPhotos.add(new RequestedPhoto(photo));
+                }
+            }
+            Log.d(TAG,"level2");
 
             //Saving photos to database
             //getting database
@@ -108,12 +96,18 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
                         with(applicationContext).
                         asBitmap().
                         load(requestedPhotos.get(0).getUrl()).into(200, 200).get();
+                //Showing Notification about success download
+                showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
+                        applicationContext.getString(R.string.requested_photos_notification_body_success,requestedPhotos.size()),firstImage);
+                return Result.success();
+            }else{
+
+                //Showing Notification that your request haven't found any photos
+                showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
+                        applicationContext.getString(R.string.requested_photos_notification_body_not_found),firstImage);
+                return Result.success();
             }
 
-            //Showing Notification about success download
-            showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
-                    applicationContext.getString(R.string.requested_photos_notification_body_success,requestedPhotos.size()),firstImage);
-            return Result.success();
         } catch (Throwable throwable) {
             Log.e(TAG, "Error in background photo updates", throwable);
             showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
@@ -157,6 +151,8 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
                     .setContentTitle(title)
                     .setContentText(body)
                     .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setAutoCancel(true)
                     .setStyle(bigPictureStyle);
 
         }else {
@@ -164,6 +160,8 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
                     .setContentTitle(title)
                     .setContentText(body)
                     .setContentIntent(pendingIntent)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .setAutoCancel(true)
                     .setSmallIcon(R.mipmap.ic_launcher);
         }
 

@@ -372,8 +372,23 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         //canceling all workers
         WorkManager workManager = WorkManager.getInstance();
         workManager.cancelAllWork();
+
+        //deleting all requestedPhotos from database
+        AsyncTask<Void,Void,Boolean> asyncTask=new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                db = db.getInstance(MainActivity.this);
+                db.requestedPhotoDao().deleteAll();
+                return true;
+            }
+        };
+        asyncTask.execute();
+
         //deleting current user from singelone CurrentUser
         CurrentUser.getInstance().setUser(null);
+
+        //removing extra from pending intent
+        getIntent().removeExtra("menuFragment");
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 

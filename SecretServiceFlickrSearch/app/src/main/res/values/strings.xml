@@ -70,9 +70,10 @@
     <string name="user_doesnt_exist">User \'%1$s\' doesn\'t exist yet</string>
 
     <!--Requested Photos-->
-    <string name="requested_photos_not_found">Photos aren\'t found by your search request!</string>
+    <string name="requested_photos_not_found">There is no photos here!</string>
     <string name="requested_photos_notification_title">\"%1$s\" photo updates</string>
     <string name="requested_photos_notification_body_success">There have been downloaded %1$d photos</string>
+    <string name="requested_photos_notification_body_not_found">Your request haven\'t found any photos</string>
     <string name="requested_photos_notification_body_fail">Download is failed</string>
 
 
