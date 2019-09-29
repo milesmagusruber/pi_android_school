@@ -341,10 +341,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         setupDrawerContent(nvDrawer);
 
+        Fragment fragment=null;
+
+        //checking if we entered into app from notification
+        String menuFragment = getIntent().getStringExtra("menuFragment");
+        if(menuFragment!=null && menuFragment.equals("requestedPhotosFragment")){
+            fragment=RequestedPhotosFragment.newInstance();
+        }else{
+            fragment=FlickrSearchFragment.newInstance();
+        }
+
+        //checking for twoPaneMode
         if (!twoPaneMode) {
-            changeFragment(FlickrSearchFragment.newInstance(),false);
+            changeFragment(fragment,false);
         } else {
-            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance(),false);
+            changeFragmentTwoPaneModeMaster(fragment,false);
         }
 
     }

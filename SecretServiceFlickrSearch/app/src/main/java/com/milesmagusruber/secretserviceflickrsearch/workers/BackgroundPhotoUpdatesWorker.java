@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -20,6 +22,7 @@ import androidx.work.WorkerParameters;
 
 import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
+import com.milesmagusruber.secretserviceflickrsearch.activities.MainActivity;
 import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
 import com.milesmagusruber.secretserviceflickrsearch.network.NetworkHelper;
@@ -136,6 +139,12 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
             manager.createNotificationChannel(channel);
         }
 
+        //notificationIntent
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        notificationIntent.putExtra("menuFragment", "requestedPhotosFragment");
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+
+        //notification builder
         NotificationCompat.Builder builder;
         if(image !=null){
 
@@ -147,12 +156,14 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(title)
                     .setContentText(body)
+                    .setContentIntent(pendingIntent)
                     .setStyle(bigPictureStyle);
 
         }else {
             builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
                     .setContentTitle(title)
                     .setContentText(body)
+                    .setContentIntent(pendingIntent)
                     .setSmallIcon(R.mipmap.ic_launcher);
         }
 
