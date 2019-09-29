@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,6 +22,8 @@ import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
 
 import java.util.ArrayList;
+
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_SEARCH_REQUEST;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -87,7 +90,7 @@ public class RequestedPhotosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_requested_photos, container, false);
         rvRequestedPhotos = view.findViewById(R.id.rv_requested_photos);
         textViewRequestedPhotosInfotext = view.findViewById(R.id.requested_photos_infotext);
-        searchRequest = "Cat";
+        searchRequest = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(KEY_SEARCH_REQUEST,"cat");
         showRequestedPhotos();
         return view;
     }

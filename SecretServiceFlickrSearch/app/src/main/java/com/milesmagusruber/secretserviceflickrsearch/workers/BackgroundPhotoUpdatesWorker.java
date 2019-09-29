@@ -30,12 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import static com.bumptech.glide.load.resource.UnitTransformation.get;
 
 public class BackgroundPhotoUpdatesWorker extends Worker {
+
+    public static final String WORKER_SEARCH_REQUEST="search_request";
 
     //Working with db
     private SSFSDatabase db;
@@ -53,12 +51,13 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
 
     private static final String TAG = "BACKGROUND_UPDATES";
 
+
     @NonNull
     @Override
     public Result doWork() {
         Context applicationContext = getApplicationContext();
         networkHelper = NetworkHelper.getInstance(applicationContext);
-        String searchRequest = "Cat";
+        String searchRequest = getInputData().getString(WORKER_SEARCH_REQUEST);
         Log.d(TAG,searchRequest);
         try {
             //Downloading Flickr Photos

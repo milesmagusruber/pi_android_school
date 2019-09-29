@@ -36,13 +36,15 @@
             android:key="settings_edit_text_search_request"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/settings_search_request_title" />
+            android:title="@string/settings_search_request_title"
+            app:isPreferenceVisible="false"/>
         <ListPreference
             android:defaultValue="15"
             android:entries="@array/listBackgroundUpdatesIntervalsArray"
             android:entryValues="@array/listBackgroundUpdatesIntervalsValues"
-            android:key="settings_list_background_updates_intervals"
-            android:title="@string/settings_updates_intervals_title" />
+            android:key="settings_background_updates_interval"
+            android:title="@string/settings_updates_intervals_title"
+            app:isPreferenceVisible="false"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

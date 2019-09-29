@@ -274,13 +274,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
      * setting up Navigation Drawer*/
     @Override
     public void onLoginButtonEnter() {
-        //Testing WorkManager
-        WorkManager workManager = WorkManager.getInstance();
-        //Setting constraints
-        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-        //Setting work request
-        OneTimeWorkRequest workerRequest = new OneTimeWorkRequest.Builder(BackgroundPhotoUpdatesWorker.class).setConstraints(constraints).build();
-        workManager.enqueue(workerRequest);
 
         //Setting support bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
