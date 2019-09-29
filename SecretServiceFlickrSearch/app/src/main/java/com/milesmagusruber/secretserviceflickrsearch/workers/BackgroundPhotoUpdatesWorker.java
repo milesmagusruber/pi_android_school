@@ -1,9 +1,11 @@
 package com.milesmagusruber.secretserviceflickrsearch.workers;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +18,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
+import com.bumptech.glide.Glide;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
@@ -29,6 +32,8 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static com.bumptech.glide.load.resource.UnitTransformation.get;
 
 public class BackgroundPhotoUpdatesWorker extends Worker {
 
@@ -82,7 +87,8 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
 
             //If download wasn't successful return failure
             if(!downloadSuccess){
-                showNotification("WorkManager","Fail: download fail");
+                showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
+                        applicationContext.getString(R.string.requested_photos_notification_body_fail),null);
                 return Result.failure();
             }
 
@@ -94,19 +100,29 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
             //inserting all new requested photos
             db.requestedPhotoDao().insertAll(requestedPhotos);
 
+            Bitmap firstImage=null;
+            if(!requestedPhotos.isEmpty()) {
+                firstImage = Glide.
+                        with(applicationContext).
+                        asBitmap().
+                        load(requestedPhotos.get(0).getUrl()).into(200, 200).get();
+            }
+
             //Showing Notification about success download
-            showNotification("WorkManager", "Success");
+            showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
+                    applicationContext.getString(R.string.requested_photos_notification_body_success,requestedPhotos.size()),firstImage);
             return Result.success();
         } catch (Throwable throwable) {
             Log.e(TAG, "Error in background photo updates", throwable);
-            showNotification("WorkManager","Fail: "+throwable.getMessage());
+            showNotification(applicationContext.getString(R.string.requested_photos_notification_title,searchRequest),
+                    applicationContext.getString(R.string.requested_photos_notification_body_fail),null);
             return Result.failure();
         }
     }
 
 
     //Showing Notifications
-    private void showNotification(String task, String desc) {
+    private void showNotification(String title, String body, Bitmap image) {
 
         NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -121,10 +137,25 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
             manager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
-                .setContentTitle(task)
-                .setContentText(desc)
-                .setSmallIcon(R.mipmap.ic_launcher);
+        NotificationCompat.Builder builder;
+        if(image !=null){
+
+            NotificationCompat.BigPictureStyle bigPictureStyle = new NotificationCompat.BigPictureStyle();
+            bigPictureStyle.bigPicture(image);
+            bigPictureStyle.bigLargeIcon(null);
+
+            builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setStyle(bigPictureStyle);
+
+        }else {
+            builder = new NotificationCompat.Builder(getApplicationContext(), channelId)
+                    .setContentTitle(title)
+                    .setContentText(body)
+                    .setSmallIcon(R.mipmap.ic_launcher);
+        }
 
         manager.notify(1, builder.build());
 

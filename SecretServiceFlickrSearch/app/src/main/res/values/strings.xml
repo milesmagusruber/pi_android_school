@@ -71,6 +71,9 @@
 
     <!--Requested Photos-->
     <string name="requested_photos_not_found">Photos aren\'t found by your search request!</string>
+    <string name="requested_photos_notification_title">\"%1$s\" photo updates</string>
+    <string name="requested_photos_notification_body_success">There have been downloaded %1$d photos</string>
+    <string name="requested_photos_notification_body_fail">Download is failed</string>
 
 
 </resources>
