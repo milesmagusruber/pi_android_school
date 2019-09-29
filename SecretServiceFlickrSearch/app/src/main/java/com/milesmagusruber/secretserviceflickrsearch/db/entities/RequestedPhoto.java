@@ -18,7 +18,7 @@ public class RequestedPhoto {
 
     @ColumnInfo(name = "url")
     private String url;
-    
+
     @Ignore
     public RequestedPhoto(){}
 

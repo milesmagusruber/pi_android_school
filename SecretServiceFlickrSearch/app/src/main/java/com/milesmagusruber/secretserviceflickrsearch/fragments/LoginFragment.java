@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,7 @@ public class LoginFragment extends Fragment{
 
     public interface LoginFragmentListener{
         void onLoginButtonEnter();
-        void getRidOfNavigationDrawer();
+        void onLogOut();
     }
 
     @Override
@@ -85,7 +86,7 @@ public class LoginFragment extends Fragment{
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        listener.getRidOfNavigationDrawer();
+        listener.onLogOut();
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         buttonEnter = view.findViewById(R.id.button_enter);

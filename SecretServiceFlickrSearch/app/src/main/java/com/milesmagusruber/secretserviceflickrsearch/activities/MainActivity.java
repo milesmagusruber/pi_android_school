@@ -17,8 +17,10 @@ import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -34,7 +36,9 @@ import com.milesmagusruber.secretserviceflickrsearch.BuildConfig;
 import com.milesmagusruber.secretserviceflickrsearch.R;
 import com.milesmagusruber.secretserviceflickrsearch.broadcast_receivers.PowerReceiver;
 import com.milesmagusruber.secretserviceflickrsearch.db.CurrentUser;
+import com.milesmagusruber.secretserviceflickrsearch.db.SSFSDatabase;
 import com.milesmagusruber.secretserviceflickrsearch.db.entities.RequestedPhoto;
+import com.milesmagusruber.secretserviceflickrsearch.db.entities.User;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FavoritesFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrSearchFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fragments.FlickrViewItemFragment;
@@ -52,10 +56,17 @@ import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.DEFAULT_KEY_INTERVAL;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.DEFAULT_KEY_SEARCH_REQUEST;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_ALLOW_UPDATES;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_INTERVAL;
+import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_SEARCH_REQUEST;
 import static com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment.KEY_THEME;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.LoginFragmentListener,
         GoogleMapsSearchFragment.MapFragmentListener, OnPhotoSelectedListener, GalleryFragment.OnTakePhotoListener {
+
+    public static final String CURRENT_USER="current_user";
 
     //Navigation Drawer variables
     private DrawerLayout drawer;
@@ -66,6 +77,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
     //Working with fragments
     private FragmentManager fragmentManager;
+
+    //Working with SharedPreferences
+    private SharedPreferences sharedPreferences;
+
+    //Working with db
+    private SSFSDatabase db;
 
     public static final int REQUEST_IMAGE_CAPTURE = 30;
     /**
@@ -101,6 +118,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //getting shared preferences
+        sharedPreferences=getPreferences(MODE_PRIVATE);
+
 
         //setting requested orientation for smartphone or wide screen device (such as tablet)
         if (findViewById(R.id.fragment_container_master) != null) {
@@ -119,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         // Find our drawer view
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         nvDrawer = (NavigationView) findViewById(R.id.main_nav_view);
-
+        nvDrawer.setVisibility(View.INVISIBLE);
 
         // Register the power receiver using the activity context.
         IntentFilter filter = new IntentFilter();
@@ -128,13 +148,33 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
 
         fragmentManager = getSupportFragmentManager();
-        Fragment fragment = LoginFragment.newInstance();
-        nvDrawer.setVisibility(View.INVISIBLE);
-        //user Initialization
-        if(!twoPaneMode){
-            fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+
+        //checking if we're logged up
+        String currentLogin=sharedPreferences.getString(CURRENT_USER,"");
+        if(!currentLogin.equals("")){
+            //getting user from database
+            AsyncTask<String,Void,Boolean> asyncTask=new AsyncTask<String, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(String... data) {
+                    String login=data[0];
+                    db = db.getInstance(MainActivity.this);
+                    User user = db.userDao().getUser(login);
+                    CurrentUser currentUser = CurrentUser.getInstance();
+                    currentUser.setUser(user);
+                    return true;
+                }
+            };
+            asyncTask.execute(currentLogin);
+            authorize();
         }else{
-            fragmentManager.beginTransaction().replace(R.id.fragment_container_master, fragment).commit();
+            Fragment fragment = LoginFragment.newInstance();
+
+            //user Initialization
+            if(!twoPaneMode){
+                fragmentManager.beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            }else{
+                fragmentManager.beginTransaction().replace(R.id.fragment_container_master, fragment).commit();
+            }
         }
     }
 
@@ -210,7 +250,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                     fragment = new SettingsFragment();
                     break;
                 case R.id.nav_login_fragment:
-                    fragment = new LoginFragment();
+                    fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    fragment = LoginFragment.newInstance();
                     break;
             }
         } catch (Exception e) {
@@ -220,9 +261,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
 
         // Insert the fragment by replacing any existing fragment
         if (!twoPaneMode) {
-            changeFragment(fragment);
+            changeFragment(fragment,true);
         } else {
-            changeFragmentTwoPaneModeMaster(fragment);
+            changeFragmentTwoPaneModeMaster(fragment,true);
         }
 
         // Highlight the selected item has been done by NavigationView
@@ -269,11 +310,21 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
                 .start(this);
     }
 
-
-    /*authorization process when we press Enter Button in LoginFragment
-     * setting up Navigation Drawer*/
+    //when we press Enter Button in LoginFragment
     @Override
-    public void onLoginButtonEnter() {
+    public void onLoginButtonEnter(){
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(CURRENT_USER, CurrentUser.getInstance().getUser().getLogin());
+        editor.commit();
+
+        authorize();
+    }
+
+    /*Authorization process
+     * setting up Navigation Drawer*/
+
+    public void authorize() {
 
         //Setting support bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -289,28 +340,41 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
         // Setup drawer view
 
         setupDrawerContent(nvDrawer);
+
         if (!twoPaneMode) {
-            changeFragment(FlickrSearchFragment.newInstance());
+            changeFragment(FlickrSearchFragment.newInstance(),false);
         } else {
-            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance());
+            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance(),false);
         }
 
     }
 
     //Getting rid of Navigation Drawer if we go to LoginFragment and clean stack of fragments
     @Override
-    public void getRidOfNavigationDrawer() {
+    public void onLogOut() {
+        //removing current user from application
+        sharedPreferences.edit().remove(CURRENT_USER).commit();
+        SharedPreferences defSharPref= PreferenceManager.getDefaultSharedPreferences(this);
+        defSharPref.edit().putBoolean(KEY_ALLOW_UPDATES,false).commit();
+        defSharPref.edit().putString(KEY_SEARCH_REQUEST,DEFAULT_KEY_SEARCH_REQUEST).commit();
+        defSharPref.edit().putString(KEY_INTERVAL,DEFAULT_KEY_INTERVAL).commit();
+        //canceling all workers
+        WorkManager workManager = WorkManager.getInstance();
+        workManager.cancelAllWork();
+        //deleting current user from singelone CurrentUser
+        CurrentUser.getInstance().setUser(null);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
     }
 
     //If the place on the map is selected transfer latitude and longitude to FlickrSearchFragment
     @Override
     public void onPlaceSelected(double latitude, double longitude) {
         if (!twoPaneMode) {
-            changeFragment(FlickrSearchFragment.newInstance(latitude, longitude));
+            changeFragment(FlickrSearchFragment.newInstance(latitude, longitude),true);
         } else {
-            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance(latitude, longitude));
+            changeFragmentTwoPaneModeMaster(FlickrSearchFragment.newInstance(latitude, longitude),true);
         }
     }
 
@@ -318,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onFlickrPhotoSelected(String searchRequest, String webLink, String title) {
         if (!twoPaneMode) {
-            changeFragment(FlickrViewItemFragment.newInstance(searchRequest, webLink, title));
+            changeFragment(FlickrViewItemFragment.newInstance(searchRequest, webLink, title),true);
         } else {
             changeFragmentTwoPaneModeDetail(FlickrViewItemFragment.newInstance(searchRequest, webLink, title));
         }
@@ -328,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     @Override
     public void onPhotoFileSelected(String filePath) {
         if (!twoPaneMode) {
-            changeFragment(GalleryViewItemFragment.newInstance(filePath));
+            changeFragment(GalleryViewItemFragment.newInstance(filePath),true);
         } else {
             changeFragmentTwoPaneModeDetail(GalleryViewItemFragment.newInstance(filePath));
         }
@@ -361,17 +425,27 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     }
 
     //Changing fragments in small screen devices such as smartphones
-    public void changeFragment(Fragment fragment) {
+    public void changeFragment(Fragment fragment, boolean isAddedToBackStack) {
+        if(isAddedToBackStack){
         fragmentManager.beginTransaction().replace(R.id.fragment_container,
                 fragment)
                 .addToBackStack(null).commit();
+        }else{
+            fragmentManager.beginTransaction().replace(R.id.fragment_container,
+                    fragment).commit();
+        }
     }
 
     //Changing master fragment in wide screen devices such as tablet
-    public void changeFragmentTwoPaneModeMaster(Fragment fragment) {
+    public void changeFragmentTwoPaneModeMaster(Fragment fragment, boolean isAddedToBackStack) {
+        if(isAddedToBackStack){
         fragmentManager.beginTransaction().replace(R.id.fragment_container_master,
                 fragment)
                 .addToBackStack(null).commit();
+        }else{
+            fragmentManager.beginTransaction().replace(R.id.fragment_container_master,
+                    fragment).commit();
+        }
         if((fragment instanceof FlickrSearchFragment)||(fragment instanceof FavoritesFragment)||(fragment instanceof GalleryFragment)
         || (fragment instanceof RequestedPhotosFragment)){
             detailContainer.setLayoutParams(layoutParamShowContainer);

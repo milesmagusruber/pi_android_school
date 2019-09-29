@@ -34,6 +34,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public static final String KEY_SEARCH_REQUEST="settings_edit_text_search_request";
     public static final String KEY_INTERVAL="settings_background_updates_interval";
 
+    public static final String DEFAULT_KEY_SEARCH_REQUEST="cat";
+    public static final String DEFAULT_KEY_INTERVAL="15";
+
     //Background updates
     private WorkManager workManager;
     private PeriodicWorkRequest workerRequest;
