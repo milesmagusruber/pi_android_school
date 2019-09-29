@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -45,54 +46,47 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
         super(appContext, workerParams);
     }
 
-    private static final String TAG = BackgroundPhotoUpdatesWorker.class.getSimpleName();
+    private static final String TAG = "BACKGROUND_UPDATES";
 
     @NonNull
     @Override
     public Result doWork() {
         Context applicationContext = getApplicationContext();
+        networkHelper = NetworkHelper.getInstance(applicationContext);
         String searchRequest = "Cat";
+        Log.d(TAG,searchRequest);
         try {
-            //TODO: Downloading Flickr Photos
+            //Downloading Flickr Photos
+            final ArrayList<RequestedPhoto> requestedPhotos = new ArrayList<>();
+
             call = networkHelper.getSearchTextQueryPhotos(searchRequest,1);
-            call.enqueue(new Callback<FlickrResponse>() {
-                @Override
-                public void onResponse(Call<FlickrResponse> call, Response<FlickrResponse> response) {
-                    FlickrResponse flickrResponse = response.body();
+            FlickrResponse flickrResponse=call.execute().body();
+            List<Photo> photos = null;
 
-                    List<Photo> photos = null;
-                    //If Response is not null making a result list of photos
-                    if (flickrResponse != null) {
+            //If Response is not null making a result list of photos
+            if (flickrResponse != null) {
 
-                        photos = flickrResponse.getPhotos().getPhoto();
+                photos = flickrResponse.getPhotos().getPhoto();
 
-                    }
-                    //If photos not null show them
-                    if (photos != null && !photos.isEmpty()) {
-                        //do one thing
-                    } else {
-                        //do another
-                    }
-
+            }
+            //If photos not null show them
+            if (photos != null && !photos.isEmpty()) {
+                for(Photo photo: photos){
+                    requestedPhotos.add(new RequestedPhoto(photo));
                 }
-
-                //If we fail then set an error string to textview
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onFailure(Call<FlickrResponse> call, Throwable t) {
-                    Log.e(TAG, "onFailure: Error");
-                    Log.e(TAG, t.toString());
-                    downloadSuccess = false;
-                }
-            });
+                downloadSuccess=true;
+            } else {
+                //do another
+            }
+            Log.d(TAG,"level2");
 
             //If download wasn't successful return failure
-            if(!downloadSuccess) return Result.failure();
-
-            ArrayList<RequestedPhoto> requestedPhotos = new ArrayList<>();
+            if(!downloadSuccess){
+                showNotification("WorkManager","Fail: download fail");
+                return Result.failure();
+            }
 
             //Saving photos to database
-
             //getting database
             db = db.getInstance(applicationContext);
             //deleting all previous requested photos
@@ -101,10 +95,11 @@ public class BackgroundPhotoUpdatesWorker extends Worker {
             db.requestedPhotoDao().insertAll(requestedPhotos);
 
             //Showing Notification about success download
-            showNotification("WorkManager", "Test message");
+            showNotification("WorkManager", "Success");
             return Result.success();
         } catch (Throwable throwable) {
             Log.e(TAG, "Error in background photo updates", throwable);
+            showNotification("WorkManager","Fail: "+throwable.getMessage());
             return Result.failure();
         }
     }

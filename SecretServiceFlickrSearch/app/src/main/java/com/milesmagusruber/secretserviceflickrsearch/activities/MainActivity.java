@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
@@ -274,6 +276,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
     public void onLoginButtonEnter() {
         //Testing WorkManager
         WorkManager workManager = WorkManager.getInstance();
+        //Setting constraints
+        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+        //Setting work request
         OneTimeWorkRequest workerRequest = new OneTimeWorkRequest.Builder(BackgroundPhotoUpdatesWorker.class).build();
         workManager.enqueue(workerRequest);
 

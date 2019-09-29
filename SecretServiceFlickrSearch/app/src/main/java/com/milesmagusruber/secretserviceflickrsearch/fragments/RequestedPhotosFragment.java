@@ -33,7 +33,7 @@ public class RequestedPhotosFragment extends Fragment {
     private RecyclerView rvRequestedPhotos;
 
     //search eequest
-    private String textSearch;
+    private String searchRequest;
 
     //database helping class
     private SSFSDatabase db;
@@ -87,6 +87,7 @@ public class RequestedPhotosFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_requested_photos, container, false);
         rvRequestedPhotos = view.findViewById(R.id.rv_requested_photos);
         textViewRequestedPhotosInfotext = view.findViewById(R.id.requested_photos_infotext);
+        searchRequest = "Cat";
         showRequestedPhotos();
         return view;
     }
@@ -113,11 +114,11 @@ public class RequestedPhotosFragment extends Fragment {
                 protected void onPostExecute(Integer a) {
                     if(requestedPhotos!=null && !requestedPhotos.isEmpty()) {
                         // Create adapter passing in the sample user data
-                        adapter = new RequestedPhotosAdapter(requestedPhotos, textSearch, new RequestedPhotosAdapter.OnItemClickListener() {
+                        adapter = new RequestedPhotosAdapter(requestedPhotos, searchRequest, new RequestedPhotosAdapter.OnItemClickListener() {
                             @Override
                             public void onItemClick(RequestedPhoto requestedPhoto) {
                                 //get to Requested Flick Photo from RequestedPhotosFragment
-                                listener.onFlickrPhotoSelected(textSearch, requestedPhoto.getUrl(), requestedPhoto.getTitle());
+                                listener.onFlickrPhotoSelected(searchRequest, requestedPhoto.getUrl(), requestedPhoto.getTitle());
                             }
 
                         });
