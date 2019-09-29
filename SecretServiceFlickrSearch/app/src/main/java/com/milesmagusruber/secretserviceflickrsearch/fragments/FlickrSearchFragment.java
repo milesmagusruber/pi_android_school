@@ -68,6 +68,8 @@ public class FlickrSearchFragment extends Fragment {
     private ProgressBar scrollProgressBar;
     private TextView textViewFlickrError;
     private RecyclerView rvFlickrResult;
+
+    //search request
     private String textSearch;
 
     //for geo coordinates
@@ -129,7 +131,7 @@ public class FlickrSearchFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof LoginFragment.LoginFragmentListener) {
+        if (context instanceof OnPhotoSelectedListener) {
             listener = (OnPhotoSelectedListener) context;
         } else {
             throw new ClassCastException(context.toString()
@@ -160,10 +162,10 @@ public class FlickrSearchFragment extends Fragment {
 
         //Initialising UI elements
         editTextFlickrSearch = view.findViewById(R.id.edittext_flickr_search);
-        downloadProgressBar = (ProgressBar) view.findViewById(R.id.download_progressbar);
-        rvFlickrResult = (RecyclerView) view.findViewById(R.id.flickr_result);
+        downloadProgressBar = view.findViewById(R.id.download_progressbar);
+        rvFlickrResult = view.findViewById(R.id.flickr_result);
         textViewFlickrError = view.findViewById(R.id.flickr_error);
-        scrollProgressBar = (ProgressBar) view.findViewById(R.id.scroll_progressbar);
+        scrollProgressBar = view.findViewById(R.id.scroll_progressbar);
         isLoading = false;
         photosPage = 1;//number of pages is 1
         photosEndReached = false;

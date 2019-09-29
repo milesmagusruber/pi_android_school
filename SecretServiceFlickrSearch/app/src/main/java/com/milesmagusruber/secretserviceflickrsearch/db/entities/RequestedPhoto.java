@@ -5,6 +5,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.milesmagusruber.secretserviceflickrsearch.network.model.Photo;
+
 @Entity(tableName = "requested_photos")
 public class RequestedPhoto {
     @PrimaryKey(autoGenerate = true)
@@ -30,6 +32,12 @@ public class RequestedPhoto {
     public RequestedPhoto(String title, String url){
         this.title = title;
         this.url = url;
+    }
+
+    @Ignore
+    public RequestedPhoto(Photo photo){
+        this.title=photo.getTitle();
+        this.url=photo.getPhotoUrl();
     }
 
     public int getId(){

@@ -10,6 +10,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -43,6 +45,7 @@ import com.milesmagusruber.secretserviceflickrsearch.fragments.RequestedPhotosFr
 import com.milesmagusruber.secretserviceflickrsearch.fragments.SettingsFragment;
 import com.milesmagusruber.secretserviceflickrsearch.fs.FileHelper;
 import com.milesmagusruber.secretserviceflickrsearch.listeners.OnPhotoSelectedListener;
+import com.milesmagusruber.secretserviceflickrsearch.workers.BackgroundPhotoUpdatesWorker;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -269,6 +272,12 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.Log
      * setting up Navigation Drawer*/
     @Override
     public void onLoginButtonEnter() {
+        //Testing WorkManager
+        WorkManager workManager = WorkManager.getInstance();
+        OneTimeWorkRequest workerRequest = new OneTimeWorkRequest.Builder(BackgroundPhotoUpdatesWorker.class).build();
+        workManager.enqueue(workerRequest);
+
+        //Setting support bar
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Find our drawer view

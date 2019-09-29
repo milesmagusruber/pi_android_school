@@ -69,6 +69,8 @@
     <string name="user_exists">User \'%1$s\' exists</string>
     <string name="user_doesnt_exist">User \'%1$s\' doesn\'t exist yet</string>
 
+    <!--Requested Photos-->
+    <string name="requested_photos_not_found">Photos aren\'t found by your search request!</string>
 
 
 </resources>

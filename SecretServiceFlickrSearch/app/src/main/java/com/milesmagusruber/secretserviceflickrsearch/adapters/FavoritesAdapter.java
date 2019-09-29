@@ -161,6 +161,4 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.View
         notifyItemRemoved(position);
     }
 
-    //public boolean removeFavorite()
-
 }
