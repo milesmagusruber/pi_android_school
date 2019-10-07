@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.BreweriesFragment">
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_breweries_get_by_location"
+        android:layout_width="@dimen/breweries_button"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:text="@string/button_nearby"
+        app:icon="@drawable/ic_breweries_get_by_location"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/button_breweries_get_by_map"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_breweries_get_by_map"
+        android:layout_width="@dimen/breweries_button"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:text="@string/button_use_map"
+        app:icon="@drawable/ic_breweries_get_by_map"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/button_breweries_get_by_location"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/brewery_download_progressbar"
+        android:layout_width="@dimen/normal_progress_bar_size"
+        android:layout_height="@dimen/normal_progress_bar_size"
+        android:layout_marginTop="@dimen/progress_bar_margin"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_breweries_get_by_location" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_breweries"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/norm_margin"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_breweries_get_by_location" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textview_brewery_search_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginTop="@dimen/very_big_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.BeerPatrol.ErrorText"
+        android:textColor="@color/colorError"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_breweries_get_by_location" />
+
+
+    <ProgressBar
+        android:id="@+id/brewery_scroll_progressbar"
+        android:layout_width="@dimen/small_progress_bar_size"
+        android:layout_height="@dimen/small_progress_bar_size"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_breweries"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

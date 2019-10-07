@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="temp">30dp</dimen>
+
+    <!--Margins-->
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="norm_margin">16dp</dimen>
+    <dimen name="very_big_margin">32dp</dimen>
+    <dimen name="progress_bar_margin">50dp</dimen>
+    <dimen name="card_margin">10dp</dimen>
+
+    <!--Elements' sizes-->
+    <dimen name="very_small_image_size">25dp</dimen>
+    <dimen name="small_image_size">50dp</dimen>
+    <dimen name="big_image_size">150dp</dimen>
+    <dimen name="small_progress_bar_size">30dp</dimen>
+    <dimen name="normal_progress_bar_size">100dp</dimen>
+    <dimen name="brewery_container">300dp</dimen>
+    <dimen name="breweries_button">150dp</dimen>
+
+    <!--Font sizes-->
+    <dimen name="subtitle_font_size">12sp</dimen>
+    <dimen name="body_font_size">14sp</dimen>
+    <dimen name="body_big_font_size">16sp</dimen>
+    <dimen name="error_font_size">18sp</dimen>
+    <dimen name="big_button_font_size">20sp</dimen>
+
+</resources>

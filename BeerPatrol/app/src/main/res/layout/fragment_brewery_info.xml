@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.BreweryInfoFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/brewery_info_app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="@drawable/ic_arrow_back" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/brewery_info_main"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/brewery_container"
+        android:layout_margin="@dimen/norm_margin"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brewery_info_app_bar_layout">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/brewery_info_image"
+                android:layout_width="@dimen/big_image_size"
+                android:layout_height="@dimen/big_image_size"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginLeft="@dimen/small_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
+                android:contentDescription="@string/brewery_info_image_desc"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/brewery_info_website"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
+                android:textAppearance="@style/TextAppearance.BeerPatrol.BoldInfoText"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintTop_toBottomOf="@+id/brewery_info_image"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/brewery_info_established"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
+                android:textAppearance="@style/TextAppearance.BeerPatrol.BoldInfoText"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brewery_info_website" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/brewery_info_description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/small_margin"
+                android:textAppearance="@style/TextAppearance.BeerPatrol.Description"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/brewery_info_established" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/brewery_info_label_beers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/small_margin"
+        android:text="@string/label_beers"
+        android:textAppearance="@style/TextAppearance.BeerPatrol.Heading"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brewery_info_main" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_brewery_beers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/small_margin"
+        android:layout_marginTop="@dimen/very_big_margin"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brewery_info_label_beers" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/brewery_info_beers_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
+        android:layout_marginLeft="@dimen/small_margin"
+        android:layout_marginTop="@dimen/very_big_margin"
+        android:layout_marginEnd="@dimen/small_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:textAppearance="@style/TextAppearance.BeerPatrol.ErrorText"
+        android:textColor="@color/colorError"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/brewery_info_label_beers" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

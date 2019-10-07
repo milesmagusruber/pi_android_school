@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Beer Patrol</string>
+
+    <!-- Add your API keys here -->
+    <string name="brewerydb_api_key">your_key</string>
+    <string name="google_maps_api_key">your_key</string>
+
+    <!-- Titles -->
+    <string name="title_beer_search">Beer Search</string>
+    <string name="title_breweries">Breweries</string>
+    <string name="title_favorite_beers">Favorite Beers</string>
+
+
+    <!--Error messages-->
+    <string name="error_turn_on_internet">Turn on the internet</string>
+    <string name="error_request">Request error</string>
+
+    <!--Beer Search -->
+    <string name="menu_item_search">Search</string>
+    <string name="beer_search_text_input_hint">Input search query</string>
+    <string name="beer_search_empty_search_query">Please input search query</string>
+    <string name="beer_search_found_nothing">Beers are not found</string>
+
+    <!--Beer Info -->
+
+    <string name="beer_info_glass">Glass: %1$s</string>
+    <string name="beer_info_abv">ABV: %1$s%%</string>
+    <string name="beer_info_ibu">IBU: %1$s%%</string>
+    <string name="beer_info_no_category">No category specified</string>
+    <string name="beer_info_no_glass">No glass specified</string>
+    <string name="beer_info_no_description">No beer description specified</string>
+    <string name="beer_info_no_abv">ABV: N/A</string>
+    <string name="beer_info_no_ibu">IBU: N/A</string>
+
+
+    <!--Breweries-->
+    <string name="breweries_search_found_nothing">Breweries are not found</string>
+    <string name="brewery_item_distance">Distance: %1$.2f km</string>
+
+    <!--Brewery Info-->
+    <string name="brewery_info_established">Established in %1$s</string>
+    <string name="brewery_info_no_established">No establishing date specified</string>
+    <string name="brewery_info_no_website">No website specified</string>
+    <string name="brewery_info_no_description">No brewery description specified</string>
+
+    <!--Favorite Beers-->
+    <string name="favorite_beer_search_filter_hint">Input beer filter</string>
+
+    <!--Map Location Fragment-->
+    <string name="geo_location_no_markers">This is no marker on the map. Please, place one to let us get your location!</string>
+    <string name="geo_snippet">Location:\nLatitude: %1$.6f\nLongitude: %2$.6f</string>
+    <string name="geo_location_problem">There is some problem with location services.
+        Can\'t get your location! Move to default spot! Please, turn on your geolocation or move
+        to the zone of better signal reception!</string>
+    <string name="geo_location_permission_not_granted">Location permission is not granted. Showing default location.</string>
+    <string name="marker_title">Coordinates</string>
+
+
+    <string name="no_info">N/A</string>
+    <string name="beer_info_image_desc">Beer image</string>
+    <string name="button_nearby">Nearby</string>
+    <string name="button_use_map">Use map</string>
+    <string name="brewery_info_image_desc">Brewery image</string>
+    <string name="label_beers">Beers</string>
+    <string name="button_map_send_result">Get Breweries Near Marker</string>
+    <string name="beer_icon_image_desc">Beer icon image</string>
+    <string name="brewery_icon_image_desc">Brewery icon image</string>
+</resources>

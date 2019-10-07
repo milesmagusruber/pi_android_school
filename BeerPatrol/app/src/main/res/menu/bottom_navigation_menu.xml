@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/bottom_nav_beer_search"
+            android:icon="@drawable/ic_bottom_nav_beer_search"
+            android:title="@string/title_beer_search"
+            android:checked="true"/>
+        <item
+            android:id="@+id/bottom_nav_breweries"
+            android:icon="@drawable/ic_bottom_nav_breweries"
+            android:title="@string/title_breweries" />
+        <item
+            android:id="@+id/bottom_nav_favorite_beers"
+            android:icon="@drawable/ic_bottom_nav_favorite_beers"
+            android:title="@string/title_favorite_beers" />
+    </group>
+</menu>
